@@ -102,3 +102,4 @@ packages/
 
 #Test files
 *.testsettings
+Unity/Assets/Dependencies/Engine.dll
