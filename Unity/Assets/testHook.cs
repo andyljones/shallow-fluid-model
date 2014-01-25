@@ -10,6 +10,6 @@ public class testHook : MonoBehaviour {
 	void Start ()
 	{
 	    var polyhedron = new Icosahedron();
-	    new SolidPolyhedronRenderer(polyhedron, "Test", "Materials/TestMaterial");
+	    new PolyhedronRenderer(polyhedron, "Test", "Materials/TestMaterial", "Materials/TestMaterial2");
 	}
 }

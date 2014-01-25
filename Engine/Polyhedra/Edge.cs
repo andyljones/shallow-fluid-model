@@ -28,7 +28,7 @@ namespace Engine.Polyhedra
                 return true;
             }
 
-            if (a == null || b == null)
+            if ((object)a == null || (object)b == null)
             {
                 return false;
             }
@@ -49,7 +49,7 @@ namespace Engine.Polyhedra
             }
 
             var edge = obj as Edge;
-            if (edge == null)
+            if ((object)edge == null)
             {
                 return false;
             }
@@ -69,7 +69,7 @@ namespace Engine.Polyhedra
                 return false;
             }
 
-            return this.A == other.A && this.B == other.B;
+            return (this.A == other.A && this.B == other.B) || (this.A == other.B && this.B == other.A);
         }
 
         public override int GetHashCode()

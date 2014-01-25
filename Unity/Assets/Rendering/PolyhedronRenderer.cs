@@ -9,35 +9,28 @@ namespace Assets.Rendering
     /// <summary>
     /// Renders a Polyhedron as a solid object with the requested properties.
     /// </summary>
-    public class SolidPolyhedronRenderer
+    public class PolyhedronRenderer
     {
         private readonly GameObject _gameObject;
         private readonly Dictionary<Vertex, int> _vertexIndices; 
 
-        public SolidPolyhedronRenderer(Polyhedron polyhedron, String name, String materialName)
+        public PolyhedronRenderer(Polyhedron polyhedron, String name, String wireframeMaterialName = "", String surfaceMaterialName = "")
         {
             _vertexIndices = GraphicsUtilities.CreateItemToIndexMap(polyhedron.Vertices);
+            _gameObject = GraphicsUtilities.CreateRenderingObject(name, CreateVertexArray(_vertexIndices));
 
-            var mesh = CreateMesh(polyhedron, _vertexIndices); 
-            _gameObject = GraphicsUtilities.CreateRenderingObject(name, materialName, mesh);
+            if (wireframeMaterialName != "")
+            { 
+                GraphicsUtilities.AddWireframe(_gameObject, CreateLineArray(_vertexIndices, polyhedron.Edges), wireframeMaterialName);
+            }
+
+            if (surfaceMaterialName != "")
+            {
+                GraphicsUtilities.AddSurface(_gameObject, CreateTriangleArray(_vertexIndices, polyhedron.Faces), surfaceMaterialName);
+            }
         }
 
         #region CreateMesh methods
-        private static Mesh CreateMesh(Polyhedron polyhedron, Dictionary<Vertex, int> vertexIndices)
-        {
-            var mesh = new Mesh();
-            mesh.vertices = CreateVertexArray(vertexIndices);
-            //mesh.subMeshCount = 2;
-
-            mesh.SetIndices(CreateTriangleArray(vertexIndices, polyhedron.Faces), MeshTopology.Triangles, 0);
-            //mesh.SetIndices(CreateLineStripArray(vertexIndices, polyhedron.Edges), MeshTopology.LineStrip, 1);
-
-            mesh.uv = new Vector2[] {};
-            mesh.RecalculateNormals();
-
-            return mesh;
-        }
-
         private static Vector3[] CreateVertexArray(Dictionary<Vertex, int> vertexIndices)
         {
             var unityVertices = new Vector3[vertexIndices.Count];
@@ -57,9 +50,8 @@ namespace Assets.Rendering
             return faces.SelectMany(face => Indices(vertexIndices, face)).ToArray();
         }
 
-        private static int[] CreateLineStripArray(Dictionary<Vertex, int> vertexIndices, IEnumerable<Edge> edges)
+        private static int[] CreateLineArray(Dictionary<Vertex, int> vertexIndices, IEnumerable<Edge> edges)
         {
-            Debug.Log(edges.Count());
             return edges.SelectMany(edge => Indices(vertexIndices, edge)).ToArray();
         }
 

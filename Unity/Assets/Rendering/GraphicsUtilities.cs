@@ -22,17 +22,49 @@ namespace Assets.Rendering
         }
 
         /// <summary>
-        /// Create a game object with MeshFilter/MeshRenderer and the specified name, material and mesh.
+        /// Create a game object with a MeshFilter, MeshRenderer and the specified vertices.
         /// </summary>
-        public static GameObject CreateRenderingObject(String name, String materialName, Mesh mesh)
+        public static GameObject CreateRenderingObject(String name, Vector3[] vertices)
         {
             var gameObject = new GameObject(name, new[] { typeof(MeshFilter), typeof(MeshRenderer) });
-            var material = Resources.Load(materialName, typeof(Material)) as Material;
-
-            gameObject.GetComponent<MeshRenderer>().materials = new Material[] {material, material};
-            gameObject.GetComponent<MeshFilter>().mesh = mesh;
+            var mesh = gameObject.GetComponent<MeshFilter>().mesh;
+            mesh.vertices = vertices;
+            mesh.uv = Enumerable.Repeat(new Vector2(), vertices.Count()).ToArray();
+            mesh.subMeshCount = 2;
 
             return gameObject;
+        }
+
+        /// <summary>
+        /// Adds a wireframe to an object.
+        /// </summary>
+        public static void AddWireframe(GameObject gameObject, int[] lines, String materialName)
+        {
+            var mesh = gameObject.GetComponent<MeshFilter>().mesh;
+            mesh.SetIndices(lines, MeshTopology.Lines, mesh.subMeshCount-1);
+            mesh.subMeshCount++;
+            mesh.RecalculateNormals();
+
+            var renderer = gameObject.GetComponent<MeshRenderer>();
+            var materials = renderer.materials.ToList();
+            materials.Add(Resources.Load(materialName) as Material);
+            renderer.materials = materials.ToArray();
+        }
+
+        /// <summary>
+        /// Adds a surface to an object.
+        /// </summary>
+        public static void AddSurface(GameObject gameObject, int[] triangles, String materialName)
+        {
+            var mesh = gameObject.GetComponent<MeshFilter>().mesh;
+            mesh.SetIndices(triangles, MeshTopology.Triangles, mesh.subMeshCount-1);
+            mesh.subMeshCount++;
+            mesh.RecalculateNormals();
+
+            var renderer = gameObject.GetComponent<MeshRenderer>();
+            var materials = renderer.materials.ToList();
+            materials.Add(Resources.Load(materialName) as Material);
+            renderer.materials = materials.ToArray();
         }
 
         /// <summary>
