@@ -28,7 +28,7 @@ namespace Engine.Polyhedra
                 return true;
             }
 
-            if (a == null || b == null)
+            if ((object)a == null || (object)b == null)
             {
                 return false;
             }
@@ -49,7 +49,7 @@ namespace Engine.Polyhedra
             }
 
             var face = obj as Face;
-            if (face == null)
+            if ((object)face == null)
             {
                 return false;
             }

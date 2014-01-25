@@ -53,7 +53,7 @@ namespace Engine.Polyhedra
             return edges;
         }
 
-        public static IEnumerable<Edge> EdgesAroundFace(Face face)
+        private static IEnumerable<Edge> EdgesAroundFace(Face face)
         {
             var vertices = face.Vertices;
 
@@ -93,6 +93,7 @@ namespace Engine.Polyhedra
         }
         #endregion
 
+        #region BuildDictionary methods
         private Dictionary<Vertex, HashSet<Edge>> BuildVertexToEdgeDictionary(IEnumerable<Vertex> vertices, IEnumerable<Edge> edges)
         {
             var vertexToEdgeDictionary = vertices.ToDictionary(vertex => vertex, vertex => new HashSet<Edge>());
@@ -131,5 +132,6 @@ namespace Engine.Polyhedra
             }
             return faceToEdgeDictionary;
         }
+        #endregion
     }
 }
