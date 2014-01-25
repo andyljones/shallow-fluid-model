@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Engine.Polyhedra
 {
     public class Face
     {
-        public List<Vertex> Vertices { get; private set; }
+        public ReadOnlyCollection<Vertex> Vertices { get; private set; }
 
         public Face(IEnumerable<Vertex> vertices)
         {
-            Vertices = vertices.ToList();
+            Vertices = new ReadOnlyCollection<Vertex>(vertices.ToList());
         }
 
         public override string ToString()

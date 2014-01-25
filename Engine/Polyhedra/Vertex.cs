@@ -7,7 +7,7 @@ namespace Engine.Polyhedra
 {
     public class Vertex
     {
-        public Vector Position { get; set; }
+        public readonly Vector Position;
 
         public Vertex(Vector position)
         {

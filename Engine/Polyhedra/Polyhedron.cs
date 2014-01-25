@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using Engine.Utilities;
@@ -14,12 +15,9 @@ namespace Engine.Polyhedra
         /// <summary>
         /// The faces of the polyhedron, with their vertices listed in clockwise order when looking toward the origin.
         /// </summary>
-        public IEnumerable<Face> Faces { get; private set; }
-
-        /// <summary>
-        /// The vertices of the polyhedron.
-        /// </summary>
-        public IEnumerable<Vertex> Vertices { get; private set; } 
+        public ReadOnlyCollection<Face> Faces { get; private set; }
+        public ReadOnlyCollection<Edge> Edges { get; private set; } 
+        public ReadOnlyCollection<Vertex> Vertices { get; private set; } 
 
         /// <summary>
         /// Construct a polyhedron from a collection of convex, planar collections of vertices.
@@ -27,13 +25,16 @@ namespace Engine.Polyhedra
         public Polyhedron(IEnumerable<IEnumerable<Vertex>> faces)
         {
             Faces = InitializeFaces(faces);
+            Edges = InitializeEdges(Faces);
             Vertices = InitializeVertices(Faces);
         }
 
         #region InitializeFaces methods
-        private static IEnumerable<Face> InitializeFaces(IEnumerable<IEnumerable<Vertex>> faces)
+        private static ReadOnlyCollection<Face> InitializeFaces(IEnumerable<IEnumerable<Vertex>> vertexCollections)
         {
-            return faces.Select(vertices => new Face(SortVertices(vertices)));
+            var faces = vertexCollections.Select(vertices => new Face(SortVertices(vertices))).ToList();
+
+            return new ReadOnlyCollection<Face>(faces);
         }
 
         private static IEnumerable<Vertex> SortVertices(IEnumerable<Vertex> vertices)
@@ -53,11 +54,18 @@ namespace Engine.Polyhedra
         }
         #endregion
 
-        private IEnumerable<Vertex> InitializeVertices(IEnumerable<Face> faces)
+        private ReadOnlyCollection<Vertex> InitializeVertices(IEnumerable<Face> faces)
         {
-            return faces.SelectMany(face => face.Vertices).Distinct();
+            var vertices = faces.SelectMany(face => face.Vertices).Distinct().ToList();
+
+            return new ReadOnlyCollection<Vertex>(vertices);
         }
 
+        private ReadOnlyCollection<Edge> InitializeEdges(IEnumerable<Face> faces)
+        {
+            var edges = faces.SelectMany(face => face.Edges()).Distinct().ToList();
 
+            return new ReadOnlyCollection<Edge>(edges);
+        }
     }
 }

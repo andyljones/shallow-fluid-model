@@ -40,7 +40,7 @@ namespace EngineTests.IcosasphereTests
 
             // Verify outcome
             var edges = faces.SelectMany(face => face.Edges()).ToArray();
-            var norms = edges.Select(edge => (edge[1].Position - edge[0].Position).Norm()).ToArray();
+            var norms = edges.Select(edge => (edge.A.Position - edge.B.Position).Norm()).ToArray();
 
             var expectedNorm = norms.First();
 
