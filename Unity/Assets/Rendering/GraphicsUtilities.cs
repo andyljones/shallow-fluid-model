@@ -43,7 +43,7 @@ namespace Assets.Rendering
             var mesh = gameObject.GetComponent<MeshFilter>().mesh;
             mesh.SetIndices(lines, MeshTopology.Lines, mesh.subMeshCount-1);
             mesh.subMeshCount++;
-            mesh.RecalculateNormals();
+            //mesh.RecalculateNormals();
 
             var renderer = gameObject.GetComponent<MeshRenderer>();
             var materials = renderer.materials.ToList();

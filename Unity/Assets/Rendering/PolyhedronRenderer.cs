@@ -57,7 +57,14 @@ namespace Assets.Rendering
 
         private static IEnumerable<int> Indices(Dictionary<Vertex, int> vertexIndices, Face face)
         {
-            return face.Vertices.Select(vertex => vertexIndices[vertex]);
+            var vertices = face.Vertices;
+            var triangles = new List<int>();
+            for (int i = 1; i < vertices.Count-1; i++)
+            {
+                var triangle = new [] { vertexIndices[vertices[0]], vertexIndices[vertices[i]], vertexIndices[vertices[i+1]] };
+                triangles.AddRange(triangle);
+            }
+            return triangles;
         }
 
         private static IEnumerable<int> Indices(Dictionary<Vertex, int> vertexIndices, Edge edge)

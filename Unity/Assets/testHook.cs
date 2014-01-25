@@ -11,11 +11,12 @@ public class testHook : MonoBehaviour {
 	void Start ()
 	{
 	    Polyhedron polyhedron = new Icosahedron();
-	    polyhedron = IcosasphereSubdivider.Subdivide(polyhedron);
         polyhedron = IcosasphereSubdivider.Subdivide(polyhedron);
         polyhedron = IcosasphereSubdivider.Subdivide(polyhedron);
         polyhedron = IcosasphereSubdivider.Subdivide(polyhedron);
-        polyhedron = IcosasphereSubdivider.Subdivide(polyhedron);
-	    new PolyhedronRenderer(polyhedron, "Test", "Materials/TestMaterial", "Materials/TestMaterial2");
+	    new PolyhedronRenderer(polyhedron, "Test", "Materials/TestMaterial");
+
+        var polyhedron2 = new Geodesic(polyhedron);
+        new PolyhedronRenderer(polyhedron2, "Test2", "Materials/TestMaterial", "Materials/TestMaterial2");
 	}
 }
