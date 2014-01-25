@@ -1,15 +1,15 @@
-﻿using UnityEngine;
+﻿using Assets;
+using Assets.Rendering;
+using Engine.Icosasphere;
+using UnityEngine;
 using System.Collections;
 
 public class testHook : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	void Start ()
+	{
+	    var polyhedron = new Icosahedron();
+	    new SolidPolyhedronRenderer(polyhedron, "Test", "Materials/TestMaterial");
 	}
 }

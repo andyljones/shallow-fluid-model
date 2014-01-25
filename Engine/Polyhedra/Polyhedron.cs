@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using Engine.Utilities;
-using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Polyhedra
@@ -18,13 +17,20 @@ namespace Engine.Polyhedra
         public IEnumerable<Face> Faces { get; private set; }
 
         /// <summary>
+        /// The vertices of the polyhedron.
+        /// </summary>
+        public IEnumerable<Vertex> Vertices { get; private set; } 
+
+        /// <summary>
         /// Construct a polyhedron from a collection of convex, planar collections of vertices.
         /// </summary>
         public Polyhedron(IEnumerable<IEnumerable<Vertex>> faces)
         {
             Faces = InitializeFaces(faces);
+            Vertices = InitializeVertices(Faces);
         }
 
+        #region InitializeFaces methods
         private static IEnumerable<Face> InitializeFaces(IEnumerable<IEnumerable<Vertex>> faces)
         {
             return faces.Select(vertices => new Face(SortVertices(vertices)));
@@ -45,5 +51,13 @@ namespace Engine.Polyhedra
 
             return sortedVertices;
         }
+        #endregion
+
+        private IEnumerable<Vertex> InitializeVertices(IEnumerable<Face> faces)
+        {
+            return faces.SelectMany(face => face.Vertices).Distinct();
+        }
+
+
     }
 }
