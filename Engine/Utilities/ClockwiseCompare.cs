@@ -17,11 +17,6 @@ namespace Engine.Utilities
 
         public int Compare(Vector a, Vector b)
         {
-            if (Vector.AlmostEqual(a, b) || Vector.AlmostEqual(a, _center) || Vector.AlmostEqual(b, _center))
-            {
-                return 0;
-            }
-            
             var middle = Vector.CrossProduct(a - _center, b - _center);
             var componentAlongCenter = Vector.ScalarProduct(middle, _center);
 

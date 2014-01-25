@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Engine.Polyhedra
@@ -10,6 +11,11 @@ namespace Engine.Polyhedra
         public Face(IEnumerable<Vertex> vertices)
         {
             Vertices = vertices.ToList();
+        }
+
+        public override string ToString()
+        {
+            return String.Join(", ", Vertices.Select(vertex => vertex.ToString()).ToArray());
         }
     }
 }
