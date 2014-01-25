@@ -11,35 +11,28 @@ namespace Assets.Rendering
     /// </summary>
     public class SolidPolyhedronRenderer
     {
-        private readonly GameObject gameObject;
-        private readonly Dictionary<Vertex, int> vertexIndices; 
+        private readonly GameObject _gameObject;
+        private readonly Dictionary<Vertex, int> _vertexIndices; 
 
         public SolidPolyhedronRenderer(Polyhedron polyhedron, String name, String materialName)
         {
-            vertexIndices = InitializeVertexToIndexMap(polyhedron.Vertices);
+            _vertexIndices = GraphicsUtilities.CreateItemToIndexMap(polyhedron.Vertices);
 
-            var mesh = CreateMesh(polyhedron, vertexIndices); 
-            gameObject = CreateRenderingObject(name, materialName, mesh);
-        }
-
-        private static Dictionary<Vertex, int> InitializeVertexToIndexMap(IEnumerable<Vertex> vertices)
-        {
-            var vertexList = vertices.ToList();
-            var indices = Enumerable.Range(0, vertexList.Count);
-            var vertexIndices = indices.ToDictionary(i => vertexList[i], i => i);
-
-            return vertexIndices;
+            var mesh = CreateMesh(polyhedron, _vertexIndices); 
+            _gameObject = GraphicsUtilities.CreateRenderingObject(name, materialName, mesh);
         }
 
         #region CreateMesh methods
         private static Mesh CreateMesh(Polyhedron polyhedron, Dictionary<Vertex, int> vertexIndices)
         {
-            var mesh = new Mesh
-            {
-                vertices = CreateVertexArray(vertexIndices),
-                triangles = CreateTriangleArray(vertexIndices, polyhedron.Faces),
-                uv = new Vector2[] { }
-            };
+            var mesh = new Mesh();
+            mesh.vertices = CreateVertexArray(vertexIndices);
+            //mesh.subMeshCount = 2;
+
+            mesh.SetIndices(CreateTriangleArray(vertexIndices, polyhedron.Faces), MeshTopology.Triangles, 0);
+            //mesh.SetIndices(CreateLineStripArray(vertexIndices, polyhedron.Edges), MeshTopology.LineStrip, 1);
+
+            mesh.uv = new Vector2[] {};
             mesh.RecalculateNormals();
 
             return mesh;
@@ -64,23 +57,21 @@ namespace Assets.Rendering
             return faces.SelectMany(face => Indices(vertexIndices, face)).ToArray();
         }
 
+        private static int[] CreateLineStripArray(Dictionary<Vertex, int> vertexIndices, IEnumerable<Edge> edges)
+        {
+            Debug.Log(edges.Count());
+            return edges.SelectMany(edge => Indices(vertexIndices, edge)).ToArray();
+        }
+
         private static IEnumerable<int> Indices(Dictionary<Vertex, int> vertexIndices, Face face)
         {
             return face.Vertices.Select(vertex => vertexIndices[vertex]);
         }
-        #endregion
 
-        private static GameObject CreateRenderingObject(String name, String materialName, Mesh mesh)
+        private static IEnumerable<int> Indices(Dictionary<Vertex, int> vertexIndices, Edge edge)
         {
-            var gameObject = new GameObject(name, new []{typeof(MeshFilter), typeof(MeshRenderer)});
-            var material = Resources.Load(materialName, typeof(Material)) as Material;
-
-            Debug.Log(material);
-
-            gameObject.GetComponent<MeshRenderer>().material = material;
-            gameObject.GetComponent<MeshFilter>().mesh = mesh;
-            
-            return gameObject;
+            return new List<int> {vertexIndices[edge.A], vertexIndices[edge.B]};
         }
+        #endregion
     }
 }

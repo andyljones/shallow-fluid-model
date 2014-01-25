@@ -21,5 +21,12 @@ namespace Engine.Polyhedra
 
             return String.Format("({0,3:N0}, {1,3:N0})", colatitude, azimuth);
         }
+
+        #region GetHashCode override
+        public override int GetHashCode()
+        {
+            return Position.GetHashCode();
+        }
+        #endregion
     }
 }
