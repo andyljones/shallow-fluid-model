@@ -1,4 +1,5 @@
-﻿using Engine.Polyhedra;
+﻿using System.Diagnostics;
+using Engine.Polyhedra;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 

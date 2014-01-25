@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Engine.Utilities;
 using MathNet.Numerics;
@@ -32,22 +33,17 @@ namespace Engine.Polyhedra
         private static IEnumerable<Vertex> SortVertices(IEnumerable<Vertex> vertices)
         {
             var vertexList = vertices.ToList();
-            var center = Center(vertexList);
-            var sortedVertices = vertexList.OrderBy(vertex => vertex.Position, new ClockwiseCompare(center));
+            var normalizedCentroid = vertexList.Aggregate(Vector.Zeros(3), (c, v) => c + v.Position).Normalize();
 
-            return sortedVertices;
-        }
-
-        private static Vector Center(IEnumerable<Vertex> vertices)
-        {
-            var center = vertices.Aggregate(Vector.Zeros(3), (c, v) => c + v.Position).Normalize();
-
-            if (center == Vector.Zeros(3))
+            if (normalizedCentroid == Vector.Zeros(3))
             {
-                center = new Vector(new[] { 0, 0, 1.0 });
+                Debug.WriteLine("Centroid of face was the zero vector! Picking an arbitrary centroid instead");
+                normalizedCentroid = new Vector(new[] { 0, 0, 1.0 });
             }
 
-            return center;
+            var sortedVertices = vertexList.OrderBy(vertex => vertex.Position, new ClockwiseCompare(normalizedCentroid));
+
+            return sortedVertices;
         }
     }
 }

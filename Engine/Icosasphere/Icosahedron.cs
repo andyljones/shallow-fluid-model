@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Engine.Polyhedra;
 using Engine.Utilities;
 using MathNet.Numerics;
@@ -14,7 +12,7 @@ namespace Engine.Icosasphere
     public class Icosahedron : Polyhedron
     {
         // The colatitudes of the northern five vertices and the southern five vertices.
-        private static readonly double NorthernColatitude = Trig.InverseCosine((1 + Math.Sqrt(5))/(5 + 2*Math.Sqrt(5)));
+        private static readonly double NorthernColatitude = Trig.InverseCosine((1 + Math.Sqrt(5))/(5 + Math.Sqrt(5)));
         private static readonly double SouthernColatitude = Math.PI - NorthernColatitude;
 
         // The 12 vertices of the icosahedron.
@@ -22,9 +20,9 @@ namespace Engine.Icosasphere
         private static readonly Vertex SouthPole = VertexUtilities.NewVertex(Math.PI, 0);
 
         private static readonly Vertex[] NorthernVertices = 
-            Enumerable.Range(0, 5).Select(i => VertexUtilities.NewVertex(NorthernColatitude, i*Math.PI/5)).ToArray();
+            Enumerable.Range(0, 5).Select(i => VertexUtilities.NewVertex(NorthernColatitude, i*2*Math.PI/5)).ToArray();
         private static readonly Vertex[] SouthernVertices = 
-            Enumerable.Range(0, 5).Select(i => VertexUtilities.NewVertex(SouthernColatitude, i*Math.PI/5 + Math.PI/10)).ToArray();
+            Enumerable.Range(0, 5).Select(i => VertexUtilities.NewVertex(SouthernColatitude, i*2*Math.PI/5 + 2*Math.PI/10)).ToArray();
 
         // The five northmost faces of the icosahedron.
         private static readonly Vertex[][] NorthernFaces = 

@@ -6,7 +6,7 @@ namespace Engine.Polyhedra
 {
     public class Face
     {
-        public IEnumerable<Vertex> Vertices { get; private set; }
+        public List<Vertex> Vertices { get; private set; }
 
         public Face(IEnumerable<Vertex> vertices)
         {

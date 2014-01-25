@@ -10,7 +10,7 @@ namespace EngineTests.PolyhedronTests
     public class PolyhedronTests
     {
         [Fact]
-        public void Constructor_SortsVerticesInEachFaceClockwise()
+        public void Constructor_GivenAnAnticlockwiseSetOfVectors_SortsThemClockwiseInTheCorrespondingFace()
         {
             // Fixture setup
             var antiClockwiseFace = new[]
