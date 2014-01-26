@@ -5,7 +5,7 @@ using Engine.Polyhedra;
 using Engine.Utilities;
 using Xunit;
 
-namespace EngineTests.PolyhedronTests
+namespace EngineTests.PolyhedraTests
 {
     public class PolyhedronTests
     {

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
-using Engine.Icosasphere;
 using Engine.Polyhedra;
+using Engine.Polyhedra.IcosahedronBased;
 using EngineTests.Utilities;
 using MathNet.Numerics;
 using Xunit;
@@ -14,7 +14,7 @@ namespace EngineTests.IcosasphereTests
         public void Vertices_ShouldAllHaveUnitNorm()
         {
             // Fixture setup
-            var icosahedron = new Icosahedron();
+            var icosahedron = IcosahedronFactory.Build();
 
             // Exercise system
             var faces = icosahedron.Faces;

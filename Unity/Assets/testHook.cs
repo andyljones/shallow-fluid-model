@@ -1,25 +1,19 @@
-﻿using Assets;
-using Assets.Rendering;
-using Engine.Icosasphere;
-using Engine.Polyhedra;
+﻿using Assets.Rendering;
+using Engine.Polyhedra.IcosahedronBased;
 using UnityEngine;
-using System.Collections;
 
-public class testHook : MonoBehaviour {
+namespace Assets
+{
+    public class TestHook : MonoBehaviour {
 
-	// Use this for initialization
-	void Start ()
-	{
-	    Polyhedron polyhedron = new Icosahedron();
-        polyhedron = IcosasphereSubdivider.Subdivide(polyhedron);
-        polyhedron = IcosasphereSubdivider.Subdivide(polyhedron);
-        polyhedron = IcosasphereSubdivider.Subdivide(polyhedron);
-        polyhedron = IcosasphereSubdivider.Subdivide(polyhedron);
-        polyhedron = IcosasphereSubdivider.Subdivide(polyhedron);
-        //new PolyhedronRenderer(polyhedron, "Test", "Materials/TestMaterial", "Materials/TestMaterial2");
-        Debug.Log(polyhedron.Vertices.Count);
-        var polyhedron2 = new Geodesic(polyhedron);
-        new PolyhedronRenderer(polyhedron2, "Test2", "Materials/TestMaterial", "Materials/TestMaterial2");
-        Debug.Log(polyhedron2.Vertices.Count);
-	}
+        // Use this for initialization
+        void Start ()
+        {
+            var polyhedron = GeodesicSphereFactory.Build(43);
+            new PolyhedronRenderer(polyhedron, "Test2", "Materials/TestMaterial", "Materials/TestMaterial2");
+            Debug.Log(polyhedron.Vertices.Count);
+            Debug.Log(polyhedron.Edges.Count);
+            Debug.Log(polyhedron.Faces.Count);
+        }
+    }
 }

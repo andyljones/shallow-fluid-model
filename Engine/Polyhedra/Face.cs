@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -8,11 +7,11 @@ namespace Engine.Polyhedra
 {
     public class Face
     {
-        public ReadOnlyCollection<Vertex> Vertices { get; private set; }
+        public readonly List<Vertex> Vertices;
 
         public Face(IEnumerable<Vertex> vertices)
         {
-            Vertices = new ReadOnlyCollection<Vertex>(vertices.ToList());
+            Vertices = vertices.ToList();
         }
 
         public override string ToString()

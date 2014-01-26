@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using Engine.Polyhedra;
-using MathNet.Numerics;
+﻿using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace Engine.Utilities
+namespace Engine.Polyhedra
 {
     public static class VertexUtilities
     {

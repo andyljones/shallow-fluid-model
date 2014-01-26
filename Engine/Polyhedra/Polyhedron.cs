@@ -20,22 +20,22 @@ namespace Engine.Polyhedra
         public readonly List<Edge> Edges;
         public readonly List<Vertex> Vertices;
 
-        public readonly Dictionary<Vertex, HashSet<Edge>> VertexToEdgeDictionary;
-        public readonly Dictionary<Vertex, HashSet<Face>> VertexToFaceDictionary;
-        public readonly Dictionary<Face, HashSet<Edge>> FaceToEdgeDictionary; 
+        public readonly Dictionary<Vertex, HashSet<Edge>> VertexToEdges;
+        public readonly Dictionary<Vertex, HashSet<Face>> VertexToFaces;
+        public readonly Dictionary<Face, HashSet<Edge>> FaceToEdges;
 
         /// <summary>
         /// Construct a polyhedron from a collection of convex, planar collections of vertices.
         /// </summary>
-        public Polyhedron(IEnumerable<IEnumerable<Vertex>> vertexLists)
+        public Polyhedron(IEnumerable<IEnumerable<Vertex>> verticesInEachFace)
         {
-            Vertices = InitializeVertices(vertexLists);
-            Faces = InitializeFaces(vertexLists);
+            Vertices = InitializeVertices(verticesInEachFace);
+            Faces = InitializeFaces(verticesInEachFace);
             Edges = InitializeEdges(Faces);
 
-            VertexToEdgeDictionary = BuildVertexToEdgeDictionary(Vertices, Edges);
-            VertexToFaceDictionary = BuildVertexToFaceDictionary(Vertices, Faces);
-            FaceToEdgeDictionary = BuildFaceToEdgeDictionary(Faces, VertexToEdgeDictionary);
+            VertexToEdges = BuildVertexToEdgeDictionary(Vertices, Edges);
+            VertexToFaces = BuildVertexToFaceDictionary(Vertices, Faces);
+            FaceToEdges = BuildFaceToEdgeDictionary(Faces, VertexToEdges);
         }
 
         private static List<Vertex> InitializeVertices(IEnumerable<IEnumerable<Vertex>> vertexLists)
@@ -96,41 +96,41 @@ namespace Engine.Polyhedra
         #region BuildDictionary methods
         private Dictionary<Vertex, HashSet<Edge>> BuildVertexToEdgeDictionary(IEnumerable<Vertex> vertices, IEnumerable<Edge> edges)
         {
-            var vertexToEdgeDictionary = vertices.ToDictionary(vertex => vertex, vertex => new HashSet<Edge>());
+            var vertexToEdges = vertices.ToDictionary(vertex => vertex, vertex => new HashSet<Edge>());
             foreach (var edge in edges)
             {
-                vertexToEdgeDictionary[edge.A].Add(edge);
-                vertexToEdgeDictionary[edge.B].Add(edge);
+                vertexToEdges[edge.A].Add(edge);
+                vertexToEdges[edge.B].Add(edge);
             }
 
-            return vertexToEdgeDictionary;
+            return vertexToEdges;
         }
 
         private Dictionary<Vertex, HashSet<Face>> BuildVertexToFaceDictionary(IEnumerable<Vertex> vertices, IEnumerable<Face> faces)
         {
-            var vertexToFaceDictionary = vertices.ToDictionary(vertex => vertex, vertex => new HashSet<Face>());
+            var vertexToFaces = vertices.ToDictionary(vertex => vertex, vertex => new HashSet<Face>());
             foreach (var face in faces)
             {
                 foreach (var vertex in face.Vertices)
                 {
-                    vertexToFaceDictionary[vertex].Add(face);
+                    vertexToFaces[vertex].Add(face);
                 }
             }
 
-            return vertexToFaceDictionary;
+            return vertexToFaces;
         }
 
         private Dictionary<Face, HashSet<Edge>> BuildFaceToEdgeDictionary(IEnumerable<Face> faces, Dictionary<Vertex, HashSet<Edge>> vertexToEdgeDictionary)
         {
-            var faceToEdgeDictionary = new Dictionary<Face, HashSet<Edge>>();
+            var faceToEdges = new Dictionary<Face, HashSet<Edge>>();
             foreach (var face in faces)
             {
                 var vertices = face.Vertices;
                 var allEdges = vertices.SelectMany(vertex => vertexToEdgeDictionary[vertex]).Distinct();
                 var adjacentEdges = allEdges.Where(edge => vertices.Contains(edge.A) && vertices.Contains(edge.B));
-                faceToEdgeDictionary.Add(face, new HashSet<Edge>(adjacentEdges));
+                faceToEdges.Add(face, new HashSet<Edge>(adjacentEdges));
             }
-            return faceToEdgeDictionary;
+            return faceToEdges;
         }
         #endregion
     }

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Linq;
-using Engine.Polyhedra;
 using Engine.Utilities;
 using MathNet.Numerics;
 
-namespace Engine.Icosasphere
+namespace Engine.Polyhedra.IcosahedronBased
 {
     /// <summary>
     /// A unit-radius icosahedron.
     /// </summary>
-    public class Icosahedron : Polyhedron
+    public static class IcosahedronFactory
     {
         // The colatitudes of the northern five vertices and the southern five vertices.
         private static readonly double NorthernColatitude = Trig.InverseCosine((1 + Math.Sqrt(5))/(5 + Math.Sqrt(5)));
@@ -72,7 +71,12 @@ namespace Engine.Icosasphere
             .Concat(SouthernFaces)
             .ToArray();
 
-
-        public Icosahedron() : base(AllFaces) {}
+        /// <summary>
+        /// Constructs an icosahedron. 
+        /// </summary>
+        public static Polyhedron Build()
+        {
+            return new Polyhedron(AllFaces);
+        }
     }
 }
