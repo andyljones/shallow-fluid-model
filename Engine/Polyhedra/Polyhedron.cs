@@ -48,7 +48,7 @@ namespace Engine.Polyhedra
         #region InitializeEdges methods
         private static List<Edge> InitializeEdges(IEnumerable<Face> faces)
         {
-            var edges = faces.SelectMany(face => EdgesAroundFace(face)).ToList();
+            var edges = faces.SelectMany(face => EdgesAroundFace(face)).Distinct().ToList();
 
             return edges;
         }
@@ -79,15 +79,15 @@ namespace Engine.Polyhedra
         private static IEnumerable<Vertex> SortVertices(IEnumerable<Vertex> vertices)
         {
             var vertexList = vertices.ToList();
-            var normalizedCentroid = vertexList.Aggregate(Vector.Zeros(3), (c, v) => c + v.Position).Normalize();
+            var centroid = vertexList.Aggregate(Vector.Zeros(3), (c, v) => c + v.Position)/vertexList.Count;
 
-            if (normalizedCentroid == Vector.Zeros(3))
+            if (centroid == Vector.Zeros(3))
             {
                 Debug.WriteLine("Centroid of face was the zero vector! Picking an arbitrary centroid instead");
-                normalizedCentroid = new Vector(new[] { 0, 0, 1.0 });
+                centroid = new Vector(new[] { 0, 0, 1.0 });
             }
 
-            var sortedVertices = vertexList.OrderBy(vertex => vertex.Position, new ClockwiseCompare(normalizedCentroid));
+            var sortedVertices = vertexList.OrderBy(vertex => vertex.Position, new ClockwiseCompare(centroid));
 
             return sortedVertices;
         }
