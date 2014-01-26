@@ -43,7 +43,7 @@ namespace Engine.Icosasphere
 
         private static Vertex VertexAtMidpointOf(Edge edge)
         {
-            var position = (edge.A.Position + edge.B.Position).Normalize();
+            var position = (edge.A.Position + edge.B.Position)/2;
 
             return new Vertex(position);
         }

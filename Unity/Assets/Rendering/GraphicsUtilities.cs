@@ -59,7 +59,7 @@ namespace Assets.Rendering
             var mesh = gameObject.GetComponent<MeshFilter>().mesh;
             mesh.SetIndices(triangles, MeshTopology.Triangles, mesh.subMeshCount-1);
             mesh.subMeshCount++;
-            mesh.RecalculateNormals();
+            mesh.normals = mesh.vertices.Select(v => v.normalized).ToArray();
 
             var renderer = gameObject.GetComponent<MeshRenderer>();
             var materials = renderer.materials.ToList();

@@ -29,9 +29,9 @@ namespace Engine.Icosasphere
 
         private static Vertex VertexAtCenterOf(Face face)
         {
-            var a = face.Vertices[0].Position;
-            var b = face.Vertices[1].Position;
-            var c = face.Vertices[2].Position;
+            var a = face.Vertices[0].Position.Normalize();
+            var b = face.Vertices[1].Position.Normalize();
+            var c = face.Vertices[2].Position.Normalize();
 
             var center = Vector.CrossProduct(a - b, c - b).Normalize();
 
