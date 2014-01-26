@@ -1,4 +1,5 @@
 ﻿using Assets.Rendering;
+using Engine;
 using Engine.Polyhedra.IcosahedronBased;
 using UnityEngine;
 
@@ -9,7 +10,8 @@ namespace Assets
         // Use this for initialization
         void Start ()
         {
-            var polyhedron = GeodesicSphereFactory.Build(43);
+            var options = new Options {MinimumNumberOfFaces = 13, Radius = 1};
+            var polyhedron = GeodesicSphereFactory.Build(options);
             new PolyhedronRenderer(polyhedron, "Test2", "Materials/TestMaterial", "Materials/TestMaterial2");
             Debug.Log(polyhedron.Vertices.Count);
             Debug.Log(polyhedron.Edges.Count);

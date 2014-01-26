@@ -5,9 +5,6 @@ using MathNet.Numerics;
 
 namespace Engine.Polyhedra.IcosahedronBased
 {
-    /// <summary>
-    /// A unit-radius icosahedron.
-    /// </summary>
     public static class IcosahedronFactory
     {
         // The colatitudes of the northern five vertices and the southern five vertices.

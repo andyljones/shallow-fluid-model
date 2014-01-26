@@ -7,32 +7,32 @@ using MathNet.Numerics;
 
 namespace Engine.Polyhedra.IcosahedronBased
 {
-    public class IcosasphereFactory
+    public static class IcosasphereFactory
     {
         /// <summary>
         /// Constructs the icosasphere with least number of vertices exceeding the specified minimum. 
         /// </summary>
-        public static Polyhedron Build(int minimumNumberOfVertices)
+        public static Polyhedron Build(IPolyhedronOptions options)
         {
             var icosahedron = IcosahedronFactory.Build();
-            var numberOfSubdivisions = NumberOfSubdivisionsRequiredForVertexCount(minimumNumberOfVertices);
+            var numberOfSubdivisions = NumberOfSubdivisionsRequired(options.MinimumNumberOfFaces);
 
             for (int i = 0; i < numberOfSubdivisions; i++)
             {
                 icosahedron = Subdivide(icosahedron);
             }
 
-            return ProjectOntoSphere(icosahedron);
+            return ProjectOntoSphere(icosahedron, options.Radius);
         }
 
-        private static double NumberOfSubdivisionsRequiredForVertexCount(int minimumNumberOfVertices)
+        private static double NumberOfSubdivisionsRequired(int minimumNumberOfFaces)
         {
             var vertices = 12;
             var edges = 30;
             var faces = 20;
 
             var subdivisions = 0;
-            while (vertices < minimumNumberOfVertices)
+            while (faces < minimumNumberOfFaces)
             {
                 vertices = vertices + edges;
                 edges = 2*edges + 3*faces;
@@ -97,11 +97,11 @@ namespace Engine.Polyhedra.IcosahedronBased
         }
         #endregion
 
-        private static Polyhedron ProjectOntoSphere(Polyhedron polyhedron)
+        private static Polyhedron ProjectOntoSphere(Polyhedron polyhedron, double radius)
         {
             var newVertex = 
                 polyhedron.Vertices.
-                ToDictionary(oldVertex => oldVertex, oldVertex => new Vertex(oldVertex.Position.Normalize()));
+                ToDictionary(oldVertex => oldVertex, oldVertex => new Vertex(radius*oldVertex.Position.Normalize()));
 
             var newFaces =
                 from face in polyhedron.Faces

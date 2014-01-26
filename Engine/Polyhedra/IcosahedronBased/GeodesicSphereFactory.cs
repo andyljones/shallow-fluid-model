@@ -9,9 +9,16 @@ namespace Engine.Polyhedra.IcosahedronBased
         /// <summary>
         /// Constructs the geodesic sphere with least number of faces exceeding the specified minimum. 
         /// </summary>
-        public static Polyhedron Build(int minimumNumberOfFaces)
+        public static Polyhedron Build(IPolyhedronOptions options)
         {
-            var icosasphere = IcosasphereFactory.Build(minimumNumberOfFaces);
+            var minimumNumberOfVertices = 2*options.MinimumNumberOfFaces - 4;
+            var icosasphereOptions = new Options
+            {
+                Radius = options.Radius,
+                MinimumNumberOfFaces = minimumNumberOfVertices
+            };
+
+            var icosasphere = IcosasphereFactory.Build(icosasphereOptions);
             var faces = DualofIcosasphere(icosasphere);
 
             return new Polyhedron(faces);
@@ -37,11 +44,13 @@ namespace Engine.Polyhedra.IcosahedronBased
 
         private static Vertex VertexAtCenterOf(Face face)
         {
-            var a = face.Vertices[0].Position.Normalize();
-            var b = face.Vertices[1].Position.Normalize();
-            var c = face.Vertices[2].Position.Normalize();
+            var a = face.Vertices[0].Position;
+            var b = face.Vertices[1].Position;
+            var c = face.Vertices[2].Position;
 
-            var center = Vector.CrossProduct(a - b, c - b).Normalize();
+            var radius = (a.Norm() + b.Norm() + c.Norm())/3;
+
+            var center = radius*Vector.CrossProduct(a - b, c - b).Normalize();
 
             return new Vertex(center);
         }
