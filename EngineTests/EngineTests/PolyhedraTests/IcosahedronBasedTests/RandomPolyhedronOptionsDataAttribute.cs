@@ -6,7 +6,7 @@ using Ploeh.AutoFixture.Xunit;
 
 namespace EngineTests.PolyhedraTests.IcosahedronBasedTests
 {
-    public class AutoPolyhedronOptionsDataAttribute : AutoDataAttribute
+    public class RandomPolyhedronOptionsDataAttribute : AutoDataAttribute
     {
         private const int MinimumMinNumberOfFaces = 30;
         private const int MaximumMinNumberOfFaces = 100;
@@ -14,7 +14,7 @@ namespace EngineTests.PolyhedraTests.IcosahedronBasedTests
         private const double MinimumRadius = 0.5;
         private const double MaximumRadius = 20;
 
-        public AutoPolyhedronOptionsDataAttribute()
+        public RandomPolyhedronOptionsDataAttribute()
         {
             Fixture.Register(CreateRandomPolyhedronOptions);
         }
