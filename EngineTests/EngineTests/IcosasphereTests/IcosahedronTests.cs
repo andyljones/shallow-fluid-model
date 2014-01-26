@@ -17,10 +17,9 @@ namespace EngineTests.IcosasphereTests
             var icosahedron = IcosahedronFactory.Build();
 
             // Exercise system
-            var faces = icosahedron.Faces;
+            var vertices = icosahedron.Vertices;
 
             // Verify outcome
-            var vertices = faces.SelectMany(face => face.Vertices).Distinct();
             var norms = vertices.Select(vertex => vertex.Position.Norm()).ToArray();
 
             Debug.WriteLine("Norms are " + StringUtilities.CollectionToString(norms));
@@ -29,25 +28,44 @@ namespace EngineTests.IcosasphereTests
             // Teardown
         }
 
-        //[Fact]
-        //public void Edges_ShouldAllHaveTheSameNorm()
-        //{
-        //    // Fixture setup
-        //    var icosahedron = new Icosahedron();
+        [Fact]
+        public void Edges_ShouldAllHaveTheSameNorm()
+        {
+            // Fixture setup
+            var icosahedron = IcosahedronFactory.Build();
 
-        //    // Exercise system
-        //    var faces = icosahedron.Faces;
+            // Exercise system
+            var edges = icosahedron.Edges;
 
-        //    // Verify outcome
-        //    var edges = faces.SelectMany(face => face.Edges()).ToArray();
-        //    var norms = edges.Select(edge => (edge.A.Position - edge.B.Position).Norm()).ToArray();
+            // Verify outcome
+            var norms = edges.Select(edge => (edge.A.Position - edge.B.Position).Norm()).ToArray();
 
-        //    var expectedNorm = norms.First();
+            var expectedNorm = norms.First();
 
-        //    Debug.WriteLine("Norms are " + StringUtilities.CollectionToString(norms));
-        //    Assert.True(norms.All(norm => Number.AlmostEqual(norm, expectedNorm)));
+            Debug.WriteLine("Norms are " + StringUtilities.CollectionToString(norms));
+            Assert.True(norms.All(norm => Number.AlmostEqual(norm, expectedNorm)));
 
-        //    // Teardown
-        //}
+            // Teardown
+        }
+
+        [Fact]
+        public void NumberOfVertexAndEdgeAndFaces_ShouldSatisfyEulersFormula()
+        {
+            // Fixture setup
+            var icosahedron = IcosahedronFactory.Build();
+
+            // Exercise system
+            var v = icosahedron.Vertices.Count;
+            var e = icosahedron.Edges.Count;
+            var f = icosahedron.Faces.Count;
+
+            // Verify outcome
+            Debug.WriteLine("Number of vertices: " + v);
+            Debug.WriteLine("Number of edges: " + e);
+            Debug.WriteLine("Number of faces: " + f);
+            Assert.True(v - e + f == 2);
+
+            // Teardown
+        }
     }
 }
