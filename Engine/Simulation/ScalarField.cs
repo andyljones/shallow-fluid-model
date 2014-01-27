@@ -1,25 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using Engine.Polyhedra;
-using MathNet.Numerics.LinearAlgebra;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Engine.Simulation
 {
-    public class ScalarField : Dictionary<Face, Vector>
+    /// <summary>
+    /// Represents a scalar field over a set of items.
+    /// </summary>
+    public class ScalarField<T>
     {
-        public static ScalarField operator +(ScalarField a, ScalarField b)
+        public readonly double[] Values;
+        public readonly Dictionary<T, int> Index;
+
+        /// <summary>
+        /// Initialize a field from a list of faces. 
+        /// </summary>
+        public ScalarField(IEnumerable<T> items)
         {
-            throw new NotImplementedException();
+            Index = GenerateIndices(items);
+            Values = new double[Index.Count];
         }
 
-        public static ScalarField operator -(ScalarField a, ScalarField b)
+        /// <summary>
+        /// Copies another scalar field's keys into a new field with the specified values.
+        /// </summary>
+        public ScalarField(Dictionary<T, int> index , double[] values)
         {
-            throw new NotImplementedException();            
+            Index = index;
+            Values = values;
         }
 
-        public static ScalarField operator *(double c, ScalarField a)
+        private static Dictionary<T, int> GenerateIndices(IEnumerable<T> items)
         {
-            throw new NotImplementedException();
+            var itemList = items.ToList();
+            var indices = Enumerable.Range(0, itemList.Count);
+            var dictionary = indices.ToDictionary(i => itemList[i], i => i);
+
+            return dictionary;
+        }
+
+        /// <summary>
+        /// Returns a new field containing the sum of the two fields.
+        /// </summary>
+        public static ScalarField<T> operator +(ScalarField<T> a, ScalarField<T> b)
+        {
+            var newValues = new double[a.Values.Length];
+            for (int i = 0; i < a.Values.Length; i++)
+            {
+                newValues[i] = a.Values[i] + b.Values[i];
+            }
+            return new ScalarField<T>(a.Index, newValues);
+        }
+
+        /// <summary>
+        /// Returns a new field containing the difference of the two fields.
+        /// </summary>
+        public static ScalarField<T> operator -(ScalarField<T> a, ScalarField<T> b)
+        {
+            var newValues = new double[a.Values.Length];
+            for (int i = 0; i < a.Values.Length; i++)
+            {
+                newValues[i] = a.Values[i] - b.Values[i];
+            }
+            return new ScalarField<T>(a.Index, newValues);        
+        }
+
+        /// <summary>
+        /// Returns a new field containing the field scaled by <param name="c">c</param>.
+        /// </summary>
+        public static ScalarField<T> operator *(double c, ScalarField<T> a)
+        {
+            var newValues = new double[a.Values.Length];
+            for (int i = 0; i < a.Values.Length; i++)
+            {
+                newValues[i] = c*a.Values[i];
+            }
+            return new ScalarField<T>(a.Index, newValues);
         }
     }
 }
