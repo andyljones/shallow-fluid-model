@@ -1,15 +1,15 @@
 ﻿namespace Engine.Simulation
 {
-    public class PrognosticFields
+    public class PrognosticFields<T>
     {
-        public ScalarField DerivativeOfAbsoluteVorticity;
-        public ScalarField DerivativeOfDivergence;
-        public ScalarField DerivativeOfHeight;
+        public ScalarField<T> DerivativeOfAbsoluteVorticity;
+        public ScalarField<T> DerivativeOfDivergence;
+        public ScalarField<T> DerivativeOfHeight;
 
-        public ScalarField AbsoluteVorticity;
-        public ScalarField Divergence;
-        public ScalarField Height;
-        public ScalarField VelocityPotential;
-        public ScalarField Streamfunction;
+        public ScalarField<T> AbsoluteVorticity;
+        public ScalarField<T> Divergence;
+        public ScalarField<T> Height;
+        public ScalarField<T> VelocityPotential;
+        public ScalarField<T> Streamfunction;
     }
 }

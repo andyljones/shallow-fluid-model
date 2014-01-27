@@ -10,7 +10,7 @@ namespace Engine.Simulation
             throw new NotImplementedException();
         }
 
-        public ScalarField Integrate(ScalarField a)
+        public ScalarField<Face> Integrate(ScalarField<Face> a)
         {
             throw new NotImplementedException();
         }

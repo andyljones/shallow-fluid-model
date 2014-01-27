@@ -12,14 +12,14 @@ namespace Engine.Simulation
         private readonly FieldIntegrator _integrator;
         private readonly SimulationParameters _parameters;
 
-        public FieldUpdater(Polyhedron surface, SimulationParameters parameters)
+        public FieldUpdater(Polyhedron surface, Dictionary<Face, int> index, SimulationParameters parameters)
         {
-            _operators = new FieldOperators(surface);
+            _operators = new FieldOperators(surface, index);
             _integrator = new FieldIntegrator(surface);
             _parameters = parameters;
         }
 
-        public PrognosticFields Update(PrognosticFields oldFields, PrognosticFields olderFields)
+        public PrognosticFields<Face> Update(PrognosticFields<Face> oldFields, PrognosticFields<Face> olderFields)
         {
             var derivativeOfAbsoluteVorticity = DerivativeOfAbsoluteVorticity(
                 oldFields.AbsoluteVorticity, 
@@ -57,7 +57,7 @@ namespace Engine.Simulation
             var streamfunction = NewStreamfunction(absoluteVorticity, _parameters.CoriolisParameter);
             var velocityPotential = NewVelocityPotential(divergence);
 
-            var newFields = new PrognosticFields
+            var newFields = new PrognosticFields<Face>
             {
                 DerivativeOfAbsoluteVorticity = derivativeOfAbsoluteVorticity,
                 DerivativeOfDivergence = derivativeOfDivergence,
@@ -72,42 +72,42 @@ namespace Engine.Simulation
             return newFields;
         }
 
-        private ScalarField DerivativeOfAbsoluteVorticity(ScalarField absoluteVorticity, ScalarField streamfunction, ScalarField velocityPotential)
+        private ScalarField<Face> DerivativeOfAbsoluteVorticity(ScalarField<Face> absoluteVorticity, ScalarField<Face> streamfunction, ScalarField<Face> velocityPotential)
         {
             throw new NotImplementedException();
         }
 
-        private ScalarField DerivativeOfDivergence(ScalarField divergence, ScalarField height, ScalarField streamfunction, ScalarField velocityPotential)
+        private ScalarField<Face> DerivativeOfDivergence(ScalarField<Face> divergence, ScalarField<Face> height, ScalarField<Face> streamfunction, ScalarField<Face> velocityPotential)
         {
             throw new NotImplementedException();
         }
 
-        private ScalarField DerivativeOfHeight(ScalarField derivativeOfHeight, ScalarField scalarField, ScalarField derivativeOfHeight1)
+        private ScalarField<Face> DerivativeOfHeight(ScalarField<Face> derivativeOfHeight, ScalarField<Face> scalarField, ScalarField<Face> derivativeOfHeight1)
         {
             throw new NotImplementedException();
         }
 
-        private ScalarField NewAbsoluteVorticity(ScalarField derivativeOfAbsoluteVorticity, ScalarField scalarField, ScalarField derivativeOfAbsoluteVorticity1)
+        private ScalarField<Face> NewAbsoluteVorticity(ScalarField<Face> derivativeOfAbsoluteVorticity, ScalarField<Face> scalarField, ScalarField<Face> derivativeOfAbsoluteVorticity1)
         {
             throw new NotImplementedException();
         }
 
-        private ScalarField NewDivergence(ScalarField derivativeOfDivergence, ScalarField scalarField, ScalarField derivativeOfDivergence1)
+        private ScalarField<Face> NewDivergence(ScalarField<Face> derivativeOfDivergence, ScalarField<Face> scalarField, ScalarField<Face> derivativeOfDivergence1)
         {
             throw new NotImplementedException();
         }
 
-        private ScalarField NewStreamfunction(ScalarField absoluteVorticity, double coriolisParameter)
+        private ScalarField<Face> NewStreamfunction(ScalarField<Face> absoluteVorticity, double coriolisParameter)
         {
             throw new NotImplementedException();
         }
 
-        private ScalarField NewVelocityPotential(ScalarField divergence)
+        private ScalarField<Face> NewVelocityPotential(ScalarField<Face> divergence)
         {
             throw new NotImplementedException();
         }
 
-        private ScalarField NewHeight(ScalarField height, object streamfunction, object velocityPotential)
+        private ScalarField<Face> NewHeight(ScalarField<Face> height, ScalarField<Face> streamfunction, ScalarField<Face> velocityPotential)
         {
             throw new NotImplementedException();
         }

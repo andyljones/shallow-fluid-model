@@ -5,9 +5,9 @@ using Engine.Polyhedra;
 
 namespace Engine.Simulation
 {
-    public class InitialConditions
+    public class InitialConditions<T>
     {
-        public static ScalarField Generate(Polyhedron surface)
+        public static ScalarField<T> Generate(Polyhedron surface)
         {
             throw new NotImplementedException();
         }

@@ -5,7 +5,6 @@ using Engine.Polyhedra;
 using Engine.Polyhedra.IcosahedronBased;
 using EngineTests.Utilities;
 using MathNet.Numerics;
-using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
 
@@ -114,6 +113,28 @@ namespace EngineTests.PolyhedraTests.IcosahedronBasedTests
 
             // Teardown
         }
+
+        [Theory]
+        [RandomPolyhedronOptionsData]
+        public void EveryEdge_ShouldNeighbourTwoFaces
+            (IPolyhedronOptions options)
+        {
+            // Fixture setup
+            var polyhedron = GeodesicSphereFactory.Build(options);
+
+            // Exercise system
+            var numberOfEdgesWithThreeFaces = polyhedron.EdgeToFaces.Values.Count(listOfFaces => listOfFaces.Count == 2);
+
+            // Verify outcome
+            var numberOfEdges = polyhedron.Edges.Count;
+
+            Debug.WriteLine("Number of edges is " + numberOfEdges);
+            Debug.WriteLine("Number of edges neighbouring two faces is " + numberOfEdgesWithThreeFaces);
+            Assert.True(numberOfEdgesWithThreeFaces == numberOfEdges);
+
+            // Teardown
+        }
+
 
         [Fact]
         public void NumberOfFaces_If42FacesAreRequested_ShouldBe42()
