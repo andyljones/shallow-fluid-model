@@ -12,7 +12,7 @@ namespace Engine.Polyhedra.IcosahedronBased
         /// <summary>
         /// Constructs the icosasphere with least number of vertices exceeding the specified minimum. 
         /// </summary>
-        public static Polyhedron Build(IPolyhedronOptions options)
+        public static IPolyhedron Build(IPolyhedronOptions options)
         {
             var icosahedron = IcosahedronFactory.Build();
             var numberOfSubdivisions = NumberOfSubdivisionsRequired(options.MinimumNumberOfFaces);
@@ -45,7 +45,7 @@ namespace Engine.Polyhedra.IcosahedronBased
         }
 
         #region Subdivision methods.
-        private static Polyhedron Subdivide(Polyhedron icosasphere)
+        private static IPolyhedron Subdivide(IPolyhedron icosasphere)
         {
             var oldEdgesToNewVertices = CreateNewVerticesFrom(icosasphere.Edges);
             var newFaces = CreateFacesFrom(icosasphere.Faces, icosasphere.EdgesOf, oldEdgesToNewVertices);
@@ -54,7 +54,7 @@ namespace Engine.Polyhedra.IcosahedronBased
         }
 
         private static IEnumerable<IEnumerable<Vertex>> CreateFacesFrom
-            (List<Face> oldFaces, Func<Face, HashSet<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
+            (IEnumerable<Face> oldFaces, Func<Face, HashSet<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
         {
             var newFaces = new List<IEnumerable<Vertex>>();
             foreach (var oldFace in oldFaces)
@@ -84,7 +84,7 @@ namespace Engine.Polyhedra.IcosahedronBased
             return newFaces;
         }
 
-        private static Dictionary<Edge, Vertex> CreateNewVerticesFrom(List<Edge> edges)
+        private static Dictionary<Edge, Vertex> CreateNewVerticesFrom(IEnumerable<Edge> edges)
         {
             return edges.Distinct().ToDictionary(edge => edge, edge => VertexAtMidpointOf(edge));
         }
@@ -97,7 +97,7 @@ namespace Engine.Polyhedra.IcosahedronBased
         }
         #endregion
 
-        private static Polyhedron ProjectOntoSphere(Polyhedron polyhedron, double radius)
+        private static IPolyhedron ProjectOntoSphere(IPolyhedron polyhedron, double radius)
         {
             var newVertex = 
                 polyhedron.Vertices.

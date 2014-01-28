@@ -7,7 +7,7 @@ namespace Engine.Simulation
 {
     public class InitialConditions<T>
     {
-        public static ScalarField<T> Generate(Polyhedron surface)
+        public static ScalarField<T> Generate(IPolyhedron surface)
         {
             throw new NotImplementedException();
         }

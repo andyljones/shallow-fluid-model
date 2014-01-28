@@ -14,7 +14,7 @@ namespace Assets.Rendering
         private readonly GameObject _gameObject;
         private readonly Dictionary<Vertex, int> _vertexIndices; 
 
-        public PolyhedronRenderer(Polyhedron polyhedron, String name, String wireframeMaterialName = "", String surfaceMaterialName = "")
+        public PolyhedronRenderer(IPolyhedron polyhedron, String name, String wireframeMaterialName = "", String surfaceMaterialName = "")
         {
             _vertexIndices = GraphicsUtilities.CreateItemToIndexMap(polyhedron.Vertices);
             _gameObject = GraphicsUtilities.CreateRenderingObject(name, CreateVertexArray(_vertexIndices));

@@ -12,7 +12,7 @@ namespace Engine.Simulation
         private readonly FieldIntegrator _integrator;
         private readonly SimulationParameters _parameters;
 
-        public FieldUpdater(Polyhedron surface, Dictionary<Face, int> index, SimulationParameters parameters)
+        public FieldUpdater(IPolyhedron surface, Dictionary<Face, int> index, SimulationParameters parameters)
         {
             _operators = new FieldOperators(surface, index);
             _integrator = new FieldIntegrator(surface, index, parameters);

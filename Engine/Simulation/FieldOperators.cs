@@ -22,7 +22,7 @@ namespace Engine.Simulation
         /// <summary>
         /// Constructs a set of difference functions for use over the given surface, with faces indexed by Index. 
         /// </summary>
-        public FieldOperators(Polyhedron surface, Dictionary<Face, int> index)
+        public FieldOperators(IPolyhedron surface, Dictionary<Face, int> index)
         {
             _areas = SimulationUtilities.BuildAreasTable(surface, index);
             _neighbours = SimulationUtilities.BuildNeighboursTable(surface, index);

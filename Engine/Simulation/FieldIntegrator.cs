@@ -22,7 +22,7 @@ namespace Engine.Simulation
         /// <summary>
         /// Constructs a numerical integrator over the given surface, with faces indexed by Index.
         /// </summary>
-        public FieldIntegrator(Polyhedron surface, Dictionary<Face, int> index, SimulationParameters parameters)
+        public FieldIntegrator(IPolyhedron surface, Dictionary<Face, int> index, SimulationParameters parameters)
         {
             _numberOfRelaxationIterations = parameters.NumberOfRelaxationIterations;
             _areas = SimulationUtilities.BuildAreasTable(surface, index);

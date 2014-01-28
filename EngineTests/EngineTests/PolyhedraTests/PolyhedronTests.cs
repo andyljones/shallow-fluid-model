@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using Engine.Polyhedra;
-using Engine.Utilities;
 using Xunit;
 
 namespace EngineTests.PolyhedraTests

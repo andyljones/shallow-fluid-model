@@ -71,7 +71,7 @@ namespace Engine.Polyhedra.IcosahedronBased
         /// <summary>
         /// Constructs an icosahedron. 
         /// </summary>
-        public static Polyhedron Build()
+        public static IPolyhedron Build()
         {
             return new Polyhedron(AllFaces);
         }
