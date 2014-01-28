@@ -11,6 +11,11 @@ namespace Engine.Simulation
         public readonly double[] Values;
         public readonly Dictionary<T, int> Index;
 
+        public double this[int i] { get { return Values[i]; } }
+        public double this[T t] { get { return Values[Index[t]]; } }
+
+        public int Count { get { return Values.Length; } }
+
         /// <summary>
         /// Initialize a field from a list of faces. 
         /// </summary>
