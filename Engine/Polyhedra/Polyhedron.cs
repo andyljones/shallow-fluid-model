@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Policy;
 using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -18,10 +19,19 @@ namespace Engine.Polyhedra
         public readonly List<Edge> Edges;
         public readonly List<Vertex> Vertices;
 
-        public readonly Dictionary<Vertex, HashSet<Edge>> VertexToEdges;
-        public readonly Dictionary<Vertex, HashSet<Face>> VertexToFaces;
-        public readonly Dictionary<Face, HashSet<Edge>> FaceToEdges;
-        public readonly Dictionary<Edge, HashSet<Face>> EdgeToFaces; 
+        #region Lookup functions
+        public HashSet<Edge> EdgesOf(Vertex vertex) { return _vertexToEdges[vertex]; }
+        private readonly Dictionary<Vertex, HashSet<Edge>> _vertexToEdges;
+
+        public HashSet<Edge> EdgesOf(Face face) { return _faceToEdges[face]; }
+        private readonly Dictionary<Face, HashSet<Edge>> _faceToEdges;
+
+        public HashSet<Face> FacesOf(Vertex vertex) { return _vertexToFaces[vertex]; } 
+        private readonly Dictionary<Vertex, HashSet<Face>> _vertexToFaces;
+
+        public HashSet<Face> FacesOf(Edge edge) { return _edgeToFaces[edge]; } 
+        private readonly Dictionary<Edge, HashSet<Face>> _edgeToFaces;
+        #endregion
 
         /// <summary>
         /// Construct a polyhedron from a collection of convex, planar collections of vertices.
@@ -32,10 +42,10 @@ namespace Engine.Polyhedra
             Faces = InitializeFaces(verticesInEachFace);
             Edges = InitializeEdges(Faces);
 
-            VertexToEdges = BuildVertexToEdgeDictionary(Vertices, Edges);
-            VertexToFaces = BuildVertexToFaceDictionary(Vertices, Faces);
-            FaceToEdges = BuildFaceToEdgeDictionary(Faces, VertexToEdges);
-            EdgeToFaces = BuildEdgeToFaceDictionary(Edges, Faces, FaceToEdges);
+            _vertexToEdges = BuildVertexToEdgeDictionary(Vertices, Edges);
+            _vertexToFaces = BuildVertexToFaceDictionary(Vertices, Faces);
+            _faceToEdges = BuildFaceToEdgeDictionary(Faces, _vertexToEdges);
+            _edgeToFaces = BuildEdgeToFaceDictionary(Edges, Faces, _faceToEdges);
         }
 
         private static List<Vertex> InitializeVertices(IEnumerable<IEnumerable<Vertex>> vertexLists)

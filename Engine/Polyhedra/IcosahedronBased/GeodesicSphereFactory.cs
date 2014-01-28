@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -29,14 +30,14 @@ namespace Engine.Polyhedra.IcosahedronBased
             var newVertexDict = icosasphere.Faces.ToDictionary(face => face, face => VertexAtCenterOf(face));
             var vertexLists = 
                 icosasphere.Vertices.
-                Select(oldVertex => CreateFaceAbout(oldVertex, newVertexDict, icosasphere.VertexToFaces));
+                Select(oldVertex => CreateFaceAbout(oldVertex, newVertexDict, icosasphere.FacesOf));
 
             return vertexLists;
         }
 
-        private static IEnumerable<Vertex> CreateFaceAbout(Vertex oldVertex, Dictionary<Face, Vertex> newVertexDict, Dictionary<Vertex, HashSet<Face>> oldFacesDict)
+        private static IEnumerable<Vertex> CreateFaceAbout(Vertex oldVertex, Dictionary<Face, Vertex> newVertexDict, Func<Vertex, HashSet<Face>> oldFacesDict)
         {
-            var oldFaces = oldFacesDict[oldVertex];
+            var oldFaces = oldFacesDict(oldVertex);
             var newVertices = oldFaces.Select(oldFace => newVertexDict[oldFace]);
 
             return newVertices;

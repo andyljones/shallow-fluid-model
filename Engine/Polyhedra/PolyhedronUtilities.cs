@@ -13,8 +13,8 @@ namespace Engine.Polyhedra
         /// </summary>
         public static IEnumerable<Face> NeighboursOf(this Polyhedron polyhedron, Face face)
         {
-            var edges = polyhedron.FaceToEdges[face];
-            var neighbours = edges.SelectMany(edge => polyhedron.EdgeToFaces[edge]);
+            var edges = polyhedron.EdgesOf(face);
+            var neighbours = edges.SelectMany(edge => polyhedron.FacesOf(edge));
 
             return neighbours.Where(neighbour => neighbour != face);
         }

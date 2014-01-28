@@ -102,7 +102,7 @@ namespace EngineTests.PolyhedraTests.IcosahedronBasedTests
             var polyhedron = GeodesicSphereFactory.Build(options);
 
             // Exercise system
-            var numberOfVerticesWithThreeFaces = polyhedron.VertexToFaces.Values.Count(listOfFaces => listOfFaces.Count == 3);
+            var numberOfVerticesWithThreeFaces = polyhedron.Vertices.Count(vertex => polyhedron.FacesOf(vertex).Count == 3);
 
             // Verify outcome
             var numberOfVertices = polyhedron.Vertices.Count;
@@ -123,7 +123,7 @@ namespace EngineTests.PolyhedraTests.IcosahedronBasedTests
             var polyhedron = GeodesicSphereFactory.Build(options);
 
             // Exercise system
-            var numberOfEdgesWithThreeFaces = polyhedron.EdgeToFaces.Values.Count(listOfFaces => listOfFaces.Count == 2);
+            var numberOfEdgesWithThreeFaces = polyhedron.Edges.Count(edge => polyhedron.FacesOf(edge).Count == 2);
 
             // Verify outcome
             var numberOfEdges = polyhedron.Edges.Count;

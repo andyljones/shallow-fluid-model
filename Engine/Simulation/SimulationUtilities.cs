@@ -41,7 +41,7 @@ namespace Engine.Simulation
             var edgeLengths = new double[surface.Faces.Count][];
             foreach (var face in surface.Faces)
             {
-                var lengths = surface.FaceToEdges[face].Select(edge => edge.Length()).ToArray();
+                var lengths = surface.EdgesOf(face).Select(edge => edge.Length()).ToArray();
                 edgeLengths[index[face]] = lengths;
             }
 

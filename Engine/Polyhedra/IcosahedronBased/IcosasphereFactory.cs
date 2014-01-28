@@ -48,29 +48,29 @@ namespace Engine.Polyhedra.IcosahedronBased
         private static Polyhedron Subdivide(Polyhedron icosasphere)
         {
             var oldEdgesToNewVertices = CreateNewVerticesFrom(icosasphere.Edges);
-            var newFaces = CreateFacesFrom(icosasphere.Faces, icosasphere.FaceToEdges, oldEdgesToNewVertices);
+            var newFaces = CreateFacesFrom(icosasphere.Faces, icosasphere.EdgesOf, oldEdgesToNewVertices);
 
             return new Polyhedron(newFaces);
         }
 
         private static IEnumerable<IEnumerable<Vertex>> CreateFacesFrom
-            (List<Face> faces, Dictionary<Face, HashSet<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
+            (List<Face> oldFaces, Func<Face, HashSet<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
         {
             var newFaces = new List<IEnumerable<Vertex>>();
-            foreach (var face in faces)
+            foreach (var oldFace in oldFaces)
             {
-                newFaces.AddRange(CreateNewFacesFrom(face, oldFacesToOldEdges, oldEdgesToNewVertices));
+                newFaces.AddRange(CreateNewFacesFrom(oldFace, oldFacesToOldEdges, oldEdgesToNewVertices));
             }
 
             return newFaces;
         }
 
         private static IEnumerable<IEnumerable<Vertex>> CreateNewFacesFrom
-            (Face oldFace, Dictionary<Face, HashSet<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
+            (Face oldFace, Func<Face, HashSet<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
         {
             var newFaces = new List<IEnumerable<Vertex>>();
 
-            var edges = oldFacesToOldEdges[oldFace];
+            var edges = oldFacesToOldEdges(oldFace);
             foreach (var vertex in oldFace.Vertices)
             {
                 var adjacentEdges = edges.Where(edge => edge.A == vertex || edge.B == vertex);
