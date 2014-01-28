@@ -7,6 +7,9 @@ using Engine.Utilities;
 
 namespace Engine.Simulation
 {
+    /// <summary>
+    /// Difference functions for use in the simulation.
+    /// </summary>
     public class FieldOperators
     {
         private readonly double[] _areas;
@@ -16,69 +19,22 @@ namespace Engine.Simulation
 
         private readonly int _numberOfFaces;
 
-        #region Constructor methods
+        /// <summary>
+        /// Constructs a set of difference functions for use over the given surface, with faces indexed by Index. 
+        /// </summary>
         public FieldOperators(Polyhedron surface, Dictionary<Face, int> index)
         {
-            _areas = BuildAreasTable(surface, index);
-            _neighbours = BuildNeighboursTable(surface, index);
-            _edgeLengths = BuildEdgeLengthsTable(surface, index);
-            _distances = BuildDistancesTable(surface, index);
+            _areas = SimulationUtilities.BuildAreasTable(surface, index);
+            _neighbours = SimulationUtilities.BuildNeighboursTable(surface, index);
+            _edgeLengths = SimulationUtilities.BuildEdgeLengthsTable(surface, index);
+            _distances = SimulationUtilities.BuildDistancesTable(surface, index);
             _numberOfFaces = surface.Faces.Count;
         }
 
-        private double[][] BuildDistancesTable(Polyhedron surface, Dictionary<Face, int> index)
-        {
-            var edgeLengths = new double[surface.Faces.Count][];
-            foreach (var face in surface.Faces)
-            {
-                var distances = 
-                    surface.
-                    NeighboursOf(face).
-                    Select(neighbour => VectorUtilities.GeodesicDistance(face.Center(), neighbour.Center())).
-                    ToArray();
-                edgeLengths[index[face]] = distances;
-            }
-
-            return edgeLengths;
-        }
-
-        private double[][] BuildEdgeLengthsTable(Polyhedron surface, Dictionary<Face, int> index)
-        {
-            var edgeLengths = new double[surface.Faces.Count][];
-            foreach (var face in surface.Faces)
-            {
-                var lengths = surface.FaceToEdges[face].Select(edge => edge.Length()).ToArray();
-                edgeLengths[index[face]] = lengths;
-            }
-
-            return edgeLengths;
-        }
-
-        private double[] BuildAreasTable(Polyhedron surface, Dictionary<Face, int> index)
-        {
-            var areas = new double[surface.Faces.Count];
-            foreach (var face in surface.Faces)
-            {
-                areas[index[face]] = face.Area();
-            }
-
-            return areas;
-        }
-
-        private static int[][] BuildNeighboursTable(Polyhedron surface, Dictionary<Face, int> index)
-        {
-            var neighbours = new int[surface.Faces.Count][];
-            foreach (var face in surface.Faces)
-            {
-                var indicesOfNeighbours = surface.NeighboursOf(face).Select(neighbour => index[neighbour]).ToArray();
-                neighbours[index[face]] = indicesOfNeighbours;
-            }
-
-            return neighbours;
-        }
-        #endregion
-
         #region Jacobian methods
+        /// <summary>
+        /// The discrete Jacobian, as described in Heikes & Randall 1995.
+        /// </summary>
         public ScalarField<Face> Jacobian(ScalarField<Face> A, ScalarField<Face> B)
         {
             var results = new double[_numberOfFaces];
@@ -115,6 +71,9 @@ namespace Engine.Simulation
         #endregion
 
         #region FluxDivergence methods
+        /// <summary>
+        /// The discrete flux divergence, as described in Heikes & Randall 1995.
+        /// </summary>
         public ScalarField<Face> FluxDivergence(ScalarField<Face> A, ScalarField<Face> B)
         {
             var results = new double[_numberOfFaces];
@@ -134,11 +93,11 @@ namespace Engine.Simulation
             var result = 0.0;
             for (int j = 0; j < neighbours.Length; j++)
             {
-                var currentNeighbour = neighbours[j];
+                var neighbour = neighbours[j];
                 var edgeLength = edgeLengths[j];
                 var distance = distances[j];
 
-                result += edgeLength/distance * (A[face] + A[currentNeighbour])*(B[currentNeighbour] - B[face]);
+                result += edgeLength/distance * (A[face] + A[neighbour])*(B[neighbour] - B[face]);
             }
 
             return result / (2 * _areas[face]);
@@ -146,6 +105,9 @@ namespace Engine.Simulation
         #endregion
 
         #region Laplacian methods
+        /// <summary>
+        /// The discrete Laplacian, as described in Heikes & Randall 1995.
+        /// </summary>
         public ScalarField<Face> Laplacian(ScalarField<Face> A)
         {
             var results = new double[_numberOfFaces];
@@ -165,11 +127,11 @@ namespace Engine.Simulation
             var result = 0.0;
             for (int j = 0; j < neighbours.Length; j++)
             {
-                var currentNeighbour = neighbours[j];
+                var neighbour = neighbours[j];
                 var edgeLength = edgeLengths[j];
                 var distance = distances[j];
 
-                result += edgeLength/distance * (A[currentNeighbour] - A[face]);
+                result += edgeLength/distance * (A[neighbour] - A[face]);
             }
 
             return result / _areas[face];

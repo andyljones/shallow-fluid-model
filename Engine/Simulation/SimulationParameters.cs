@@ -7,6 +7,7 @@ namespace Engine.Simulation
 {
     public class SimulationParameters
     {
-        public double CoriolisParameter;
+        public double CoriolisParameter { get; set; }
+        public int NumberOfRelaxationIterations { get; set; } 
     }
 }

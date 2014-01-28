@@ -15,7 +15,7 @@ namespace Engine.Simulation
         public FieldUpdater(Polyhedron surface, Dictionary<Face, int> index, SimulationParameters parameters)
         {
             _operators = new FieldOperators(surface, index);
-            _integrator = new FieldIntegrator(surface);
+            _integrator = new FieldIntegrator(surface, index, parameters);
             _parameters = parameters;
         }
 
