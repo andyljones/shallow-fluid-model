@@ -21,7 +21,7 @@ namespace EngineTests.PolyhedraTests.IcosahedronBasedTests
             // Verify outcome
             var norms = vertices.Select(vertex => vertex.Position.Norm()).ToArray();
 
-            Debug.WriteLine("Norms are " + StringUtilities.CollectionToString(norms));
+            Debug.WriteLine("Norms are " + TestUtilities.CollectionToString(norms));
             Assert.True(norms.All(norm => Number.AlmostEqual(norm, 1.0)));
 
             // Teardown
@@ -41,7 +41,7 @@ namespace EngineTests.PolyhedraTests.IcosahedronBasedTests
 
             var expectedNorm = norms.First();
 
-            Debug.WriteLine("Norms are " + StringUtilities.CollectionToString(norms));
+            Debug.WriteLine("Norms are " + TestUtilities.CollectionToString(norms));
             Assert.True(norms.All(norm => Number.AlmostEqual(norm, expectedNorm)));
 
             // Teardown

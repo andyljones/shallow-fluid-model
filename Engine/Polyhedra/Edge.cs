@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Polyhedra
@@ -76,6 +77,12 @@ namespace Engine.Polyhedra
         {
             return A.GetHashCode() ^ B.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return String.Format("[{0}-{1}]", A, B);
+        }
+
         #endregion
     }
 }

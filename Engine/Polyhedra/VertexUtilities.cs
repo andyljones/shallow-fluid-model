@@ -54,7 +54,15 @@ namespace Engine.Polyhedra
             var y = Trig.Sine(colatitude) * Trig.Sine(azimuth);
             var z = Trig.Cosine(colatitude);
 
-            var v = new Vector(new[] { x, y, z });
+            return NewVertex(x, y, z);
+        }
+
+        /// <summary>
+        /// Create a vertex at the specified coordinates.
+        /// </summary>
+        public static Vertex NewVertex(double x, double y, double z)
+        {
+            var v = new Vector(new[] {x, y, z});
 
             return new Vertex(v);
         }

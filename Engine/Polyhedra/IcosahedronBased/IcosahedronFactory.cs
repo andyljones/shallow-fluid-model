@@ -60,20 +60,18 @@ namespace Engine.Polyhedra.IcosahedronBased
             new[] {SouthernVertices[4], NorthernVertices[0], SouthernVertices[0]}
         };
 
-        // All the faces of the icosahedron.
-        private static readonly Vertex[][] AllFaces =
-            NorthernFaces
-            .Concat(UpperMiddleFaces)
-            .Concat(LowerMiddleFaces)
-            .Concat(SouthernFaces)
-            .ToArray();
-
         /// <summary>
         /// Constructs an icosahedron. 
         /// </summary>
         public static IPolyhedron Build()
         {
-            return new Polyhedron(AllFaces);
+            var allFaces = NorthernFaces
+            .Concat(UpperMiddleFaces)
+            .Concat(LowerMiddleFaces)
+            .Concat(SouthernFaces)
+            .ToArray();
+
+            return new Polyhedron(allFaces);
         }
     }
 }

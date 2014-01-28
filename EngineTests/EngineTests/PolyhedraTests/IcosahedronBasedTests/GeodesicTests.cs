@@ -26,7 +26,7 @@ namespace EngineTests.PolyhedraTests.IcosahedronBasedTests
             // Verify outcome
             var lengths = vertices.Select(vertex => vertex.Position.Norm()).ToList();
 
-            Debug.WriteLine("Lengths were " + StringUtilities.CollectionToString(lengths));
+            Debug.WriteLine("Lengths were " + TestUtilities.CollectionToString(lengths));
             Assert.True(lengths.All(length => Number.AlmostEqual(length, options.Radius)));
 
             // Teardown
