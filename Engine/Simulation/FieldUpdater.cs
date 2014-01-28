@@ -57,6 +57,7 @@ namespace Engine.Simulation
             var streamfunction = NewStreamfunction(absoluteVorticity, _parameters.CoriolisParameter);
             var velocityPotential = NewVelocityPotential(divergence);
 
+
             var newFields = new PrognosticFields<Face>
             {
                 DerivativeOfAbsoluteVorticity = derivativeOfAbsoluteVorticity,

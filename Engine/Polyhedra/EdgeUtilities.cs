@@ -6,7 +6,7 @@ namespace Engine.Polyhedra
     {
         public static double Length(this Edge edge)
         {
-            throw new NotImplementedException();
+            return (edge.A.Position - edge.B.Position).Norm();
         }
     }
 }
