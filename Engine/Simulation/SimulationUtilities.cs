@@ -24,10 +24,12 @@ namespace Engine.Simulation
                 var distances =
                     surface.
                     NeighboursOf(face).
-                    Select(neighbour => VectorUtilities.GeodesicDistance(face.Center(), neighbour.Center())).
+                    Select(neighbour => VectorUtilities.GeodesicDistance(face.SphericalCenter(), neighbour.SphericalCenter())).
                     ToArray();
                 edgeLengths[index[face]] = distances;
             }
+
+            //TODO: Work out how to turn this into spherical area.
 
             return edgeLengths;
         }

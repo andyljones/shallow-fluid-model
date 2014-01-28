@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Engine.Polyhedra;
+using EngineTests.AutoFixtureCustomizations;
 using EngineTests.Utilities;
 using Xunit;
 using Xunit.Extensions;
@@ -11,38 +12,6 @@ namespace EngineTests.PolyhedraTests
 {
     public class PolyhedronTests
     {
-        [Fact]
-        public void Faces_GivenAnAnticlockwiseSetOfVertices_SortsVerticesInEachFaceInClockwiseOrder()
-        {
-            // Fixture setup
-            var antiClockwiseFace = new[]
-            {
-                VertexUtilities.NewVertex(0, 0), 
-                VertexUtilities.NewVertex(Math.PI/2, 0), 
-                VertexUtilities.NewVertex(Math.PI/2, Math.PI/2)
-            };
-
-            var clockwiseOrderingA = new[] { antiClockwiseFace[0], antiClockwiseFace[2], antiClockwiseFace[1] };
-            var clockwiseOrderingB = new[] { antiClockwiseFace[2], antiClockwiseFace[1], antiClockwiseFace[0] };
-            var clockwiseOrderingC = new[] { antiClockwiseFace[1], antiClockwiseFace[0], antiClockwiseFace[2] };
-
-            // Exercise system
-            var polyhedron = new Polyhedron(new[] {antiClockwiseFace});
-            var resultingFace = polyhedron.Faces.First();
-
-            // Verify outcome
-            Debug.WriteLine("Resulting face was " + resultingFace);
-
-            var resultIsClockwiseOrdered =
-                resultingFace.Vertices.SequenceEqual(clockwiseOrderingA) ||
-                resultingFace.Vertices.SequenceEqual(clockwiseOrderingB) ||
-                resultingFace.Vertices.SequenceEqual(clockwiseOrderingC);
-
-            Assert.True(resultIsClockwiseOrdered);
-
-            // Teardown
-        }
-
         [Theory]
         [AutoPolyhedronData]
         public void Vertices_ShouldBeThoseGivenToTheConstructor
@@ -56,7 +25,7 @@ namespace EngineTests.PolyhedraTests
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(TestUtilities.SetEqual(expected, actual));
+            Assert.True(TestUtilities.UnorderedEquals(expected, actual));
 
             // Teardown
         }
@@ -74,7 +43,7 @@ namespace EngineTests.PolyhedraTests
             // Verify outcome
             foreach (var vertexList in vertexLists)
             {
-                Assert.True(faces.Any(face => TestUtilities.SetEqual(face.Vertices, vertexList)));
+                Assert.True(faces.Any(face => TestUtilities.UnorderedEquals(face.Vertices, vertexList)));
             }
 
             // Teardown
@@ -93,7 +62,7 @@ namespace EngineTests.PolyhedraTests
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(TestUtilities.SetEqual(expected, actual));
+            Assert.True(TestUtilities.UnorderedEquals(expected, actual));
 
             // Teardown
         }
@@ -111,7 +80,7 @@ namespace EngineTests.PolyhedraTests
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(TestUtilities.SetEqual(expected, actual));
+            Assert.True(TestUtilities.UnorderedEquals(expected, actual));
 
             // Teardown
         }
@@ -129,7 +98,7 @@ namespace EngineTests.PolyhedraTests
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(TestUtilities.SetEqual(expected, actual));
+            Assert.True(TestUtilities.UnorderedEquals(expected, actual));
 
             // Teardown
         }
@@ -147,7 +116,7 @@ namespace EngineTests.PolyhedraTests
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(TestUtilities.SetEqual(expected, actual));
+            Assert.True(TestUtilities.UnorderedEquals(expected, actual));
 
             // Teardown
         }

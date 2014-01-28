@@ -21,5 +21,17 @@ namespace Engine.Utilities
 
             return radius*angle;
         }
+
+        /// <summary>
+        /// Create a vector at the specified colatitude and azimuth at unit distance from the origin.
+        /// </summary>
+        public static Vector NewVector(double colatitude, double azimuth)
+        {
+            var x = Trig.Sine(colatitude) * Trig.Cosine(azimuth);
+            var y = Trig.Sine(colatitude) * Trig.Sine(azimuth);
+            var z = Trig.Cosine(colatitude);
+
+            return new Vector(new [] {x, y, z});
+        }
     }
 }

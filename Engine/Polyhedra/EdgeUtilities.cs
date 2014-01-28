@@ -1,4 +1,5 @@
 ﻿using System;
+using Engine.Utilities;
 
 namespace Engine.Polyhedra
 {
@@ -6,7 +7,7 @@ namespace Engine.Polyhedra
     {
         public static double Length(this Edge edge)
         {
-            return (edge.A.Position - edge.B.Position).Norm();
+            return VectorUtilities.GeodesicDistance(edge.A.Position, edge.B.Position);
         }
     }
 }

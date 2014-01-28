@@ -1,4 +1,5 @@
-﻿using MathNet.Numerics;
+﻿using Engine.Utilities;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Polyhedra
@@ -50,11 +51,7 @@ namespace Engine.Polyhedra
         /// </summary>
         public static Vertex NewVertex(double colatitude, double azimuth)
         {
-            var x = Trig.Sine(colatitude) * Trig.Cosine(azimuth);
-            var y = Trig.Sine(colatitude) * Trig.Sine(azimuth);
-            var z = Trig.Cosine(colatitude);
-
-            return NewVertex(x, y, z);
+            return new Vertex(VectorUtilities.NewVector(colatitude, azimuth));
         }
 
         /// <summary>

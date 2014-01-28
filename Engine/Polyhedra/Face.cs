@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using Engine.Utilities;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Polyhedra
 {
@@ -11,7 +13,23 @@ namespace Engine.Polyhedra
 
         public Face(IEnumerable<Vertex> vertices)
         {
-            Vertices = vertices.ToList();
+            Vertices = SortVerticesClockwise(vertices).ToList();
+        }
+
+        private static IEnumerable<Vertex> SortVerticesClockwise(IEnumerable<Vertex> vertices)
+        {
+            var vertexList = vertices.ToList();
+            var centroid = vertexList.Aggregate(Vector.Zeros(3), (c, v) => c + v.Position) / vertexList.Count;
+
+            if (centroid == Vector.Zeros(3))
+            {
+                Debug.WriteLine("Centroid of face was the zero vector! Picking an arbitrary centroid instead");
+                centroid = new Vector(new[] { 0, 0, 1.0 });
+            }
+
+            var sortedVertices = vertexList.OrderBy(vertex => vertex.Position, new ClockwiseCompare(centroid));
+
+            return sortedVertices;
         }
 
         public override string ToString()
