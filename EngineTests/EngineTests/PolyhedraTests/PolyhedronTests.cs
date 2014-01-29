@@ -18,7 +18,7 @@ namespace EngineTests.PolyhedraTests
             (IPolyhedron polyhedron, IEnumerable<IEnumerable<Vertex>> vertexLists)
         {
             // Fixture setup
-            var expected = vertexLists.SelectMany(list => list).ToList();
+            var expected = vertexLists.SelectMany(list => list).Distinct().ToList();
             
             // Exercise system
             var actual = polyhedron.Vertices.ToList();
@@ -84,6 +84,8 @@ namespace EngineTests.PolyhedraTests
 
             // Teardown
         }
+
+        //TODO: Check edges are given in clockwise order.
 
         [Theory]
         [AutoPolyhedronData]

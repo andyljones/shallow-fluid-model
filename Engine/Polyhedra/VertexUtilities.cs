@@ -35,7 +35,7 @@ namespace Engine.Polyhedra
         /// </summary>
         public static double Colatitude(this Vertex vertex)
         {
-            return Trig.InverseCosine(vertex.Z());
+            return Trig.InverseCosine(vertex.Position.Normalize()[2]);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Engine.Polyhedra
         /// </summary>
         public static double Azimuth(this Vertex vertex)
         {
-            return Trig.InverseTangentFromRational(vertex.Y(), vertex.X());            
+            return Trig.InverseTangentFromRational(vertex.Position.Normalize()[1], vertex.Position.Normalize()[0]);            
         }
 
         /// <summary>

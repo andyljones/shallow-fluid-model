@@ -6,6 +6,7 @@ using Engine.Simulation;
 using EngineTests.AutoFixtureCustomizations;
 using EngineTests.Utilities;
 using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
 using Xunit;
 using Xunit.Extensions;
 
@@ -13,8 +14,6 @@ namespace EngineTests.ModelTests
 {
     public class SimulationUtilitiesTests
     {
-        private const double RelativeAccuracy = 1.0/1000000;
-
         [Theory]
         [AutoFaceIndexedCubeData]
         public void BuildDistancesTable_OnACube_ShouldCreateSixListsOfFourElements
@@ -51,7 +50,7 @@ namespace EngineTests.ModelTests
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(TestUtilities.UnorderedEquals(expected, actual, RelativeAccuracy));
+            Assert.True(TestUtilities.UnorderedEquals(expected, actual, TestUtilities.RelativeAccuracy));
 
             // Teardown
         }
@@ -92,7 +91,7 @@ namespace EngineTests.ModelTests
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(TestUtilities.UnorderedEquals(expected, actual, RelativeAccuracy));
+            Assert.True(TestUtilities.UnorderedEquals(expected, actual, TestUtilities.RelativeAccuracy));
 
             // Teardown
         }
@@ -145,15 +144,47 @@ namespace EngineTests.ModelTests
             // Fixture setup
 
             // Exercise system
-            var neighbours = SimulationUtilities.BuildNeighboursTable(polyhedron, index);
+            var neighbourTable = SimulationUtilities.BuildNeighboursTable(polyhedron, index);
 
             // Verify outcome
-            for (int face = 0; face < neighbours.Length; face++)
+            for (int face = 0; face < neighbourTable.Length; face++)
             {
-                foreach (var neighbour in neighbours[face])
+                foreach (var neighbour in neighbourTable[face])
                 {
-                    Assert.Contains(face, neighbours[neighbour]);
+                    Assert.Contains(face, neighbourTable[neighbour]);
                 }
+            }
+
+            // Teardown
+        }
+
+        [Theory]
+        [AutoFaceIndexedCubeData]
+        public void BuildNeighboursTable_OnACube_ShouldListNeighboursInClockwiseOrder
+            (IPolyhedron polyhedron, Dictionary<Face, int> index)
+        {
+            // Fixture setup
+
+            // Exercise system
+            var neighbourTable = SimulationUtilities.BuildNeighboursTable(polyhedron, index);
+
+            // Verify outcome
+            for (int i = 0; i < neighbourTable.Length; i++)
+            {
+                var neighbours = neighbourTable[i];
+                var centerOfFace = polyhedron.Faces[i].SphericalCenter();
+                for (int j = 0; j < neighbours.Length-1; j++)
+                {
+                    var centerOfThisNeighbour = polyhedron.Faces[neighbours[j]].SphericalCenter();
+                    var centerOfNextNeighbour = polyhedron.Faces[neighbours[j + 1]].SphericalCenter();
+
+                    Assert.True(Vector.CrossProduct(centerOfNextNeighbour - centerOfFace, centerOfThisNeighbour - centerOfFace).ScalarMultiply(centerOfFace) >= 0);
+                }
+                var centerOfLastNeighbour = polyhedron.Faces[neighbours[neighbours.Length - 1]].SphericalCenter();
+                var centerOfFirstNeighbour = polyhedron.Faces[neighbours[0]].SphericalCenter();
+
+                Assert.True(Vector.CrossProduct(centerOfFirstNeighbour - centerOfFace, centerOfLastNeighbour - centerOfFace).ScalarMultiply(centerOfFace) >= 0);
+
             }
 
             // Teardown
@@ -173,7 +204,7 @@ namespace EngineTests.ModelTests
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(TestUtilities.UnorderedEquals(expected, actual, RelativeAccuracy));
+            Assert.True(TestUtilities.UnorderedEquals(expected, actual, TestUtilities.RelativeAccuracy));
 
             // Teardown
         }

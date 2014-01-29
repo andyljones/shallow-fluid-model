@@ -55,7 +55,7 @@ namespace Engine.Simulation
             var lastNeighbour = neighbours[neighbours.Length - 1];
 
             var result = 0.0;
-            result += (A[firstNeighbour] + A[face]) * (B[secondNeighbour] - B[lastNeighbour]);
+            result += (A[face] + A[firstNeighbour]) * (B[secondNeighbour] - B[lastNeighbour]);
             for (int j = 1; j < neighbours.Length - 1; j++)
             {
                 var previousNeighbour = neighbours[j - 1];
@@ -64,7 +64,7 @@ namespace Engine.Simulation
 
                 result += (A[face] + A[currentNeighbour]) * (B[nextNeighbour] - B[previousNeighbour]);
             }
-            result += (A[lastNeighbour] + A[face]) * (B[firstNeighbour] - B[secondToLastNeighbour]);
+            result += (A[face] + A[lastNeighbour]) * (B[firstNeighbour] - B[secondToLastNeighbour]);
 
             return result / (6 * _areas[face]);
         }

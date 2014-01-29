@@ -96,10 +96,16 @@ namespace Engine.Polyhedra
             var faceToEdges = new Dictionary<Face, HashSet<Edge>>();
             foreach (var face in faces)
             {
+                var edges = new HashSet<Edge>();
                 var vertices = face.Vertices;
-                var allEdges = vertices.SelectMany(vertex => vertexToEdges(vertex)).Distinct();
-                var adjacentEdges = allEdges.Where(edge => vertices.Contains(edge.A) && vertices.Contains(edge.B));
-                faceToEdges.Add(face, new HashSet<Edge>(adjacentEdges));
+                for (int i = 0; i < vertices.Count-1; i++)
+                {
+                    var edge = vertexToEdges(vertices[i]).Intersect(vertexToEdges(vertices[i + 1])).Single();
+                    edges.Add(edge);
+                }
+                var lastEdge = vertexToEdges(vertices[vertices.Count-1]).Intersect(vertexToEdges(vertices[0])).Single();
+                edges.Add(lastEdge);
+                faceToEdges.Add(face, edges);
             }
             return faceToEdges;
         }

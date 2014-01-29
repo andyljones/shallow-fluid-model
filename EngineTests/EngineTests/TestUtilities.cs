@@ -11,6 +11,8 @@ namespace EngineTests.Utilities
 {
     public static class TestUtilities
     {
+        public readonly static double RelativeAccuracy = 1.0/1000000;
+
         public static string CollectionToString<T>(IEnumerable<T> collection)
         {
             var itemStrings = collection.Select(item => item.ToString()).ToArray();
