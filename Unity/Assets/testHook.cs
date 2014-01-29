@@ -14,12 +14,12 @@ namespace Assets
     public class TestHook : MonoBehaviour
     {
         private Dictionary<Face, int> index; 
-        private VectorFieldRenderer renderer;
+        private VectorFieldRenderer fieldRenderer;
 
         // Use this for initialization
         void Start ()
         {
-            var options = new Options {MinimumNumberOfFaces = 1000, Radius = 1};
+            var options = new Options {MinimumNumberOfFaces = 10000, Radius = 1};
             var polyhedron = GeodesicSphereFactory.Build(options);
             new PolyhedronRenderer(polyhedron, "Surface", "Materials/Wireframe", "Materials/Surface");
             Debug.Log(polyhedron.Vertices.Count);
@@ -32,7 +32,7 @@ namespace Assets
                 index.Add(polyhedron.Faces[i], i);
             }
             
-            renderer = new VectorFieldRenderer(index, polyhedron, "vectors", "Materials/Vectors");
+            fieldRenderer = new VectorFieldRenderer(index, polyhedron, "vectors", "Materials/Vectors");
         }
 
         void Update()
@@ -40,11 +40,11 @@ namespace Assets
             var x = Math.Sin(Time.time);
             var y = Math.Cos(Time.time);
             var z = 0;
-            var v = 0.1*new Vector(new [] {x, y, z});
+            var v = 0.05*new Vector(new [] {x, y, z});
             var values = Enumerable.Repeat(v, index.Count).ToArray();
             var field = new VectorField<Face>(index, values);
     
-            renderer.Update(field);
+            fieldRenderer.Update(field);
         }
     }
 }
