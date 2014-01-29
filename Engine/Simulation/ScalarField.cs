@@ -71,6 +71,28 @@ namespace Engine.Simulation
         }
 
         /// <summary>
+        /// Returns the negation of the field.
+        /// </summary>
+        public static ScalarField<T> operator -(ScalarField<T> a)
+        {
+            return -1 * a;
+        }
+
+        /// <summary>
+        /// Returns a new field with the constant subtracted from each element of the field.
+        /// </summary>
+        public static ScalarField<T> operator -(ScalarField<T> a, double b)
+        {
+            var newValues = new double[a.Values.Length];
+            for (int i = 0; i < a.Values.Length; i++)
+            {
+                newValues[i] = a.Values[i] - b;
+            }
+            return new ScalarField<T>(a.Index, newValues);
+        }
+
+
+        /// <summary>
         /// Returns a new field containing the field scaled by <param name="c">c</param>.
         /// </summary>
         public static ScalarField<T> operator *(double c, ScalarField<T> a)
@@ -82,6 +104,8 @@ namespace Engine.Simulation
             }
             return new ScalarField<T>(a.Index, newValues);
         }
+
+
 
         public IEnumerator<double> GetEnumerator()
         {

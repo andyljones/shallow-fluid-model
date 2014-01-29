@@ -19,53 +19,59 @@ namespace Engine.Simulation
             _parameters = parameters;
         }
 
-        public PrognosticFields<Face> Update(PrognosticFields<Face> oldFields, PrognosticFields<Face> olderFields)
+        public PrognosticFields<Face> Update
+            (PrognosticFields<Face> fields, PrognosticFields<Face> oldFields, PrognosticFields<Face> olderFields)
         {
+            // Instantaneous derivatives.
             var derivativeOfAbsoluteVorticity = DerivativeOfAbsoluteVorticity(
-                oldFields.AbsoluteVorticity, 
-                oldFields.Streamfunction,
-                oldFields.VelocityPotential);
+                fields.AbsoluteVorticity, 
+                fields.Streamfunction,
+                fields.VelocityPotential);
 
             var derivativeOfDivergence = DerivativeOfDivergence(
-                oldFields.Divergence, 
-                oldFields.Height,
-                oldFields.Streamfunction,
-                oldFields.VelocityPotential);
+                fields.AbsoluteVorticity, 
+                fields.Height,
+                fields.Streamfunction,
+                fields.VelocityPotential);
 
             var derivativeOfHeight = DerivativeOfHeight(
-                oldFields.Height, 
-                oldFields.Streamfunction, 
-                oldFields.VelocityPotential);
+                fields.Height, 
+                fields.Streamfunction, 
+                fields.VelocityPotential);
 
-
-            var absoluteVorticity = NewAbsoluteVorticity(
+            // New fields based on averaged derivatives.
+            var absoluteVorticity = AdamsBashforthUpdate(
+                fields.AbsoluteVorticity,
                 derivativeOfAbsoluteVorticity,
                 oldFields.DerivativeOfAbsoluteVorticity,
                 olderFields.DerivativeOfAbsoluteVorticity);
 
-            var divergence = NewDivergence(
+            var divergence = AdamsBashforthUpdate(
+                fields.Divergence,
                 derivativeOfDivergence,
                 oldFields.DerivativeOfDivergence,
                 olderFields.DerivativeOfDivergence);
 
-            var height = NewHeight(
+            var height = AdamsBashforthUpdate(
+                fields.Height,
                 derivativeOfHeight, 
                 oldFields.DerivativeOfHeight, 
                 olderFields.DerivativeOfHeight);
 
-
-            var streamfunction = NewStreamfunction(absoluteVorticity, _parameters.CoriolisParameter);
-            var velocityPotential = NewVelocityPotential(divergence);
-
+            // Integral fields.
+            var streamfunction = NewStreamfunction(fields.Streamfunction, absoluteVorticity, _parameters.Coriolis);
+            var velocityPotential = NewVelocityPotential(fields.Streamfunction, divergence);
 
             var newFields = new PrognosticFields<Face>
             {
                 DerivativeOfAbsoluteVorticity = derivativeOfAbsoluteVorticity,
                 DerivativeOfDivergence = derivativeOfDivergence,
                 DerivativeOfHeight = derivativeOfHeight,
+
                 AbsoluteVorticity = absoluteVorticity,
                 Divergence = divergence,
                 Height = height,
+                
                 Streamfunction = streamfunction,
                 VelocityPotential = velocityPotential
             };
@@ -73,44 +79,68 @@ namespace Engine.Simulation
             return newFields;
         }
 
-        private ScalarField<Face> DerivativeOfAbsoluteVorticity(ScalarField<Face> absoluteVorticity, ScalarField<Face> streamfunction, ScalarField<Face> velocityPotential)
+        private ScalarField<Face> DerivativeOfAbsoluteVorticity
+            (ScalarField<Face> absoluteVorticity, ScalarField<Face> streamfunction, ScalarField<Face> velocityPotential)
         {
-            throw new NotImplementedException();
+            var derivative = 
+                - _operators.FluxDivergence(absoluteVorticity, velocityPotential)
+                + _operators.Jacobian(absoluteVorticity, streamfunction);
+
+            return derivative;
         }
 
-        private ScalarField<Face> DerivativeOfDivergence(ScalarField<Face> divergence, ScalarField<Face> height, ScalarField<Face> streamfunction, ScalarField<Face> velocityPotential)
+        private ScalarField<Face> DerivativeOfDivergence
+            (ScalarField<Face> absoluteVorticity, ScalarField<Face> height, ScalarField<Face> streamfunction, ScalarField<Face> velocityPotential)
         {
-            throw new NotImplementedException();
+            var energy = KineticEnergy(streamfunction, velocityPotential);
+            var gravity = _parameters.Gravity;
+
+            var derivative = 
+                  _operators.FluxDivergence(absoluteVorticity, streamfunction)
+                + _operators.Jacobian(absoluteVorticity, velocityPotential)
+                - _operators.Laplacian(energy + gravity*height);
+
+            return derivative;
         }
 
-        private ScalarField<Face> DerivativeOfHeight(ScalarField<Face> derivativeOfHeight, ScalarField<Face> scalarField, ScalarField<Face> derivativeOfHeight1)
+        private ScalarField<Face> KineticEnergy
+            (ScalarField<Face> streamfunction, ScalarField<Face> velocityPotential)
         {
-            throw new NotImplementedException();
+            var energy = 0.5 * (
+                  _operators.FluxDivergence(streamfunction, streamfunction) - _operators.Laplacian(streamfunction)
+                + _operators.FluxDivergence(velocityPotential, velocityPotential) - _operators.Laplacian(velocityPotential)
+                + _operators.Jacobian(streamfunction, velocityPotential)); //TODO: Is this the right sign?
+
+            return energy;
         }
 
-        private ScalarField<Face> NewAbsoluteVorticity(ScalarField<Face> derivativeOfAbsoluteVorticity, ScalarField<Face> scalarField, ScalarField<Face> derivativeOfAbsoluteVorticity1)
+        private ScalarField<Face> DerivativeOfHeight
+            (ScalarField<Face> height, ScalarField<Face> streamfunction, ScalarField<Face> velocityPotential)
         {
-            throw new NotImplementedException();
+            var derivative =
+                - _operators.FluxDivergence(height, velocityPotential)
+                + _operators.Jacobian(height, streamfunction);
+
+            return derivative;
         }
 
-        private ScalarField<Face> NewDivergence(ScalarField<Face> derivativeOfDivergence, ScalarField<Face> scalarField, ScalarField<Face> derivativeOfDivergence1)
+        private ScalarField<Face> AdamsBashforthUpdate
+            (ScalarField<Face> field, ScalarField<Face> derivative, ScalarField<Face> oldDerivative, ScalarField<Face> olderDerivative)
         {
-            throw new NotImplementedException();
+            var step = 1.0/12.0*(23*derivative - 16*oldDerivative + 5*olderDerivative);
+            var newField = field + _parameters.Timestep*step;
+
+            return newField;
         }
 
-        private ScalarField<Face> NewStreamfunction(ScalarField<Face> absoluteVorticity, double coriolisParameter)
+        private ScalarField<Face> NewStreamfunction(ScalarField<Face> streamfunction, ScalarField<Face> absoluteVorticity, double coriolisParameter)
         {
-            throw new NotImplementedException();
+            return _integrator.Integrate(streamfunction, absoluteVorticity - coriolisParameter);
         }
 
-        private ScalarField<Face> NewVelocityPotential(ScalarField<Face> divergence)
+        private ScalarField<Face> NewVelocityPotential(ScalarField<Face> velocityPotential, ScalarField<Face> divergence)
         {
-            throw new NotImplementedException();
-        }
-
-        private ScalarField<Face> NewHeight(ScalarField<Face> height, ScalarField<Face> streamfunction, ScalarField<Face> velocityPotential)
-        {
-            throw new NotImplementedException();
+            return _integrator.Integrate(velocityPotential, divergence);
         }
     }
 }
