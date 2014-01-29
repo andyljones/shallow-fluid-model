@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Engine.Simulation
@@ -6,7 +7,7 @@ namespace Engine.Simulation
     /// <summary>
     /// Represents a scalar field over a set of items.
     /// </summary>
-    public class ScalarField<T>
+    public class ScalarField<T> : IEnumerable<double>
     {
         public readonly double[] Values;
         public readonly Dictionary<T, int> Index;
@@ -80,6 +81,16 @@ namespace Engine.Simulation
                 newValues[i] = c*a.Values[i];
             }
             return new ScalarField<T>(a.Index, newValues);
+        }
+
+        public IEnumerator<double> GetEnumerator()
+        {
+            return Values.ToList().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
