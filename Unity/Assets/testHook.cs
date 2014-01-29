@@ -26,7 +26,6 @@ namespace Assets
             Debug.Log(polyhedron.Edges.Count);
             Debug.Log(polyhedron.Faces.Count);
 
-            
             fieldRenderer = new VectorFieldRenderer(polyhedron, "vectors", "Materials/Vectors");
         }
 

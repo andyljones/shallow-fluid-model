@@ -33,5 +33,15 @@ namespace Engine.Utilities
 
             return new Vector(new [] {x, y, z});
         }
+
+        public static Vector LocalDirection(Vector from, Vector to)
+        {
+            var direction = to - from;
+            var normalAtFrom = from.Normalize();
+
+            var localDirection = (direction - Vector.ScalarProduct(direction, normalAtFrom)*normalAtFrom).Normalize();
+
+            return localDirection;
+        }
     }
 }

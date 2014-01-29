@@ -25,10 +25,10 @@ namespace Engine.Simulation
         public FieldIntegrator(IPolyhedron surface, SimulationParameters parameters)
         {
             _numberOfRelaxationIterations = parameters.NumberOfRelaxationIterations;
-            _areas = SimulationUtilities.BuildAreasTable(surface);
-            _neighbours = SimulationUtilities.BuildNeighboursTable(surface);
-            _edgeLengths = SimulationUtilities.BuildEdgeLengthsTable(surface);
-            _distances = SimulationUtilities.BuildDistancesTable(surface);
+            _areas = SimulationUtilities.AreasTable(surface);
+            _neighbours = SimulationUtilities.NeighboursTable(surface);
+            _edgeLengths = SimulationUtilities.EdgeLengthsTable(surface);
+            _distances = SimulationUtilities.DistancesTable(surface);
             _numberOfFaces = surface.Faces.Count;
         }
 
