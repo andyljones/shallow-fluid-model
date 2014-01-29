@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,28 +11,19 @@ namespace Engine.Simulation
     public class ScalarField<T> : IEnumerable<double>
     {
         public readonly double[] Values;
-        public readonly Dictionary<T, int> Index;
+        public readonly Func<T, int> IndexOf;
 
         public double this[int i] { get { return Values[i]; } }
-        public double this[T t] { get { return Values[Index[t]]; } }
+        public double this[T t] { get { return Values[IndexOf(t)]; } }
 
         public int Count { get { return Values.Length; } }
 
         /// <summary>
-        /// Initialize a field from a list of faces. 
-        /// </summary>
-        public ScalarField(IEnumerable<T> items)
-        {
-            Index = GenerateIndices(items);
-            Values = new double[Index.Count];
-        }
-
-        /// <summary>
         /// Copies another scalar field's keys into a new field with the specified values.
         /// </summary>
-        public ScalarField(Dictionary<T, int> index , double[] values)
+        public ScalarField(Func<T, int> index, double[] values)
         {
-            Index = index;
+            IndexOf = index;
             Values = values;
         }
 
@@ -54,7 +46,7 @@ namespace Engine.Simulation
             {
                 newValues[i] = a.Values[i] + b.Values[i];
             }
-            return new ScalarField<T>(a.Index, newValues);
+            return new ScalarField<T>(a.IndexOf, newValues);
         }
 
         /// <summary>
@@ -67,7 +59,7 @@ namespace Engine.Simulation
             {
                 newValues[i] = a.Values[i] - b.Values[i];
             }
-            return new ScalarField<T>(a.Index, newValues);        
+            return new ScalarField<T>(a.IndexOf, newValues);        
         }
 
         /// <summary>
@@ -88,7 +80,7 @@ namespace Engine.Simulation
             {
                 newValues[i] = a.Values[i] - b;
             }
-            return new ScalarField<T>(a.Index, newValues);
+            return new ScalarField<T>(a.IndexOf, newValues);
         }
 
 
@@ -102,7 +94,7 @@ namespace Engine.Simulation
             {
                 newValues[i] = c*a.Values[i];
             }
-            return new ScalarField<T>(a.Index, newValues);
+            return new ScalarField<T>(a.IndexOf, newValues);
         }
 
 

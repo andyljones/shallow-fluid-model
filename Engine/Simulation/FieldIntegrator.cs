@@ -22,13 +22,13 @@ namespace Engine.Simulation
         /// <summary>
         /// Constructs a numerical integrator over the given surface, with faces indexed by Index.
         /// </summary>
-        public FieldIntegrator(IPolyhedron surface, Dictionary<Face, int> index, SimulationParameters parameters)
+        public FieldIntegrator(IPolyhedron surface, SimulationParameters parameters)
         {
             _numberOfRelaxationIterations = parameters.NumberOfRelaxationIterations;
-            _areas = SimulationUtilities.BuildAreasTable(surface, index);
-            _neighbours = SimulationUtilities.BuildNeighboursTable(surface, index);
-            _edgeLengths = SimulationUtilities.BuildEdgeLengthsTable(surface, index);
-            _distances = SimulationUtilities.BuildDistancesTable(surface, index);
+            _areas = SimulationUtilities.BuildAreasTable(surface);
+            _neighbours = SimulationUtilities.BuildNeighboursTable(surface);
+            _edgeLengths = SimulationUtilities.BuildEdgeLengthsTable(surface);
+            _distances = SimulationUtilities.BuildDistancesTable(surface);
             _numberOfFaces = surface.Faces.Count;
         }
 
@@ -52,7 +52,7 @@ namespace Engine.Simulation
             {
                 results[face] = RelaxationAtFace(face, U, f);
             }
-            return new ScalarField<Face>(U.Index, results);
+            return new ScalarField<Face>(U.IndexOf, results);
         }
 
         private double RelaxationAtFace(int face, ScalarField<Face> U, ScalarField<Face> f)

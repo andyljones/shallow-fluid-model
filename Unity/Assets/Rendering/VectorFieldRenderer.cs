@@ -15,10 +15,10 @@ namespace Assets.Rendering
         private TangentSpace[] _tangentSpaces;
         private GameObject _gameObject;
 
-        public VectorFieldRenderer(Dictionary<Face, int> index, IPolyhedron polyhedron, String name, String materialName)
+        public VectorFieldRenderer(IPolyhedron polyhedron, String name, String materialName)
         {
-            _origins = FindOrigins(index, polyhedron);
-            _tangentSpaces = ConstructTangentSpaces(index, polyhedron);
+            _origins = FindOrigins(polyhedron);
+            _tangentSpaces = ConstructTangentSpaces(polyhedron);
 
             _gameObject = CreateRenderingObject(name, materialName, polyhedron.Faces.Count);
 
@@ -31,6 +31,7 @@ namespace Assets.Rendering
             var mesh = gameObject.GetComponent<MeshFilter>().mesh;
             mesh.vertices = new Vector3[2*numberOfFaces];
             mesh.uv = Enumerable.Repeat(new Vector2(), mesh.vertexCount).ToArray();
+            mesh.normals = mesh.vertices.Select(v => v.normalized).ToArray();
             mesh.SetIndices(Enumerable.Range(0, mesh.vertexCount).ToArray(), MeshTopology.Lines, 0);
 
             var renderer = gameObject.GetComponent<MeshRenderer>();
@@ -39,19 +40,19 @@ namespace Assets.Rendering
             return gameObject;
         }
 
-        private static Vector3[] FindOrigins(Dictionary<Face, int> index, IPolyhedron polyhedron)
+        private static Vector3[] FindOrigins(IPolyhedron polyhedron)
         {
             var origins = new Vector3[polyhedron.Faces.Count];
             foreach (var face in polyhedron.Faces)
             {
                 var origin = GraphicsUtilities.Vector3(face.SphericalCenter());
-                origins[index[face]] = origin;
+                origins[polyhedron.IndexOf(face)] = origin;
             }
 
             return origins;
         }
 
-        private static TangentSpace[] ConstructTangentSpaces(Dictionary<Face, int> index, IPolyhedron polyhedron)
+        private static TangentSpace[] ConstructTangentSpaces(IPolyhedron polyhedron)
         {
             var globalNorth = VectorUtilities.NewVector(0, 0);
 
@@ -61,7 +62,7 @@ namespace Assets.Rendering
                 var up = face.SphericalCenter().Normalize();
                 var east = Vector.CrossProduct(globalNorth, up).Normalize();
                 var north = Vector.CrossProduct(up, east).Normalize();
-                tangentSpaces[index[face]] = new TangentSpace(east, north, up);
+                tangentSpaces[polyhedron.IndexOf(face)] = new TangentSpace(east, north, up);
             }
 
             return tangentSpaces;

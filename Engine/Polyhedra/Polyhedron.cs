@@ -39,6 +39,11 @@ namespace Engine.Polyhedra
         private readonly Dictionary<Edge, HashSet<Face>> _edgeToFaces;
         #endregion
 
+        #region Indexes
+        public int IndexOf(Face face) { return _faceIndices[face]; }
+        private readonly Dictionary<Face, int> _faceIndices;
+        #endregion
+
         /// <summary>
         /// Construct a polyhedron from a collection of convex, planar collections of vertices.
         /// </summary>
@@ -52,6 +57,8 @@ namespace Engine.Polyhedra
             _vertexToFaces = PolyhedronInitialization.VertexToFaceDictionary(Vertices, Faces);
             _faceToEdges = PolyhedronInitialization.FaceToEdgeDictionary(Faces, EdgesOf);
             _edgeToFaces = PolyhedronInitialization.EdgeToFaceDictionary(Edges, Faces, EdgesOf);
+
+            _faceIndices = PolyhedronInitialization.FaceIndexDictionary(Faces);
         }
     }
 }

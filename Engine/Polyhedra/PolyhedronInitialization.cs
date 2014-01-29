@@ -123,5 +123,13 @@ namespace Engine.Polyhedra
             return edgeToFaces;
         }
         #endregion
+
+        public static Dictionary<Face, int> FaceIndexDictionary(List<Face> faces)
+        {
+            var indices = Enumerable.Range(0, faces.Count);
+            var dictionary = indices.ToDictionary(i => faces[i], i => i);
+
+            return dictionary;
+        }
     }
 }

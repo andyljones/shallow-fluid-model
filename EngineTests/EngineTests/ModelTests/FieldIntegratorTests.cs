@@ -19,7 +19,7 @@ namespace EngineTests.ModelTests
             (FieldIntegrator integrator, ScalarField<Face> randomField, FieldOperators operators)
         {
             // Fixture setup
-            var zero = new ScalarField<Face>(randomField.Index, Enumerable.Repeat(0.0, randomField.Count).ToArray());
+            var zero = new ScalarField<Face>(randomField.IndexOf, Enumerable.Repeat(0.0, randomField.Count).ToArray());
 
             // Exercise system
             var integral = integrator.Integrate(zero, randomField);

@@ -16,7 +16,7 @@ namespace Engine.Simulation
         /// Constructs a table of the distances from each face's center to it's neighbour's centers. 
         /// Neighbours are listed in the same order as given by surface.NeighboursOf.
         /// </summary>
-        public static double[][] BuildDistancesTable(IPolyhedron surface, Dictionary<Face, int> index)
+        public static double[][] BuildDistancesTable(IPolyhedron surface)
         {
             var edgeLengths = new double[surface.Faces.Count][];
             foreach (var face in surface.Faces)
@@ -26,7 +26,7 @@ namespace Engine.Simulation
                     NeighboursOf(face).
                     Select(neighbour => VectorUtilities.GeodesicDistance(face.SphericalCenter(), neighbour.SphericalCenter())).
                     ToArray();
-                edgeLengths[index[face]] = distances;
+                edgeLengths[surface.IndexOf(face)] = distances;
             }
 
             //TODO: Work out how to turn this into spherical area.
@@ -38,13 +38,13 @@ namespace Engine.Simulation
         /// Constructs a table of the lengths of edges surrounding each face. 
         /// Edges are listed in the same order as the opposing faces are given by surface.NeighboursOf.
         /// </summary>
-        public static double[][] BuildEdgeLengthsTable(IPolyhedron surface, Dictionary<Face, int> index)
+        public static double[][] BuildEdgeLengthsTable(IPolyhedron surface)
         {
             var edgeLengths = new double[surface.Faces.Count][];
             foreach (var face in surface.Faces)
             {
                 var lengths = surface.EdgesOf(face).Select(edge => edge.Length()).ToArray();
-                edgeLengths[index[face]] = lengths;
+                edgeLengths[surface.IndexOf(face)] = lengths;
             }
 
             return edgeLengths;
@@ -53,12 +53,12 @@ namespace Engine.Simulation
         /// <summary>
         /// Constructs a table of the areas of the faces.
         /// </summary>
-        public static double[] BuildAreasTable(IPolyhedron surface, Dictionary<Face, int> index)
+        public static double[] BuildAreasTable(IPolyhedron surface)
         {
             var areas = new double[surface.Faces.Count];
             foreach (var face in surface.Faces)
             {
-                areas[index[face]] = face.Area();
+                areas[surface.IndexOf(face)] = face.Area();
             }
 
             return areas;
@@ -68,13 +68,13 @@ namespace Engine.Simulation
         /// Constructs a table of the neighbours of each face. 
         /// Neighbours are listed in the same order as given by surface.NeighboursOf.
         /// </summary>
-        public static int[][] BuildNeighboursTable(IPolyhedron surface, Dictionary<Face, int> index)
+        public static int[][] BuildNeighboursTable(IPolyhedron surface)
         {
             var neighbours = new int[surface.Faces.Count][];
             foreach (var face in surface.Faces)
             {
-                var indicesOfNeighbours = surface.NeighboursOf(face).Select(neighbour => index[neighbour]).ToArray();
-                neighbours[index[face]] = indicesOfNeighbours;
+                var indicesOfNeighbours = surface.NeighboursOf(face).Select(neighbour => surface.IndexOf(neighbour)).ToArray();
+                neighbours[surface.IndexOf(face)] = indicesOfNeighbours;
             }
 
             return neighbours;

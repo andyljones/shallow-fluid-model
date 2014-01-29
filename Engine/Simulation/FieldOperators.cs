@@ -22,12 +22,12 @@ namespace Engine.Simulation
         /// <summary>
         /// Constructs a set of difference functions for use over the given surface, with faces indexed by Index. 
         /// </summary>
-        public FieldOperators(IPolyhedron surface, Dictionary<Face, int> index)
+        public FieldOperators(IPolyhedron surface)
         {
-            _areas = SimulationUtilities.BuildAreasTable(surface, index);
-            _neighbours = SimulationUtilities.BuildNeighboursTable(surface, index);
-            _edgeLengths = SimulationUtilities.BuildEdgeLengthsTable(surface, index);
-            _distances = SimulationUtilities.BuildDistancesTable(surface, index);
+            _areas = SimulationUtilities.BuildAreasTable(surface);
+            _neighbours = SimulationUtilities.BuildNeighboursTable(surface);
+            _edgeLengths = SimulationUtilities.BuildEdgeLengthsTable(surface);
+            _distances = SimulationUtilities.BuildDistancesTable(surface);
             _numberOfFaces = surface.Faces.Count;
         }
 
@@ -42,7 +42,7 @@ namespace Engine.Simulation
             {
                 results[face] = JacobianAtFace(face, A, B);
             }
-            return new ScalarField<Face>(A.Index, results);
+            return new ScalarField<Face>(A.IndexOf, results);
         }
 
         private double JacobianAtFace(int face, ScalarField<Face> A, ScalarField<Face> B)
@@ -81,7 +81,7 @@ namespace Engine.Simulation
             {
                 results[face] = FluxDivergenceAtFace(face, A, B);
             }
-            return new ScalarField<Face>(A.Index, results);
+            return new ScalarField<Face>(A.IndexOf, results);
         }
 
         private double FluxDivergenceAtFace(int face, ScalarField<Face> A, ScalarField<Face> B)
@@ -115,7 +115,7 @@ namespace Engine.Simulation
             {
                 results[face] = LaplacianAtFace(face, A);
             }
-            return new ScalarField<Face>(A.Index, results);
+            return new ScalarField<Face>(A.IndexOf, results);
         }
 
         private double LaplacianAtFace(int face, ScalarField<Face> A)
