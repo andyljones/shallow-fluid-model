@@ -52,7 +52,7 @@ namespace Engine.Simulation
             for (int i = 0; i < neighbours.Length; i++)
             {
                 var neighbour = neighbours[i];
-                gradient += (A[neighbour] - A[face])/distances[neighbour]*directions[neighbour];
+                gradient += (A[neighbour] - A[face])/distances[i]*directions[i];
             }
 
             return gradient/neighbours.Length;

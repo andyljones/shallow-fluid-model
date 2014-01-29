@@ -15,30 +15,53 @@ namespace Assets
     {
         private VectorFieldRenderer fieldRenderer;
         private IPolyhedron polyhedron;
+        
+        private VelocityFieldFactory velocityFieldFactory;
+        private FieldUpdater updater;
+
+        private PrognosticFields<Face> fields;
+        private PrognosticFields<Face> oldFields;
+        private PrognosticFields<Face> olderFields; 
 
         // Use this for initialization
         void Start ()
         {
-            var options = new Options {MinimumNumberOfFaces = 10000, Radius = 1};
+            var options = new Options {MinimumNumberOfFaces = 30, Radius = 6000};
             polyhedron = GeodesicSphereFactory.Build(options);
             new PolyhedronRenderer(polyhedron, "Surface", "Materials/Wireframe", "Materials/Surface");
-            Debug.Log(polyhedron.Vertices.Count);
-            Debug.Log(polyhedron.Edges.Count);
-            Debug.Log(polyhedron.Faces.Count);
 
+            velocityFieldFactory = new VelocityFieldFactory(polyhedron);
             fieldRenderer = new VectorFieldRenderer(polyhedron, "vectors", "Materials/Vectors");
+
+            fields = new InitialConditions(polyhedron).Fields;
+
+            var parameters = new SimulationParameters
+            {
+                RotationPeriod = 24*60*60,
+                Gravity = 9.8/1000,
+                NumberOfRelaxationIterations = 2*options.MinimumNumberOfFaces,
+                Timestep = 300
+            };
+
+            updater = new FieldUpdater(polyhedron, parameters);
+
+            var velocityField = velocityFieldFactory.VelocityField(fields.Streamfunction, fields.VelocityPotential);
+
+            fieldRenderer.Update(velocityField);
         }
 
         void Update()
         {
-            var x = Math.Sin(Time.time);
-            var y = Math.Cos(Time.time);
-            var z = 0;
-            var v = 0.05*new Vector(new [] {x, y, z});
-            var values = Enumerable.Repeat(v, polyhedron.Faces.Count).ToArray();
-            var field = new VectorField<Face>(polyhedron.IndexOf, values);
-    
-            fieldRenderer.Update(field);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                olderFields = oldFields;
+                oldFields = fields;
+                fields = updater.Update(fields, oldFields, olderFields);
+
+                var velocityField = velocityFieldFactory.VelocityField(fields.Streamfunction, fields.VelocityPotential);
+
+                fieldRenderer.Update(velocityField);
+            }
         }
     }
 }

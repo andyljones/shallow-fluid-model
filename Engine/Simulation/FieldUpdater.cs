@@ -12,11 +12,15 @@ namespace Engine.Simulation
         private readonly FieldIntegrator _integrator;
         private readonly SimulationParameters _parameters;
 
+        private readonly ScalarField<Face> _coriolisField; 
+
         public FieldUpdater(IPolyhedron surface, SimulationParameters parameters)
         {
             _operators = new FieldOperators(surface);
             _integrator = new FieldIntegrator(surface, parameters);
             _parameters = parameters;
+
+            _coriolisField = SimulationUtilities.CoriolisField(surface, _parameters.RotationPeriod);
         }
 
         public PrognosticFields<Face> Update(PrognosticFields<Face> fields, PrognosticFields<Face> oldFields = null, PrognosticFields<Face> olderFields = null)
@@ -44,7 +48,7 @@ namespace Engine.Simulation
             }
 
             // Integral fields.
-            var streamfunction = NewStreamfunction(fields.Streamfunction, absoluteVorticity, _parameters.Coriolis);
+            var streamfunction = NewStreamfunction(fields.Streamfunction, absoluteVorticity);
             var velocityPotential = NewVelocityPotential(fields.Streamfunction, divergence);
 
             var newFields = new PrognosticFields<Face>
@@ -121,9 +125,9 @@ namespace Engine.Simulation
         }
 
 
-        private ScalarField<Face> NewStreamfunction(ScalarField<Face> streamfunction, ScalarField<Face> absoluteVorticity, double coriolisParameter)
+        private ScalarField<Face> NewStreamfunction(ScalarField<Face> streamfunction, ScalarField<Face> absoluteVorticity)
         {
-            return _integrator.Integrate(streamfunction, absoluteVorticity - coriolisParameter);
+            return _integrator.Integrate(streamfunction, absoluteVorticity - _coriolisField);
         }
 
         private ScalarField<Face> NewVelocityPotential(ScalarField<Face> velocityPotential, ScalarField<Face> divergence)

@@ -73,7 +73,7 @@ namespace Engine.Simulation
             var neighbours = new int[surface.Faces.Count][];
             foreach (var face in surface.Faces)
             {
-                var indicesOfNeighbours = surface.NeighboursOf(face).Select(neighbour => surface.IndexOf(neighbour))x;
+                var indicesOfNeighbours = surface.NeighboursOf(face).Select(neighbour => surface.IndexOf(neighbour));
                 neighbours[surface.IndexOf(face)] = indicesOfNeighbours.ToArray();
             }
 
@@ -82,13 +82,13 @@ namespace Engine.Simulation
 
         public static Vector[] NormalsTable(IPolyhedron surface)
         {
-            var centers = new Vector[surface.Faces.Count];
+            var normals = new Vector[surface.Faces.Count];
             foreach (var face in surface.Faces)
             {
-                centers[surface.IndexOf(face)] = face.SphericalCenter().Normalize();
+                normals[surface.IndexOf(face)] = face.SphericalCenter().Normalize();
             }
 
-            return centers;
+            return normals;
         }
 
         public static Vector[][] DirectionTable(IPolyhedron surface)
@@ -109,6 +109,21 @@ namespace Engine.Simulation
         private static Vector Direction(Face from, Face to)
         {
             return VectorUtilities.LocalDirection(from.SphericalCenter(), to.SphericalCenter());
+        }
+
+        public static ScalarField<Face> CoriolisField(IPolyhedron surface, double rotationPeriod)
+        {
+            var normals = NormalsTable(surface);
+            var angularVelocity = 2*Math.PI/rotationPeriod;
+
+            var values = new double[surface.Faces.Count];
+            foreach (var face in surface.Faces)
+            {
+                var faceIndex = surface.IndexOf(face);
+                values[faceIndex] = 2*angularVelocity*Math.Cos(normals[faceIndex][2]);
+            }
+
+            return new ScalarField<Face>(surface.IndexOf, values);
         }
     }
 }
