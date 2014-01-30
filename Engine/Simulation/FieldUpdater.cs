@@ -49,7 +49,7 @@ namespace Engine.Simulation
 
             // Integral fields.
             var streamfunction = NewStreamfunction(fields.Streamfunction, absoluteVorticity);
-            var velocityPotential = NewVelocityPotential(fields.Streamfunction, divergence);
+            var velocityPotential = NewVelocityPotential(fields.VelocityPotential, divergence);
 
             var newFields = new PrognosticFields<Face>
             {
@@ -93,7 +93,7 @@ namespace Engine.Simulation
             var streamfunctionTerm = _operators.FluxDivergence(streamfunction, streamfunction) - _operators.Laplacian(streamfunction);
             var velocityPotentialTerm =  _operators.FluxDivergence(velocityPotential, velocityPotential) - _operators.Laplacian(velocityPotential);
 
-            var energy = 0.5 * (streamfunctionTerm + velocityPotentialTerm + _operators.Jacobian(streamfunction, velocityPotential)); //TODO: Is this the right sign?
+            var energy = 0.5 * (streamfunctionTerm + velocityPotentialTerm) + _operators.Jacobian(streamfunction, velocityPotential); //TODO: Is this the right sign?
 
             return energy;
         }

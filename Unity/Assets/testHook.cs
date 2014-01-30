@@ -26,7 +26,7 @@ namespace Assets
         // Use this for initialization
         void Start ()
         {
-            var options = new Options {MinimumNumberOfFaces = 30, Radius = 6000};
+            var options = new Options {MinimumNumberOfFaces = 100, Radius = 6000};
             polyhedron = GeodesicSphereFactory.Build(options);
             new PolyhedronRenderer(polyhedron, "Surface", "Materials/Wireframe", "Materials/Surface");
 
@@ -37,10 +37,10 @@ namespace Assets
 
             var parameters = new SimulationParameters
             {
-                RotationPeriod = 24*60*60,
-                Gravity = 9.8/1000,
-                NumberOfRelaxationIterations = 2*options.MinimumNumberOfFaces,
-                Timestep = 300
+                RotationPeriod = 0,
+                Gravity = 0,
+                NumberOfRelaxationIterations = 1,
+                Timestep = 1
             };
 
             updater = new FieldUpdater(polyhedron, parameters);
@@ -54,13 +54,16 @@ namespace Assets
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                olderFields = oldFields;
-                oldFields = fields;
-                fields = updater.Update(fields, oldFields, olderFields);
+                for (int i = 0; i < 1; i++)
+                {
+                    Debug.Log(fields.ToString(1));
+                    olderFields = oldFields;
+                    oldFields = fields;
+                    fields = updater.Update(fields, oldFields, olderFields);
+                    var velocityField = velocityFieldFactory.VelocityField(fields.Streamfunction, fields.VelocityPotential);
 
-                var velocityField = velocityFieldFactory.VelocityField(fields.Streamfunction, fields.VelocityPotential);
-
-                fieldRenderer.Update(velocityField);
+                    fieldRenderer.Update(velocityField);
+                }
             }
         }
     }
