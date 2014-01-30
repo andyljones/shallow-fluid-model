@@ -124,12 +124,13 @@ namespace Engine.Polyhedra
         }
         #endregion
 
-        public static Dictionary<Face, int> FaceIndexDictionary(List<Face> faces)
+        public static Dictionary<T, int> ItemToIndexDictionary<T>(IEnumerable<T> items)
         {
-            var indices = Enumerable.Range(0, faces.Count);
-            var dictionary = indices.ToDictionary(i => faces[i], i => i);
+            var itemList = items.ToList();
+            var indices = Enumerable.Range(0, itemList.Count);
+            var itemIndices = indices.ToDictionary(i => itemList[i], i => i);
 
-            return dictionary;
+            return itemIndices;
         }
     }
 }

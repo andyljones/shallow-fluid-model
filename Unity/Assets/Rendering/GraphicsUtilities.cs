@@ -60,7 +60,6 @@ namespace Assets.Rendering
             mesh.SetIndices(triangles, MeshTopology.Triangles, mesh.subMeshCount-1);
             mesh.subMeshCount++;
             mesh.normals = mesh.vertices.Select(v => v.normalized).ToArray();
-            mesh.colors = Enumerable.Repeat(Color.red, mesh.vertexCount).ToArray();
 
             var renderer = gameObject.GetComponent<MeshRenderer>();
             var materials = renderer.materials.ToList();
@@ -68,16 +67,16 @@ namespace Assets.Rendering
             renderer.materials = materials.ToArray();
         }
 
-        /// <summary>
-        /// Create a dictionary that associates every item in a collection with an index.
-        /// </summary>
-        public static Dictionary<T, int> CreateItemToIndexMap<T>(IEnumerable<T> vertices)
-        {
-            var vertexList = vertices.ToList();
-            var indices = Enumerable.Range(0, vertexList.Count);
-            var vertexIndices = indices.ToDictionary(i => vertexList[i], i => i);
+        ///// <summary>
+        ///// Create a dictionary that associates every item in a collection with an index.
+        ///// </summary>
+        //public static Dictionary<T, int> CreateItemToIndexMap<T>(IEnumerable<T> vertices)
+        //{
+        //    var vertexList = vertices.ToList();
+        //    var indices = Enumerable.Range(0, vertexList.Count);
+        //    var vertexIndices = indices.ToDictionary(i => vertexList[i], i => i);
 
-            return vertexIndices;
-        }
+        //    return vertexIndices;
+        //}
     }
 }

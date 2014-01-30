@@ -15,7 +15,8 @@ namespace Assets
     {
         private VectorFieldRenderer fieldRenderer;
         private IPolyhedron polyhedron;
-        
+
+        private PolyhedronRenderer polyhedronRenderer;
         private VelocityFieldFactory velocityFieldFactory;
         private FieldUpdater updater;
 
@@ -31,7 +32,7 @@ namespace Assets
         {
             var options = new Options {MinimumNumberOfFaces = 101, Radius = 6000};
             polyhedron = GeodesicSphereFactory.Build(options);
-            new PolyhedronRenderer(polyhedron, "Surface", "Materials/Wireframe", "Materials/Surface");
+            polyhedronRenderer = new PolyhedronRenderer(polyhedron, "Surface", "Materials/Wireframe", "Materials/Surface");
 
             velocityFieldFactory = new VelocityFieldFactory(polyhedron);
             fieldRenderer = new VectorFieldRenderer(polyhedron, "vectors", "Materials/Vectors");
@@ -42,7 +43,7 @@ namespace Assets
 
             var parameters = new SimulationParameters
             {
-                RotationFrequency = 1.0/(24.0*3600.0)*0.4,
+                RotationFrequency = 0,//1.0/(24.0*3600.0)*0.4,
                 Gravity = 10.0/1000.0,
                 NumberOfRelaxationIterations = 300,
                 Timestep = 300
@@ -82,6 +83,7 @@ namespace Assets
                     //Debug.Log(velocityField.Values.Max(value => 1000*value.Norm()));
 
                     fieldRenderer.Update(velocityField);
+                    polyhedronRenderer.Update(fields.Height);
                 }
             }
         }

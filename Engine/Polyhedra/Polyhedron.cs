@@ -42,6 +42,12 @@ namespace Engine.Polyhedra
         #region Indexes
         public int IndexOf(Face face) { return _faceIndices[face]; }
         private readonly Dictionary<Face, int> _faceIndices;
+
+        public int IndexOf(Edge edge) { return _edgeIndices[edge]; }
+        private readonly Dictionary<Edge, int> _edgeIndices;
+
+        public int IndexOf(Vertex vertex) { return _vertexIndices[vertex]; }
+        private readonly Dictionary<Vertex, int> _vertexIndices;
         #endregion
 
         /// <summary>
@@ -58,7 +64,9 @@ namespace Engine.Polyhedra
             _faceToEdges = PolyhedronInitialization.FaceToEdgeDictionary(Faces, EdgesOf);
             _edgeToFaces = PolyhedronInitialization.EdgeToFaceDictionary(Edges, Faces, EdgesOf);
 
-            _faceIndices = PolyhedronInitialization.FaceIndexDictionary(Faces);
+            _faceIndices = PolyhedronInitialization.ItemToIndexDictionary(Faces);
+            _edgeIndices = PolyhedronInitialization.ItemToIndexDictionary(Edges);
+            _vertexIndices = PolyhedronInitialization.ItemToIndexDictionary(Vertices);
         }
     }
 }

@@ -20,5 +20,7 @@ namespace Engine.Polyhedra
         HashSet<Face> FacesOf(Edge edge);
 
         int IndexOf(Face face);
+        int IndexOf(Edge edge);
+        int IndexOf(Vertex vertex);
     }
 }

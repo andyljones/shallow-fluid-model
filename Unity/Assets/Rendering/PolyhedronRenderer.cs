@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Engine.Polyhedra;
+using Engine.Simulation;
 using UnityEngine;
 
 namespace Assets.Rendering
@@ -12,65 +13,62 @@ namespace Assets.Rendering
     public class PolyhedronRenderer
     {
         private readonly GameObject _gameObject;
-        private readonly Dictionary<Vertex, int> _vertexIndices; 
+        private readonly ColorMap _colorMap;
 
         public PolyhedronRenderer(IPolyhedron polyhedron, String name, String wireframeMaterialName = "", String surfaceMaterialName = "")
         {
-            _vertexIndices = GraphicsUtilities.CreateItemToIndexMap(polyhedron.Vertices);
-            _gameObject = GraphicsUtilities.CreateRenderingObject(name, CreateVertexArray(_vertexIndices));
+            _gameObject = GraphicsUtilities.CreateRenderingObject(name, CreateVertexArray(polyhedron.Vertices));
 
             if (wireframeMaterialName != "")
             { 
-                GraphicsUtilities.AddWireframe(_gameObject, CreateLineArray(_vertexIndices, polyhedron.Edges), wireframeMaterialName);
+                GraphicsUtilities.AddWireframe(_gameObject, CreateLineArray(polyhedron.IndexOf, polyhedron.Edges), wireframeMaterialName);
             }
 
             if (surfaceMaterialName != "")
             {
-                GraphicsUtilities.AddSurface(_gameObject, CreateTriangleArray(_vertexIndices, polyhedron.Faces), surfaceMaterialName);
+                GraphicsUtilities.AddSurface(_gameObject, CreateTriangleArray(polyhedron.IndexOf, polyhedron.Faces), surfaceMaterialName);
             }
+
+            _colorMap = new ColorMap(_gameObject, polyhedron);
         }
 
         #region CreateMesh methods
-        private static Vector3[] CreateVertexArray(Dictionary<Vertex, int> vertexIndices)
+        private static Vector3[] CreateVertexArray(IEnumerable<Vertex> vertices)
         {
-            var unityVertices = new Vector3[vertexIndices.Count];
-            foreach (var vertexAndIndex in vertexIndices)
-            {
-                var vertex = vertexAndIndex.Key;
-                var index = vertexAndIndex.Value;
-
-                unityVertices[index] = GraphicsUtilities.Vector3(vertex.Position);
-            }
-
-            return unityVertices;
+            return vertices.Select(vertex => GraphicsUtilities.Vector3(vertex.Position)).ToArray();
         }
 
-        private static int[] CreateTriangleArray(Dictionary<Vertex, int> vertexIndices, IEnumerable<Face> faces)
+        private static int[] CreateTriangleArray(Func<Vertex, int> indexOf, IEnumerable<Face> faces)
         {
-            return faces.SelectMany(face => Indices(vertexIndices, face)).ToArray();
+            return faces.SelectMany(face => Indices(indexOf, face)).ToArray();
         }
 
-        private static int[] CreateLineArray(Dictionary<Vertex, int> vertexIndices, IEnumerable<Edge> edges)
+        private static int[] CreateLineArray(Func<Vertex, int> indexOf, IEnumerable<Edge> edges)
         {
-            return edges.SelectMany(edge => Indices(vertexIndices, edge)).ToArray();
+            return edges.SelectMany(edge => Indices(indexOf, edge)).ToArray();
         }
 
-        private static IEnumerable<int> Indices(Dictionary<Vertex, int> vertexIndices, Face face)
+        private static IEnumerable<int> Indices(Func<Vertex, int> indexOf, Face face)
         {
             var vertices = face.Vertices;
             var triangles = new List<int>();
             for (int i = 1; i < vertices.Count-1; i++)
             {
-                var triangle = new [] { vertexIndices[vertices[0]], vertexIndices[vertices[i]], vertexIndices[vertices[i+1]] };
+                var triangle = new [] { indexOf(vertices[0]), indexOf(vertices[i]), indexOf(vertices[i+1]) };
                 triangles.AddRange(triangle);
             }
             return triangles;
         }
 
-        private static IEnumerable<int> Indices(Dictionary<Vertex, int> vertexIndices, Edge edge)
+        private static IEnumerable<int> Indices(Func<Vertex, int> indexOf, Edge edge)
         {
-            return new List<int> {vertexIndices[edge.A], vertexIndices[edge.B]};
+            return new List<int> {indexOf(edge.A), indexOf(edge.B)};
         }
         #endregion
+
+        public void Update(ScalarField<Face> field)
+        {
+            _colorMap.Update(field);
+        }
     }
 }
