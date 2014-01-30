@@ -60,6 +60,7 @@ namespace Assets.Rendering
             mesh.SetIndices(triangles, MeshTopology.Triangles, mesh.subMeshCount-1);
             mesh.subMeshCount++;
             mesh.normals = mesh.vertices.Select(v => v.normalized).ToArray();
+            mesh.colors = Enumerable.Repeat(Color.red, mesh.vertexCount).ToArray();
 
             var renderer = gameObject.GetComponent<MeshRenderer>();
             var materials = renderer.materials.ToList();

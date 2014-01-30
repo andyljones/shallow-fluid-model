@@ -37,7 +37,7 @@ namespace Assets
             fieldRenderer = new VectorFieldRenderer(polyhedron, "vectors", "Materials/Vectors");
 
             var fieldsFactory = new PrognosticFieldsFactory(polyhedron);
-            fieldsFactory.Height = fieldsFactory.ConstantField(8);
+            fieldsFactory.Height = fieldsFactory.XDependentField(8, 1);
             fields = fieldsFactory.Build();
 
             var parameters = new SimulationParameters
@@ -64,7 +64,7 @@ namespace Assets
             {
                 for (int i = 0; i < 1; i++)
                 {
-                    Debug.Log(fields.ToString(0));
+                    //Debug.Log(fields.ToString(0));
                     olderFields = oldFields;
                     oldFields = fields;
                     fields = updater.Update(fields, oldFields, olderFields);

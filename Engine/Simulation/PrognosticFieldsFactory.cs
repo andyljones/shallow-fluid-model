@@ -58,10 +58,18 @@ namespace Engine.Simulation
             return new ScalarField<Face>(_polyhedron.IndexOf, values);
         }
 
-        public ScalarField<Face> SinusoidalField(double average, double deviation)
+        public ScalarField<Face> ZDependentField(double average, double deviation)
         {
             var normals = SimulationUtilities.NormalsTable(_polyhedron);
             var values = _polyhedron.Faces.Select(face => average + deviation*normals[_polyhedron.IndexOf(face)][2]).ToArray();
+
+            return new ScalarField<Face>(_polyhedron.IndexOf, values);
+        }
+
+        public ScalarField<Face> XDependentField(double average, double deviation)
+        {
+            var normals = SimulationUtilities.NormalsTable(_polyhedron);
+            var values = _polyhedron.Faces.Select(face => average + deviation * normals[_polyhedron.IndexOf(face)][0]).ToArray();
 
             return new ScalarField<Face>(_polyhedron.IndexOf, values);
         }
