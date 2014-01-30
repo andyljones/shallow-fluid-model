@@ -120,7 +120,7 @@ namespace Engine.Simulation
             foreach (var face in surface.Faces)
             {
                 var faceIndex = surface.IndexOf(face);
-                values[faceIndex] = 2*angularVelocity*Math.Cos(normals[faceIndex][2]);
+                values[faceIndex] = 2*angularVelocity*normals[faceIndex][2];
             }
 
             return new ScalarField<Face>(surface.IndexOf, values);

@@ -69,7 +69,7 @@ namespace Engine.Simulation
                 var edgeLength = edgeLengths[j];
                 var distance = distances[j];
 
-                numerator += edgeLength/distance*U[neighbour];
+                numerator += (edgeLength/distance)*U[neighbour];
                 denominator += edgeLength/distance;
             }
             numerator -= _areas[face]*f[face];

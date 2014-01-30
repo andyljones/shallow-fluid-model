@@ -24,11 +24,12 @@ namespace Assets
         private PrognosticFields<Face> olderFields;
 
         private FieldOperators _operators;
+        private FieldIntegrator _integrator;
 
         // Use this for initialization
         void Start ()
         {
-            var options = new Options {MinimumNumberOfFaces = 100, Radius = 6000};
+            var options = new Options {MinimumNumberOfFaces = 101, Radius = 6000};
             polyhedron = GeodesicSphereFactory.Build(options);
             new PolyhedronRenderer(polyhedron, "Surface", "Materials/Wireframe", "Materials/Surface");
 
@@ -36,14 +37,14 @@ namespace Assets
             fieldRenderer = new VectorFieldRenderer(polyhedron, "vectors", "Materials/Vectors");
 
             var fieldsFactory = new PrognosticFieldsFactory(polyhedron);
-            fieldsFactory.Height = fieldsFactory.SinusoidalField(8, 1);
+            fieldsFactory.Height = fieldsFactory.ConstantField(8);
             fields = fieldsFactory.Build();
 
             var parameters = new SimulationParameters
             {
-                RotationFrequency = 0,
+                RotationFrequency = 1.0/(24.0*3600.0)*0.4,
                 Gravity = 10.0/1000.0,
-                NumberOfRelaxationIterations = 200,
+                NumberOfRelaxationIterations = 300,
                 Timestep = 300
             };
 
@@ -54,6 +55,7 @@ namespace Assets
             fieldRenderer.Update(velocityField);
 
             _operators = new FieldOperators(polyhedron);
+            _integrator = new FieldIntegrator(polyhedron, parameters);
         }
 
         void Update()
@@ -62,13 +64,22 @@ namespace Assets
             {
                 for (int i = 0; i < 1; i++)
                 {
-                    //Debug.Log(fields.ToString(5));
-                    //Debug.Log(fields.Height);
+                    Debug.Log(fields.ToString(0));
                     olderFields = oldFields;
                     oldFields = fields;
                     fields = updater.Update(fields, oldFields, olderFields);
+                    //Debug.Log(fields.Streamfunction);
+                    //Debug.Log(_operators.Laplacian(fields.Streamfunction));
+                    //var coriolis = SimulationUtilities.CoriolisField(polyhedron, 1.0 / (24.0 * 3600.0));
+                    //var f = fields.AbsoluteVorticity - coriolis;
+                    //var sf = _integrator.Integrate(oldFields.Streamfunction, f);
+                    //var error = (_operators.Laplacian(sf) - f).Select(x => Math.Abs(x));
+                    //Debug.Log("Max f: " + f.Max());
+                    //Debug.Log("Max error: " + error.Max());
+                    //Debug.Log("Max SF:" + fields.Streamfunction.Max());
+
                     var velocityField = velocityFieldFactory.VelocityField(fields.Streamfunction, fields.VelocityPotential);
-                    //Debug.Log(velocityField.Values.Max(value => value[2]));
+                    //Debug.Log(velocityField.Values.Max(value => 1000*value.Norm()));
 
                     fieldRenderer.Update(velocityField);
                 }
