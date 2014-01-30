@@ -73,5 +73,13 @@ namespace Engine.Simulation
 
             return new ScalarField<Face>(_polyhedron.IndexOf, values);
         }
+
+        public ScalarField<Face> RandomField(double average, double deviation)
+        {
+            var prng = new Random();
+            var values = _polyhedron.Faces.Select(face => average + deviation * (prng.NextDouble()-0.5)).ToArray();
+
+            return new ScalarField<Face>(_polyhedron.IndexOf, values);
+        }
     }
 }

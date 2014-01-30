@@ -15,54 +15,74 @@ namespace Assets.Rendering
         private readonly GameObject _gameObject;
         private readonly ColorMap _colorMap;
 
+        private readonly IPolyhedron _polyhedron;
+
         public PolyhedronRenderer(IPolyhedron polyhedron, String name, String wireframeMaterialName = "", String surfaceMaterialName = "")
         {
-            _gameObject = GraphicsUtilities.CreateRenderingObject(name, CreateVertexArray(polyhedron.Vertices));
+            _polyhedron = polyhedron;            
+            _gameObject = GraphicsUtilities.CreateRenderingObject(name, CreateVectorArray());
 
             if (wireframeMaterialName != "")
             { 
-                GraphicsUtilities.AddWireframe(_gameObject, CreateLineArray(polyhedron.IndexOf, polyhedron.Edges), wireframeMaterialName);
+                GraphicsUtilities.AddWireframe(_gameObject, CreateLineArray(), wireframeMaterialName);
             }
 
             if (surfaceMaterialName != "")
             {
-                GraphicsUtilities.AddSurface(_gameObject, CreateTriangleArray(polyhedron.IndexOf, polyhedron.Faces), surfaceMaterialName);
+                GraphicsUtilities.AddSurface(_gameObject, CreateTriangleArray(), surfaceMaterialName);
             }
 
             _colorMap = new ColorMap(_gameObject, polyhedron);
         }
 
         #region CreateMesh methods
-        private static Vector3[] CreateVertexArray(IEnumerable<Vertex> vertices)
+        private Vector3[] CreateVectorArray()
         {
-            return vertices.Select(vertex => GraphicsUtilities.Vector3(vertex.Position)).ToArray();
+            var vertexVectors = _polyhedron.Vertices.Select(vertex => GraphicsUtilities.Vector3(vertex.Position));
+            var faceVectors = _polyhedron.Faces.Select(face => GraphicsUtilities.Vector3(face.SphericalCenter()));
+
+            return vertexVectors.Concat(faceVectors).ToArray();
         }
 
-        private static int[] CreateTriangleArray(Func<Vertex, int> indexOf, IEnumerable<Face> faces)
+        private int[] CreateTriangleArray()
         {
-            return faces.SelectMany(face => Indices(indexOf, face)).ToArray();
+            return _polyhedron.Faces.SelectMany(face => Face(face)).ToArray();
         }
 
-        private static int[] CreateLineArray(Func<Vertex, int> indexOf, IEnumerable<Edge> edges)
+        private int[] CreateLineArray()
         {
-            return edges.SelectMany(edge => Indices(indexOf, edge)).ToArray();
+            return _polyhedron.Edges.SelectMany(edge => Line(edge)).ToArray();
         }
 
-        private static IEnumerable<int> Indices(Func<Vertex, int> indexOf, Face face)
+        private IEnumerable<int> Face(Face face)
         {
             var vertices = face.Vertices;
+            var center = _polyhedron.Vertices.Count + _polyhedron.IndexOf(face);
             var triangles = new List<int>();
-            for (int i = 1; i < vertices.Count-1; i++)
+            for (int i = 0; i < vertices.Count-1; i++)
             {
-                var triangle = new [] { indexOf(vertices[0]), indexOf(vertices[i]), indexOf(vertices[i+1]) };
+                var triangle = new[]
+                {
+                    center,
+                    _polyhedron.IndexOf(vertices[i]),
+                    _polyhedron.IndexOf(vertices[i + 1])
+                };
                 triangles.AddRange(triangle);
             }
+            var lastTriangle = new[]
+            {
+                center,
+                _polyhedron.IndexOf(vertices[vertices.Count - 1]),
+                _polyhedron.IndexOf(vertices[0]),
+            };
+            triangles.AddRange(lastTriangle);
+
             return triangles;
         }
 
-        private static IEnumerable<int> Indices(Func<Vertex, int> indexOf, Edge edge)
+        private IEnumerable<int> Line(Edge edge)
         {
-            return new List<int> {indexOf(edge.A), indexOf(edge.B)};
+            return new List<int> { _polyhedron.IndexOf(edge.A), _polyhedron.IndexOf(edge.B) };
         }
         #endregion
 

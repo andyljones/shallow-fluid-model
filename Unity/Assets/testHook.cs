@@ -38,14 +38,14 @@ namespace Assets
             fieldRenderer = new VectorFieldRenderer(polyhedron, "vectors", "Materials/Vectors");
 
             var fieldsFactory = new PrognosticFieldsFactory(polyhedron);
-            fieldsFactory.Height = fieldsFactory.XDependentField(8, 1);
+            fieldsFactory.Height = fieldsFactory.RandomField(8,2);
             fields = fieldsFactory.Build();
 
             var parameters = new SimulationParameters
             {
-                RotationFrequency = 0,//1.0/(24.0*3600.0)*0.4,
+                RotationFrequency = 1.0/(24.0*3600.0)*0.47,
                 Gravity = 10.0/1000.0,
-                NumberOfRelaxationIterations = 300,
+                NumberOfRelaxationIterations = polyhedron.Faces.Count,
                 Timestep = 300
             };
 

@@ -11,25 +11,28 @@ namespace Assets.Rendering
 {
     public class VectorFieldRenderer
     {
-        private Vector3[] _origins;
+        private readonly Vector3[] _origins;
         private TangentSpace[] _tangentSpaces;
-        private GameObject _gameObject;
+        private readonly GameObject _gameObject;
+
+        private readonly IPolyhedron _polyhedron;
 
         public VectorFieldRenderer(IPolyhedron polyhedron, String name, String materialName)
         {
+            _polyhedron = polyhedron;
             _origins = FindOrigins(polyhedron);
-            _tangentSpaces = ConstructTangentSpaces(polyhedron);
+            //_tangentSpaces = ConstructTangentSpaces(polyhedron);
 
-            _gameObject = CreateRenderingObject(name, materialName, polyhedron.Faces.Count);
+            _gameObject = CreateRenderingObject(name, materialName, polyhedron.Faces.Count + polyhedron.Vertices.Count);
 
         }
 
-        private static GameObject CreateRenderingObject(String name, String materialName, int numberOfFaces)
+        private static GameObject CreateRenderingObject(String name, String materialName, int numberOfVectors)
         {
             var gameObject = new GameObject(name, new[] { typeof(MeshFilter), typeof(MeshRenderer) });
 
             var mesh = gameObject.GetComponent<MeshFilter>().mesh;
-            mesh.vertices = new Vector3[2*numberOfFaces];
+            mesh.vertices = new Vector3[2*numberOfVectors];
             mesh.uv = Enumerable.Repeat(new Vector2(), mesh.vertexCount).ToArray();
             mesh.normals = mesh.vertices.Select(v => v.normalized).ToArray();
             mesh.SetIndices(Enumerable.Range(0, mesh.vertexCount).ToArray(), MeshTopology.Lines, 0);
@@ -42,39 +45,47 @@ namespace Assets.Rendering
 
         private static Vector3[] FindOrigins(IPolyhedron polyhedron)
         {
-            var origins = new Vector3[polyhedron.Faces.Count];
-            foreach (var face in polyhedron.Faces)
-            {
-                var origin = GraphicsUtilities.Vector3(face.SphericalCenter());
-                origins[polyhedron.IndexOf(face)] = origin;
-            }
+            var faceVectors = polyhedron.Faces.Select(face => GraphicsUtilities.Vector3(face.SphericalCenter()));
+            var vertexVectors = polyhedron.Vertices.Select(vertex => GraphicsUtilities.Vector3(vertex.Position));
 
-            return origins;
+            return faceVectors.Concat(vertexVectors).ToArray();
         }
 
-        private static TangentSpace[] ConstructTangentSpaces(IPolyhedron polyhedron)
-        {
-            var globalNorth = VectorUtilities.NewVector(0, 0);
+        //private static TangentSpace[] ConstructTangentSpaces(IPolyhedron polyhedron)
+        //{
+        //    var globalNorth = VectorUtilities.NewVector(0, 0);
 
-            var tangentSpaces = new TangentSpace[polyhedron.Faces.Count];
-            foreach (var face in polyhedron.Faces)
-            {
-                var up = face.SphericalCenter().Normalize();
-                var east = Vector.CrossProduct(globalNorth, up).Normalize();
-                var north = Vector.CrossProduct(up, east).Normalize();
-                tangentSpaces[polyhedron.IndexOf(face)] = new TangentSpace(east, north, up);
-            }
+        //    var tangentSpaces = new TangentSpace[polyhedron.Faces.Count];
+        //    foreach (var face in polyhedron.Faces)
+        //    {
+        //        var up = face.SphericalCenter().Normalize();
+        //        var east = Vector.CrossProduct(globalNorth, up).Normalize();
+        //        var north = Vector.CrossProduct(up, east).Normalize();
+        //        tangentSpaces[polyhedron.IndexOf(face)] = new TangentSpace(east, north, up);
+        //    }
 
-            return tangentSpaces;
-        }
+        //    return tangentSpaces;
+        //}
 
         public void Update(VectorField<Face> field)
         {
-            var newVertices = new Vector3[2*field.Count];
-            for (int i = 0; i < field.Count; i++)
+            var scaleFactor = (float) (1500/.2);
+            var numberOfFaces = _polyhedron.Faces.Count;
+            var numberOfVertices = _polyhedron.Vertices.Count;
+
+            var newVertices = new Vector3[2*(numberOfFaces + numberOfVertices)];
+            for (int i = 0; i < numberOfFaces; i++)
             {
                 newVertices[2*i] = _origins[i];
-                newVertices[2*i + 1] = _origins[i] + (float)(1500/.2)* GraphicsUtilities.Vector3(field[i]);
+                newVertices[2*i + 1] = _origins[i] + scaleFactor * GraphicsUtilities.Vector3(field[i]);
+            }
+
+            for (int i = 0; i < numberOfVertices; i++)
+            {
+                var vertex = _polyhedron.Vertices[i];
+                var average = _polyhedron.FacesOf(vertex).Aggregate(Vector.Zeros(3), (v, f) => v + field[f])/_polyhedron.FacesOf(vertex).Count;
+                newVertices[2*numberOfFaces + 2*i] = _origins[numberOfFaces+i];
+                newVertices[2*numberOfFaces + 2*i + 1] = _origins[numberOfFaces+i] + scaleFactor*GraphicsUtilities.Vector3(average);
             }
 
             _gameObject.GetComponent<MeshFilter>().mesh.vertices = newVertices;

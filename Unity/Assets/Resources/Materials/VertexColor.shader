@@ -6,7 +6,6 @@
 
 	SubShader { 
 		Tags { "RenderType"="Opaque" }
-		LOD 400
 
 		CGPROGRAM
 
@@ -26,3 +25,4 @@
 	}
 	FallBack "Diffuse"
 }
+
