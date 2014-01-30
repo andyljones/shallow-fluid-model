@@ -4,7 +4,7 @@ namespace Engine.Simulation
 {
     public class ShallowWaterModel
     {
-        public ShallowWaterModel(IPolyhedron surface, InitialConditions conditions)
+        public ShallowWaterModel(IPolyhedron surface, PrognosticFieldsFactory conditionsFactory)
         {
             
         }

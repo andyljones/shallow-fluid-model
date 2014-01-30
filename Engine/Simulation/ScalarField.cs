@@ -108,5 +108,11 @@ namespace Engine.Simulation
         {
             return GetEnumerator();
         }
+
+
+        public override string ToString()
+        {
+            return String.Join(", " , Values.Select(value => value.ToString("N3")).ToArray());
+        }
     }
 }

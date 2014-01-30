@@ -26,21 +26,23 @@ namespace Assets
         // Use this for initialization
         void Start ()
         {
-            var options = new Options {MinimumNumberOfFaces = 100, Radius = 6000};
+            var options = new Options {MinimumNumberOfFaces = 5, Radius = 6000};
             polyhedron = GeodesicSphereFactory.Build(options);
             new PolyhedronRenderer(polyhedron, "Surface", "Materials/Wireframe", "Materials/Surface");
 
             velocityFieldFactory = new VelocityFieldFactory(polyhedron);
             fieldRenderer = new VectorFieldRenderer(polyhedron, "vectors", "Materials/Vectors");
 
-            fields = new InitialConditions(polyhedron).Fields;
+            var fieldsFactory = new PrognosticFieldsFactory(polyhedron);
+            fieldsFactory.Height = fieldsFactory.SinusoidalField(8, 1);
+            fields = fieldsFactory.Build();
 
             var parameters = new SimulationParameters
             {
                 RotationFrequency = 0,
-                Gravity = 0,
-                NumberOfRelaxationIterations = 1,
-                Timestep = 1
+                Gravity = 10/1000,
+                NumberOfRelaxationIterations = 10,
+                Timestep = 300
             };
 
             updater = new FieldUpdater(polyhedron, parameters);
@@ -52,11 +54,12 @@ namespace Assets
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (true)
             {
                 for (int i = 0; i < 1; i++)
                 {
-                    Debug.Log(fields.ToString(1));
+                    Debug.Log(fields.ToString(10));
+                    Debug.Log(fields.Height);
                     olderFields = oldFields;
                     oldFields = fields;
                     fields = updater.Update(fields, oldFields, olderFields);
