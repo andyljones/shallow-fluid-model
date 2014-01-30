@@ -21,12 +21,14 @@ namespace Assets
 
         private PrognosticFields<Face> fields;
         private PrognosticFields<Face> oldFields;
-        private PrognosticFields<Face> olderFields; 
+        private PrognosticFields<Face> olderFields;
+
+        private FieldOperators _operators;
 
         // Use this for initialization
         void Start ()
         {
-            var options = new Options {MinimumNumberOfFaces = 5, Radius = 6000};
+            var options = new Options {MinimumNumberOfFaces = 100, Radius = 6000};
             polyhedron = GeodesicSphereFactory.Build(options);
             new PolyhedronRenderer(polyhedron, "Surface", "Materials/Wireframe", "Materials/Surface");
 
@@ -40,8 +42,8 @@ namespace Assets
             var parameters = new SimulationParameters
             {
                 RotationFrequency = 0,
-                Gravity = 10/1000,
-                NumberOfRelaxationIterations = 10,
+                Gravity = 10.0/1000.0,
+                NumberOfRelaxationIterations = 200,
                 Timestep = 300
             };
 
@@ -50,20 +52,23 @@ namespace Assets
             var velocityField = velocityFieldFactory.VelocityField(fields.Streamfunction, fields.VelocityPotential);
 
             fieldRenderer.Update(velocityField);
+
+            _operators = new FieldOperators(polyhedron);
         }
 
         void Update()
         {
-            if (true)
+            if (Input.GetKeyDown(KeyCode.F) || Input.GetKey(KeyCode.N))
             {
                 for (int i = 0; i < 1; i++)
                 {
-                    Debug.Log(fields.ToString(10));
-                    Debug.Log(fields.Height);
+                    //Debug.Log(fields.ToString(5));
+                    //Debug.Log(fields.Height);
                     olderFields = oldFields;
                     oldFields = fields;
                     fields = updater.Update(fields, oldFields, olderFields);
                     var velocityField = velocityFieldFactory.VelocityField(fields.Streamfunction, fields.VelocityPotential);
+                    //Debug.Log(velocityField.Values.Max(value => value[2]));
 
                     fieldRenderer.Update(velocityField);
                 }

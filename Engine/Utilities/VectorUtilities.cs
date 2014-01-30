@@ -34,10 +34,10 @@ namespace Engine.Utilities
             return new Vector(new [] {x, y, z});
         }
 
-        public static Vector LocalDirection(Vector from, Vector to)
+        public static Vector LocalDirection(Vector origin, Vector destination)
         {
-            var direction = to - from;
-            var normalAtFrom = from.Normalize();
+            var direction = destination - origin;
+            var normalAtFrom = origin.Normalize();
 
             var localDirection = (direction - Vector.ScalarProduct(direction, normalAtFrom)*normalAtFrom).Normalize();
 

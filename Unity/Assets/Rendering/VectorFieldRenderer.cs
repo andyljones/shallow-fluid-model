@@ -74,7 +74,7 @@ namespace Assets.Rendering
             for (int i = 0; i < field.Count; i++)
             {
                 newVertices[2*i] = _origins[i];
-                newVertices[2*i + 1] = _origins[i] + GraphicsUtilities.Vector3(_tangentSpaces[i].ToEuclideanSpace(field[i]));
+                newVertices[2*i + 1] = _origins[i] + (float)(6000/.2)* GraphicsUtilities.Vector3(field[i]);
             }
 
             _gameObject.GetComponent<MeshFilter>().mesh.vertices = newVertices;
