@@ -30,12 +30,14 @@ namespace Engine.Simulation
 
         public string ToString(int index)
         {
+            var nameWidth = _scalarFieldVariables.Select(variable => variable.Name.Length).Max() + 1;
+
             var result = new StringBuilder();
             foreach (var scalarFieldVariable in _scalarFieldVariables)
             {
                 var name = scalarFieldVariable.Name;
                 var scalarField = scalarFieldVariable.GetValue(this) as ScalarField<T>;
-                var stringForField = String.Format("{0}: {1,3:N2}\n", name, scalarField[index]);
+                var stringForField = String.Format("{0, "+nameWidth+"}: {1,3:N2}\n", name, scalarField[index]);
                 result.Append(stringForField);
             }
 

@@ -20,7 +20,7 @@ namespace Engine.Simulation
             _integrator = new FieldIntegrator(surface, parameters);
             _parameters = parameters;
 
-            _coriolisField = SimulationUtilities.CoriolisField(surface, _parameters.RotationPeriod);
+            _coriolisField = SimulationUtilities.CoriolisField(surface, _parameters.RotationFrequency);
         }
 
         public PrognosticFields<Face> Update(PrognosticFields<Face> fields, PrognosticFields<Face> oldFields = null, PrognosticFields<Face> olderFields = null)

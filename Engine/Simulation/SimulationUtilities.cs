@@ -111,10 +111,10 @@ namespace Engine.Simulation
             return VectorUtilities.LocalDirection(from.SphericalCenter(), to.SphericalCenter());
         }
 
-        public static ScalarField<Face> CoriolisField(IPolyhedron surface, double rotationPeriod)
+        public static ScalarField<Face> CoriolisField(IPolyhedron surface, double rotationFrequency)
         {
             var normals = NormalsTable(surface);
-            var angularVelocity = 2*Math.PI/rotationPeriod;
+            var angularVelocity = 2*Math.PI*rotationFrequency;
 
             var values = new double[surface.Faces.Count];
             foreach (var face in surface.Faces)

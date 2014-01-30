@@ -37,7 +37,7 @@ namespace Assets
 
             var parameters = new SimulationParameters
             {
-                RotationPeriod = 0,
+                RotationFrequency = 0,
                 Gravity = 0,
                 NumberOfRelaxationIterations = 1,
                 Timestep = 1
