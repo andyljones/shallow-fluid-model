@@ -81,5 +81,12 @@ namespace Engine.Simulation
 
             return new ScalarField<Face>(_polyhedron.IndexOf, values);
         }
+
+        public ScalarField<Face> DiracDelta(int i, double deviation)
+        {
+            var values = _polyhedron.Faces.Select(face => _polyhedron.IndexOf(face) == i? deviation : 0).ToArray();
+
+            return new ScalarField<Face>(_polyhedron.IndexOf, values);
+        }
     }
 }

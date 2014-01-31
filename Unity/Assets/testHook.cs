@@ -13,6 +13,8 @@ namespace Assets
 {
     public class TestHook : MonoBehaviour
     {
+        private bool freerunning = false;
+
         private int counter = 0;
 
         private VectorFieldRenderer fieldRenderer;
@@ -43,13 +45,13 @@ namespace Assets
             fieldRenderer = new VectorFieldRenderer(polyhedron, "vectors", "Materials/Vectors");
 
             fieldsFactory = new PrognosticFieldsFactory(polyhedron);
-            fieldsFactory.Height = fieldsFactory.ConstantField(10);
-            fieldsFactory.AbsoluteVorticity = fieldsFactory.XDependentField(0, 1.0/100000);
+            fieldsFactory.Height = fieldsFactory.RandomField(10, .1);
+            fieldsFactory.AbsoluteVorticity = fieldsFactory.XDependentField(0, 0.00001);
             fields = fieldsFactory.Build();
 
             parameters = new SimulationParameters
             {
-                RotationFrequency = 1.0/(24.0*3600.0)*0.3,
+                RotationFrequency = 1.0/(24.0*3600.0)*0.33,
                 Gravity = 10.0/1000.0,
                 NumberOfRelaxationIterations = polyhedron.Faces.Count/2,
                 Timestep = 300
@@ -67,7 +69,12 @@ namespace Assets
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F) || Input.GetKey(KeyCode.N))
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                freerunning = !freerunning;
+            }
+
+            if (Input.GetKeyDown(KeyCode.F) || Input.GetKey(KeyCode.N) || freerunning)
             {
                 for (int i = 0; i < 1; i++)
                 {

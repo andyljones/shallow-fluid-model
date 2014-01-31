@@ -36,7 +36,7 @@ namespace Assets.Rendering
             Debug.Log(String.Format("Min: {0,3:N2}, Max: {1,3:N2}", min, max));
 
             var normalizedValues = values.Select(value => (value - min)/gap).ToArray();
-            var colors = normalizedValues.Select(average => ColorFromValue(average)).ToArray();
+            var colors = normalizedValues.Select(average => ColorFromValue((float)average)).ToArray();
 
             _meshFilter.mesh.colors = colors;
         }
@@ -63,29 +63,15 @@ namespace Assets.Rendering
             return _polyhedron.FacesOf(edge).Average(face => field[face]);
         }
 
-        private Color ColorFromValue(double x)
+        private Color ColorFromValue(float x)
         {
-            var colors = new List<Color> {Color.blue, Color.cyan, Color.green, Color.yellow, Color.red, Color.magenta};
+            x = x >= 1 ? 1 : x <= 0 ? 0 : x;
 
-            var interval = x >= 1? colors.Count - 2 : x <=0? 0 : (int)Math.Floor((colors.Count-1)*x);
+            var r = -Mathf.Cos(1.5f*Mathf.PI*x)/2 + 0.5f;
+            var g = Mathf.Sin(1.5f*Mathf.PI*x);
+            var b = Mathf.Cos(1.5f*Mathf.PI*x)/2 + 0.5f;
 
-            var offset = x - (double)(interval) / (colors.Count);
-            var fractionalOffset = offset/(1.0/colors.Count);
-
-            var lowerColor = colors[interval];
-            var upperColor = colors[interval + 1];
-
-            return Color.Lerp(lowerColor, upperColor, (float)fractionalOffset);
-
-
-            //if (x <= 0.5)
-            //{
-            //    return Color.Lerp(Color.blue, Color., (float) (2*x));
-            //}
-            //else
-            //{
-            //    return Color.Lerp(Color.green, Color.red, (float) (2*x - 1));
-            //}
+            return new Color(r, g, b);
         }
 
     }
