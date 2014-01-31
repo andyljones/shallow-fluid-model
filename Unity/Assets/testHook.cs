@@ -13,6 +13,8 @@ namespace Assets
 {
     public class TestHook : MonoBehaviour
     {
+        private int counter = 0;
+
         private VectorFieldRenderer fieldRenderer;
         private IPolyhedron polyhedron;
 
@@ -26,26 +28,30 @@ namespace Assets
 
         private FieldOperators _operators;
         private FieldIntegrator _integrator;
+        private PrognosticFieldsFactory fieldsFactory;
+
+        private SimulationParameters parameters;
 
         // Use this for initialization
         void Start ()
         {
-            var options = new Options {MinimumNumberOfFaces = 101, Radius = 6000};
+            var options = new Options {MinimumNumberOfFaces = 200, Radius = 6000};
             polyhedron = GeodesicSphereFactory.Build(options);
             polyhedronRenderer = new PolyhedronRenderer(polyhedron, "Surface", "Materials/Wireframe", "Materials/Surface");
 
             velocityFieldFactory = new VelocityFieldFactory(polyhedron);
             fieldRenderer = new VectorFieldRenderer(polyhedron, "vectors", "Materials/Vectors");
 
-            var fieldsFactory = new PrognosticFieldsFactory(polyhedron);
-            fieldsFactory.Height = fieldsFactory.RandomField(8,2);
+            fieldsFactory = new PrognosticFieldsFactory(polyhedron);
+            fieldsFactory.Height = fieldsFactory.ConstantField(10);
+            fieldsFactory.AbsoluteVorticity = fieldsFactory.XDependentField(0, 1.0/100000);
             fields = fieldsFactory.Build();
 
-            var parameters = new SimulationParameters
+            parameters = new SimulationParameters
             {
-                RotationFrequency = 1.0/(24.0*3600.0)*0.47,
+                RotationFrequency = 1.0/(24.0*3600.0)*0.3,
                 Gravity = 10.0/1000.0,
-                NumberOfRelaxationIterations = polyhedron.Faces.Count,
+                NumberOfRelaxationIterations = polyhedron.Faces.Count/2,
                 Timestep = 300
             };
 
@@ -65,6 +71,11 @@ namespace Assets
             {
                 for (int i = 0; i < 1; i++)
                 {
+                    counter++;
+                    var seconds = (int)(counter*parameters.Timestep);
+                    var days = seconds/(3600*24);
+                    var hours = seconds/3600 - 24*days;
+                    Debug.Log(String.Format("{0}D {1}H", days, hours));
                     //Debug.Log(fields.ToString(0));
                     olderFields = oldFields;
                     oldFields = fields;

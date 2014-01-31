@@ -31,8 +31,11 @@ namespace Assets.Rendering
 
             var max = _maxes.Average();
             var min = _mins.Average();
+            var gap = max - min <= 0 ? 1 : max - min; 
 
-            var normalizedValues = values.Select(value => (value - min)/(max - min)).ToArray();
+            Debug.Log(String.Format("Min: {0,3:N2}, Max: {1,3:N2}", min, max));
+
+            var normalizedValues = values.Select(value => (value - min)/gap).ToArray();
             var colors = normalizedValues.Select(average => ColorFromValue(average)).ToArray();
 
             _meshFilter.mesh.colors = colors;
@@ -62,14 +65,27 @@ namespace Assets.Rendering
 
         private Color ColorFromValue(double x)
         {
-            if (x <= 0.5)
-            {
-                return Color.Lerp(Color.blue, Color.green, (float) (2*x));
-            }
-            else
-            {
-                return Color.Lerp(Color.green, Color.red, (float) (2*x - 1));
-            }
+            var colors = new List<Color> {Color.blue, Color.cyan, Color.green, Color.yellow, Color.red, Color.magenta};
+
+            var interval = x >= 1? colors.Count - 2 : x <=0? 0 : (int)Math.Floor((colors.Count-1)*x);
+
+            var offset = x - (double)(interval) / (colors.Count);
+            var fractionalOffset = offset/(1.0/colors.Count);
+
+            var lowerColor = colors[interval];
+            var upperColor = colors[interval + 1];
+
+            return Color.Lerp(lowerColor, upperColor, (float)fractionalOffset);
+
+
+            //if (x <= 0.5)
+            //{
+            //    return Color.Lerp(Color.blue, Color., (float) (2*x));
+            //}
+            //else
+            //{
+            //    return Color.Lerp(Color.green, Color.red, (float) (2*x - 1));
+            //}
         }
 
     }
