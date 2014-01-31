@@ -51,9 +51,9 @@ namespace Assets
 
             parameters = new SimulationParameters
             {
-                RotationFrequency = 1.0/(24.0*3600.0)*0.33,
+                RotationFrequency = 1.0/(24.0*3600.0)*0.3,
                 Gravity = 10.0/1000.0,
-                NumberOfRelaxationIterations = polyhedron.Faces.Count/2,
+                NumberOfRelaxationIterations = polyhedron.Faces.Count/4,
                 Timestep = 300
             };
 

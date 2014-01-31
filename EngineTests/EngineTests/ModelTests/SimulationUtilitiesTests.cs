@@ -105,7 +105,7 @@ namespace EngineTests.ModelTests
             var expected = Enumerable.Repeat(4, 6).ToList();
 
             // Exercise system
-            var neighbours = SimulationUtilities.NeighboursTable(polyhedron);
+            var neighbours = SimulationUtilities.FaceNeighboursTable(polyhedron);
 
             var actual = neighbours.Select(list => list.Count()).ToList();
 
@@ -125,7 +125,7 @@ namespace EngineTests.ModelTests
             var expected = Enumerable.Repeat(Enumerable.Range(0, 6), 4).SelectMany(list => list).ToList();
 
             // Exercise system
-            var neighbours = SimulationUtilities.NeighboursTable(polyhedron);
+            var neighbours = SimulationUtilities.FaceNeighboursTable(polyhedron);
 
             var actual = neighbours.SelectMany(list => list).ToList();
 
@@ -144,7 +144,7 @@ namespace EngineTests.ModelTests
             // Fixture setup
 
             // Exercise system
-            var neighbourTable = SimulationUtilities.NeighboursTable(polyhedron);
+            var neighbourTable = SimulationUtilities.FaceNeighboursTable(polyhedron);
 
             // Verify outcome
             for (int face = 0; face < neighbourTable.Length; face++)
@@ -166,7 +166,7 @@ namespace EngineTests.ModelTests
             // Fixture setup
 
             // Exercise system
-            var neighbourTable = SimulationUtilities.NeighboursTable(polyhedron);
+            var neighbourTable = SimulationUtilities.FaceNeighboursTable(polyhedron);
 
             // Verify outcome
             for (int i = 0; i < neighbourTable.Length; i++)
@@ -200,7 +200,7 @@ namespace EngineTests.ModelTests
             var expected = Enumerable.Repeat(correctArea, 6).ToList();
 
             // Exercise system
-            var actual = SimulationUtilities.AreasTable(polyhedron);
+            var actual = SimulationUtilities.FaceAreasTable(polyhedron);
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);

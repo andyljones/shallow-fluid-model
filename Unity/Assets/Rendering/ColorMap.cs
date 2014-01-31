@@ -67,12 +67,11 @@ namespace Assets.Rendering
         {
             x = x >= 1 ? 1 : x <= 0 ? 0 : x;
 
-            var r = -Mathf.Cos(1.5f*Mathf.PI*x)/2 + 0.5f;
-            var g = Mathf.Sin(1.5f*Mathf.PI*x);
-            var b = Mathf.Cos(1.5f*Mathf.PI*x)/2 + 0.5f;
+            var r = -Mathf.Cos(1.5f * Mathf.PI * x) / 2 + 0.5f;
+            var g = Mathf.Sin(1.5f * Mathf.PI * x);
+            var b = Mathf.Cos(1.5f * Mathf.PI * x) / 2 + 0.5f;
 
             return new Color(r, g, b);
         }
-
     }
 }

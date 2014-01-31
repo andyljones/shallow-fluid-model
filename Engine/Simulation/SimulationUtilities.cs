@@ -53,7 +53,7 @@ namespace Engine.Simulation
         /// <summary>
         /// Constructs a table of the areas of the faces.
         /// </summary>
-        public static double[] AreasTable(IPolyhedron surface)
+        public static double[] FaceAreasTable(IPolyhedron surface)
         {
             var areas = new double[surface.Faces.Count];
             foreach (var face in surface.Faces)
@@ -68,7 +68,7 @@ namespace Engine.Simulation
         /// Constructs a table of the neighbours of each face. 
         /// Neighbours are listed in the same order as given by surface.NeighboursOf.
         /// </summary>
-        public static int[][] NeighboursTable(IPolyhedron surface)
+        public static int[][] FaceNeighboursTable(IPolyhedron surface)
         {
             var neighbours = new int[surface.Faces.Count][];
             foreach (var face in surface.Faces)
@@ -80,7 +80,7 @@ namespace Engine.Simulation
             return neighbours;
         }
 
-        public static Vector[] NormalsTable(IPolyhedron surface)
+        public static Vector[] FaceNormalsTable(IPolyhedron surface)
         {
             var normals = new Vector[surface.Faces.Count];
             foreach (var face in surface.Faces)
@@ -91,9 +91,9 @@ namespace Engine.Simulation
             return normals;
         }
 
-        public static Vector[][] DirectionTable(IPolyhedron surface)
+        public static Vector[][] FaceDirectionTable(IPolyhedron surface)
         {
-            var neighbours = NeighboursTable(surface);
+            var neighbours = FaceNeighboursTable(surface);
 
             var directions = new Vector[surface.Faces.Count][];
             foreach (var face in surface.Faces)
@@ -113,7 +113,7 @@ namespace Engine.Simulation
 
         public static ScalarField<Face> CoriolisField(IPolyhedron surface, double rotationFrequency)
         {
-            var normals = NormalsTable(surface);
+            var normals = FaceNormalsTable(surface);
             var angularVelocity = 2*Math.PI*rotationFrequency;
 
             var values = new double[surface.Faces.Count];
@@ -125,5 +125,31 @@ namespace Engine.Simulation
 
             return new ScalarField<Face>(surface.IndexOf, values);
         }
+
+        public static Vector[][] EdgeNormalsTable(IPolyhedron surface)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static double[][] HalfEdgeLengthsTable(IPolyhedron surface)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static double[] VertexAreasTable(IPolyhedron surface)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static int[][] VertexNeighboursTable(IPolyhedron surface)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static double[][] VertexDistanceTable(IPolyhedron surface)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

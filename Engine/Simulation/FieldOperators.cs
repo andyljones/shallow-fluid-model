@@ -24,8 +24,8 @@ namespace Engine.Simulation
         /// </summary>
         public FieldOperators(IPolyhedron surface)
         {
-            _areas = SimulationUtilities.AreasTable(surface);
-            _neighbours = SimulationUtilities.NeighboursTable(surface);
+            _areas = SimulationUtilities.FaceAreasTable(surface);
+            _neighbours = SimulationUtilities.FaceNeighboursTable(surface);
             _edgeLengths = SimulationUtilities.EdgeLengthsTable(surface);
             _distances = SimulationUtilities.DistancesTable(surface);
             _numberOfFaces = surface.Faces.Count;
