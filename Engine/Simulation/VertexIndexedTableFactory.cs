@@ -27,6 +27,8 @@ namespace Engine.Simulation
 
         /// <summary>
         /// Constructs a table of the vectors perpendicular to a vertex and normal to each adjoining edge.
+        /// 
+        /// Normals point anticlockwise around the vertex.
         /// </summary>
         public static Vector[][] EdgeNormals(IPolyhedron surface)
         {
@@ -35,7 +37,7 @@ namespace Engine.Simulation
             {
                 var vertexVector = vertex.Position;
                 var edgeVectors = surface.NeighboursOf(vertex).Select(neighbour => (neighbour.Position - vertexVector));
-                var edgeNormals = edgeVectors.Select(vector => Vector.CrossProduct(vertexVector, vector).Normalize()).ToArray();
+                var edgeNormals = edgeVectors.Select(edgeVector => Vector.CrossProduct(vertexVector, edgeVector).Normalize()).ToArray();
                 edgeNormalsTable[surface.IndexOf(vertex)] = edgeNormals;
             }
 
@@ -100,6 +102,42 @@ namespace Engine.Simulation
             }
 
             return distanceTable;
+        }
+
+        /// <summary>
+        /// Constructs a table of the faces around each vertex.
+        /// 
+        /// The ith face listed is the face anticlockwise of the ith edge given by surface.EdgesOf
+        /// </summary>
+        public static int[][] Faces(IPolyhedron surface)
+        {
+            var faceTable = new int[surface.Vertices.Count][];
+            foreach (var vertex in surface.Vertices)
+            {
+                faceTable[surface.IndexOf(vertex)] = FacesAroundVertex(vertex, surface);
+            }
+
+            return faceTable;
+        }
+
+        private static int[] FacesAroundVertex(Vertex vertex, IPolyhedron surface)
+        {
+            var edges = surface.EdgesOf(vertex);
+
+            var faces = new List<int>();
+            for (int i = 0; i < edges.Count - 1; i++)
+            {
+                var thisEdge = edges[i];
+                var nextEdge = edges[i + 1];
+                var faceInCommon = surface.FacesOf(thisEdge).Intersect(surface.FacesOf(nextEdge)).First();
+                var indexOfFace = surface.IndexOf(faceInCommon);
+                faces.Add(indexOfFace);
+            }
+            var lastFace = surface.FacesOf(edges[edges.Count - 1]).Intersect(surface.FacesOf(edges[0])).First();
+            var indexOfLastFace = surface.IndexOf(lastFace);
+            faces.Add(indexOfLastFace);
+
+            return faces.ToArray();
         }
     }
 }

@@ -244,5 +244,35 @@ namespace EngineTests.ModelTests
 
             // Teardown
         }
+
+        [Theory]
+        [AutoCubeData]
+        public void Faces_OfEachVertex_ShouldHaveTheSameOrderAsEdgesOfEachVertex
+            (IPolyhedron polyhedron)
+        {
+            // Fixture setup
+
+            // Exercise system
+            var faces = VertexIndexedTableFactory.Faces(polyhedron);
+
+            // Verify outcome
+            for (int vertex = 0; vertex < polyhedron.Vertices.Count; vertex++)
+            {
+                var faceList = faces[vertex];
+                var edgeList = polyhedron.EdgesOf(polyhedron.Vertices[vertex]);
+
+                for (int i = 0; i < edgeList.Count-1; i++)
+                {
+                    var thisFace = polyhedron.Faces[faceList[i]];
+                    var thisEdge = edgeList[i];
+                    var nextEdge = edgeList[i + 1];
+
+                    Assert.True(polyhedron.EdgesOf(thisFace).Contains(thisEdge));
+                    Assert.True(polyhedron.EdgesOf(thisFace).Contains(nextEdge));
+                }
+            }
+
+            // Teardown
+        }
     }
 }
