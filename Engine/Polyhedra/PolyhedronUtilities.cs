@@ -13,16 +13,20 @@ namespace Engine.Polyhedra
         /// </summary>
         public static IEnumerable<Face> NeighboursOf(this IPolyhedron polyhedron, Face face)
         {
-            var edges = polyhedron.EdgesOf(face);
-            var neighbours = edges.SelectMany(edge => polyhedron.FacesOf(edge));
+            var faceSingleton = new[] {face};
 
-            return neighbours.Where(neighbour => neighbour != face);
+            var edges = polyhedron.EdgesOf(face);
+            var neighbours = edges.SelectMany(edge => polyhedron.FacesOf(edge).Except(faceSingleton));
+
+            return neighbours;
         }
 
         public static IEnumerable<Vertex> NeighboursOf(this IPolyhedron polyhedron, Vertex vertex)
         {
+            var vertexSingleton = new[] {vertex};
+
             var edges = polyhedron.EdgesOf(vertex);
-            var neighbours = edges.SelectMany(edge => edge.Vertices());
+            var neighbours = edges.SelectMany(edge => edge.Vertices().Except(vertexSingleton));
 
             return neighbours.Where(neighbour => neighbour != vertex);
         }

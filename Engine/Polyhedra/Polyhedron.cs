@@ -53,7 +53,7 @@ namespace Engine.Polyhedra
         /// <summary>
         /// Construct a polyhedron from a collection of convex, planar collections of vertices.
         /// </summary>
-        public Polyhedron(IEnumerable<IEnumerable<Vertex>> verticesInEachFace)
+        public Polyhedron(List<List<Vertex>> verticesInEachFace)
         {
             _vertices = PolyhedronInitialization.Vertices(verticesInEachFace);
             _faces = PolyhedronInitialization.Faces(verticesInEachFace);

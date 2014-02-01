@@ -91,22 +91,20 @@ namespace Engine.Simulation
             return normals;
         }
 
-        public static Vector[][] FaceDirectionTable(IPolyhedron surface)
+        public static Vector[][] InterfaceDirectionsTable(IPolyhedron surface)
         {
-            var neighbours = FaceNeighboursTable(surface);
-
             var directions = new Vector[surface.Faces.Count][];
             foreach (var face in surface.Faces)
             {
-                var neighboursOfFace = neighbours[surface.IndexOf(face)];
-                var localDirections = neighboursOfFace.Select(neighbour => Direction(face, surface.Faces[neighbour]));
+                var neighboursOfFace = surface.NeighboursOf(face);
+                var localDirections = neighboursOfFace.Select(neighbour => InterfaceDirection(face, neighbour));
                 directions[surface.IndexOf(face)] = localDirections.ToArray();
             }
 
             return directions;
         }
 
-        private static Vector Direction(Face from, Face to)
+        private static Vector InterfaceDirection(Face from, Face to)
         {
             return VectorUtilities.LocalDirection(from.SphericalCenter(), to.SphericalCenter());
         }
@@ -128,33 +126,75 @@ namespace Engine.Simulation
 
         public static int[][] VertexNeighboursTable(IPolyhedron surface)
         {
+            var neighbours = new int[surface.Vertices.Count][];
             foreach (var vertex in surface.Vertices)
             {
-                var neighbours = surface;
+                var indicesOfNeighbours = surface.NeighboursOf(vertex).Select(neighbour => surface.IndexOf(neighbour));
+                neighbours[surface.IndexOf(vertex)] = indicesOfNeighbours.ToArray();
             }
 
-            throw new NotImplementedException();
+            return neighbours;
         }
 
         public static Vector[][] EdgeNormalsTable(IPolyhedron surface)
         {
-            throw new NotImplementedException();
+            var edgeNormalsTable = new Vector[surface.Vertices.Count][];
+            foreach (var vertex in surface.Vertices)
+            {
+                var vertexVector = vertex.Position;
+                var edgeVectors = surface.NeighboursOf(vertex).Select(neighbour => (neighbour.Position - vertexVector));
+                var edgeNormals = edgeVectors.Select(vector => Vector.CrossProduct(vertexVector, vector).Normalize()).ToArray();
+                edgeNormalsTable[surface.IndexOf(vertex)] = edgeNormals;
+            }
+
+            return edgeNormalsTable;
         }
 
         public static double[][] HalfEdgeLengthsTable(IPolyhedron surface)
         {
-            throw new NotImplementedException();
+            var halfLengthsTable = new double[surface.Vertices.Count][];
+            foreach (var vertex in surface.Vertices)
+            {
+                var edges = surface.EdgesOf(vertex);
+                var lengths = new List<double>();
+                foreach (var edge in edges)
+                {
+                    var neighbour = edge.Vertices().First(v => v != vertex);
+                    var center = surface.FacesOf(edge).First().SphericalCenter();
+                    var length = Vector.ScalarProduct(center - vertex.Position, (neighbour.Position - vertex.Position).Normalize());
+                    lengths.Add(length);
+                }
+                halfLengthsTable[surface.IndexOf(vertex)] = lengths.ToArray();
+            }
+
+            return halfLengthsTable;
         }
 
         public static double[] VertexAreasTable(IPolyhedron surface)
         {
-            throw new NotImplementedException();
+            var areas = new double[surface.Vertices.Count];
+            foreach (var vertex in surface.Vertices)
+            {
+                var centers = surface.FacesOf(vertex).Select(face => face.SphericalCenter()).ToList();
+                var area = Vector.ScalarProduct(Vector.CrossProduct(centers[0] - centers[1], centers[2] - centers[1]), vertex.Position.Normalize());
+                areas[surface.IndexOf(vertex)] = area;
+            }
+
+            return areas;
         }
 
         public static double[][] VertexDistanceTable(IPolyhedron surface)
         {
-            throw new NotImplementedException();
-        }
+            var distanceTable = new double[surface.Vertices.Count][];
+            foreach (var vertex in surface.Vertices)
+            {
+                var edges = surface.EdgesOf(vertex);
+                var distances = edges.Select(edge => edge.Length()).ToArray();
+                distanceTable[surface.IndexOf(vertex)] = distances;
+            }
 
-    }
+            return distanceTable;
+
+
+        }
 }

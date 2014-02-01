@@ -9,7 +9,7 @@ namespace Engine.Polyhedra
 {
     public static class PolyhedronInitialization
     {
-        public static List<Vertex> Vertices(IEnumerable<IEnumerable<Vertex>> vertexLists)
+        public static List<Vertex> Vertices(List<List<Vertex>> vertexLists)
         {
             var vertices = vertexLists.SelectMany(list => list).Distinct().ToList();
 
@@ -17,7 +17,7 @@ namespace Engine.Polyhedra
         }
 
         #region InitializeEdges methods
-        public static List<Edge> Edges(IEnumerable<Face> faces)
+        public static List<Edge> Edges(List<Face> faces)
         {
             var edges = faces.SelectMany(face => EdgesAroundFace(face)).Distinct().ToList();
 
@@ -40,14 +40,14 @@ namespace Engine.Polyhedra
         #endregion
 
         #region InitializeFaces methods
-        public static List<Face> Faces(IEnumerable<IEnumerable<Vertex>> vertexLists)
+        public static List<Face> Faces(List<List<Vertex>> vertexLists)
         {
             var faces = vertexLists.Select(vertexList => new Face(SortVertices(vertexList))).ToList();
 
             return faces;
         }
 
-        private static IEnumerable<Vertex> SortVertices(IEnumerable<Vertex> vertices)
+        private static IEnumerable<Vertex> SortVertices(List<Vertex> vertices)
         {
             var vertexList = vertices.ToList();
             var centroid = vertexList.Aggregate(Vector.Zeros(3), (c, v) => c + v.Position) / vertexList.Count;
@@ -65,7 +65,7 @@ namespace Engine.Polyhedra
         #endregion
 
         #region BuildDictionary methods
-        public static Dictionary<Vertex, List<Edge>> VertexToEdgeDictionary(IEnumerable<Vertex> vertices, IEnumerable<Edge> edges)
+        public static Dictionary<Vertex, List<Edge>> VertexToEdgeDictionary(List<Vertex> vertices, List<Edge> edges)
         {
             var vertexToEdges = vertices.ToDictionary(vertex => vertex, vertex => new List<Edge>());
             foreach (var edge in edges)
@@ -74,16 +74,17 @@ namespace Engine.Polyhedra
                 vertexToEdges[edge.B].Add(edge);
             }
 
-            foreach (var vertex in vertexToEdges.Keys)
-            {
-                var comparer = new ClockwiseCompare(vertex.Position);
-                vertexToEdges[vertex] = vertexToEdges[vertex].OrderBy(edge => edge.SphericalCenter(), comparer).ToList();
-            }
+            //foreach (var vertex in vertices)
+            //{
+            //    var comparer = new ClockwiseCompare(vertex.Position);
+            //    var sortedEdges = vertexToEdges[vertex].OrderBy(edge => edge.SphericalCenter(), comparer);
+            //    vertexToEdges[vertex] = sortedEdges.ToList();
+            //}
 
             return vertexToEdges;
         }
 
-        public static Dictionary<Vertex, List<Face>> VertexToFaceDictionary(IEnumerable<Vertex> vertices, IEnumerable<Face> faces)
+        public static Dictionary<Vertex, List<Face>> VertexToFaceDictionary(List<Vertex> vertices, List<Face> faces)
         {
             var vertexToFaces = vertices.ToDictionary(vertex => vertex, vertex => new List<Face>());
             foreach (var face in faces)
@@ -94,7 +95,7 @@ namespace Engine.Polyhedra
                 }
             }
 
-            foreach (var vertex in vertexToFaces.Keys)
+            foreach (var vertex in vertices)
             {
                 var comparer = new ClockwiseCompare(vertex.Position);
                 vertexToFaces[vertex] = vertexToFaces[vertex].OrderBy(face => face.SphericalCenter(), comparer).ToList();
@@ -103,12 +104,13 @@ namespace Engine.Polyhedra
             return vertexToFaces;
         }
 
-        public static Dictionary<Face, List<Edge>> FaceToEdgeDictionary(IEnumerable<Face> faces, Func<Vertex, List<Edge>> edgesOfVertex)
+        #region FaceToEdgeDictionary methods
+        public static Dictionary<Face, List<Edge>> FaceToEdgeDictionary(List<Face> faces, Func<Vertex, List<Edge>> edgesOf)
         {
             var faceToEdges = new Dictionary<Face, List<Edge>>();
             foreach (var face in faces)
             {
-                faceToEdges.Add(face, EdgesOfFace(face, edgesOfVertex));
+                faceToEdges.Add(face, EdgesOfFace(face, edgesOf));
             }
             return faceToEdges;
         }
@@ -127,8 +129,9 @@ namespace Engine.Polyhedra
 
             return edges;
         }
+        #endregion
 
-        public static Dictionary<Edge, List<Face>> EdgeToFaceDictionary(IEnumerable<Edge> edges, IEnumerable<Face> faces, Func<Face, List<Edge>> edgesOf)
+        public static Dictionary<Edge, List<Face>> EdgeToFaceDictionary(List<Edge> edges, List<Face> faces, Func<Face, List<Edge>> edgesOf)
         {
             var edgeToFaces = edges.ToDictionary(edge => edge, edge => new List<Face>());
             foreach (var face in faces)

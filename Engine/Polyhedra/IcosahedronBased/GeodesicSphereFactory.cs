@@ -25,20 +25,20 @@ namespace Engine.Polyhedra.IcosahedronBased
             return new Polyhedron(faces);
         }
 
-        private static IEnumerable<IEnumerable<Vertex>> DualofIcosasphere(IPolyhedron icosasphere)
+        private static List<List<Vertex>> DualofIcosasphere(IPolyhedron icosasphere)
         {
             var newVertexDict = icosasphere.Faces.ToDictionary(face => face, face => VertexAtCenterOf(face));
             var vertexLists = 
                 icosasphere.Vertices.
-                Select(oldVertex => CreateFaceAbout(oldVertex, newVertexDict, icosasphere.FacesOf));
+                Select(oldVertex => CreateFaceAbout(oldVertex, newVertexDict, icosasphere.FacesOf)).ToList();
 
             return vertexLists;
         }
 
-        private static IEnumerable<Vertex> CreateFaceAbout(Vertex oldVertex, Dictionary<Face, Vertex> newVertexDict, Func<Vertex, List<Face>> oldFacesDict)
+        private static List<Vertex> CreateFaceAbout(Vertex oldVertex, Dictionary<Face, Vertex> newVertexDict, Func<Vertex, List<Face>> oldFacesDict)
         {
             var oldFaces = oldFacesDict(oldVertex);
-            var newVertices = oldFaces.Select(oldFace => newVertexDict[oldFace]);
+            var newVertices = oldFaces.Select(oldFace => newVertexDict[oldFace]).ToList();
 
             return newVertices;
         }

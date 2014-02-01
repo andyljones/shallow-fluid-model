@@ -48,15 +48,15 @@ namespace Engine.Polyhedra.IcosahedronBased
         private static IPolyhedron Subdivide(IPolyhedron icosasphere)
         {
             var oldEdgesToNewVertices = CreateNewVerticesFrom(icosasphere.Edges);
-            var newFaces = CreateFacesFrom(icosasphere.Faces, icosasphere.EdgesOf, oldEdgesToNewVertices);
+            var newFaces = CreateFacesFrom(icosasphere.Faces, icosasphere.EdgesOf, oldEdgesToNewVertices).ToList();
 
             return new Polyhedron(newFaces);
         }
 
-        private static IEnumerable<IEnumerable<Vertex>> CreateFacesFrom
-            (IEnumerable<Face> oldFaces, Func<Face, List<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
+        private static List<List<Vertex>> CreateFacesFrom
+            (List<Face> oldFaces, Func<Face, List<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
         {
-            var newFaces = new List<IEnumerable<Vertex>>();
+            var newFaces = new List<List<Vertex>>();
             foreach (var oldFace in oldFaces)
             {
                 newFaces.AddRange(CreateNewFacesFrom(oldFace, oldFacesToOldEdges, oldEdgesToNewVertices));
@@ -65,10 +65,10 @@ namespace Engine.Polyhedra.IcosahedronBased
             return newFaces;
         }
 
-        private static IEnumerable<IEnumerable<Vertex>> CreateNewFacesFrom
+        private static List<List<Vertex>> CreateNewFacesFrom
             (Face oldFace, Func<Face, List<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
         {
-            var newFaces = new List<IEnumerable<Vertex>>();
+            var newFaces = new List<List<Vertex>>();
 
             var edges = oldFacesToOldEdges(oldFace);
             foreach (var vertex in oldFace.Vertices)
@@ -105,9 +105,9 @@ namespace Engine.Polyhedra.IcosahedronBased
 
             var newFaces =
                 from face in polyhedron.Faces
-                select face.Vertices.Select(oldVertex => newVertex[oldVertex]);
+                select face.Vertices.Select(oldVertex => newVertex[oldVertex]).ToList();
 
-            return new Polyhedron(newFaces);
+            return new Polyhedron(newFaces.ToList());
         }
     }
 }
