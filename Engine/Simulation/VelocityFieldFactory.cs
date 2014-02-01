@@ -17,11 +17,11 @@ namespace Engine.Simulation
 
         public VelocityFieldFactory(IPolyhedron polyhedron)
         {
-            _neighbours = SimulationUtilities.FaceNeighboursTable(polyhedron);
-            _directions = SimulationUtilities.InterfaceDirectionsTable(polyhedron);
-            _distances = SimulationUtilities.DistancesTable(polyhedron);
+            _neighbours = FaceIndexedTableFactory.NeighboursTable(polyhedron);
+            _directions = FaceIndexedTableFactory.DirectionsTable(polyhedron);
+            _distances = FaceIndexedTableFactory.DistancesTable(polyhedron);
 
-            _centers = new VectorField<Face>(polyhedron.IndexOf, SimulationUtilities.FaceNormalsTable(polyhedron));
+            _centers = new VectorField<Face>(polyhedron.IndexOf, FaceIndexedTableFactory.NormalsTable(polyhedron));
         }
 
         public VectorField<Face> VelocityField(ScalarField<Face> streamfunction, ScalarField<Face> vectorPotential)

@@ -15,7 +15,7 @@ namespace EngineTests.PolyhedraTests
         [Theory]
         [AutoPolyhedronData]
         public void Vertices_ShouldBeThoseGivenToTheConstructor
-            (IPolyhedron polyhedron, IEnumerable<IEnumerable<Vertex>> vertexLists)
+            (IPolyhedron polyhedron, List<List<Vertex>> vertexLists)
         {
             // Fixture setup
             var expected = vertexLists.SelectMany(list => list).Distinct().ToList();
@@ -33,7 +33,7 @@ namespace EngineTests.PolyhedraTests
         [Theory]
         [AutoPolyhedronData]
         public void Faces_ShouldBeThoseGivenToTheConstructor
-            (IPolyhedron polyhedron, IEnumerable<IEnumerable<Vertex>> vertexLists)
+            (IPolyhedron polyhedron, List<List<Vertex>> vertexLists)
         {
             // Fixture setup
 

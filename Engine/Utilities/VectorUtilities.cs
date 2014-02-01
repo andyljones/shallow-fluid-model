@@ -34,6 +34,14 @@ namespace Engine.Utilities
             return new Vector(new [] {x, y, z});
         }
 
+        /// <summary>
+        /// Create a vector with the specified coordinates. 
+        /// </summary>
+        public static Vector NewVector(double x, double y, double z)
+        {
+            return new Vector(new [] {x, y, z});
+        }
+
         public static Vector LocalDirection(Vector origin, Vector destination)
         {
             var direction = destination - origin;

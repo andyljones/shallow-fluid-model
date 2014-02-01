@@ -3,12 +3,11 @@ using Ploeh.AutoFixture.Xunit;
 
 namespace EngineTests.AutoFixtureCustomizations
 {
-    public class AutoFaceIndexedCubeDataAttribute : AutoDataAttribute
+    public class AutoCubeDataAttribute : AutoDataAttribute
     {
-        public AutoFaceIndexedCubeDataAttribute()
+        public AutoCubeDataAttribute()
         {
             Fixture.Customize(new CubeCustomization());
-            Fixture.Customize(new FaceIndexCustomization());
         }
     }
 }
