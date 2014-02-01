@@ -1,5 +1,6 @@
 ﻿using System;
 using Engine.Utilities;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Polyhedra
 {
@@ -8,6 +9,11 @@ namespace Engine.Polyhedra
         public static double Length(this Edge edge)
         {
             return VectorUtilities.GeodesicDistance(edge.A.Position, edge.B.Position);
+        }
+
+        public static Vector SphericalCenter(this Edge edge)
+        {
+            return (edge.A.Position + edge.B.Position).Normalize();
         }
     }
 }

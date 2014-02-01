@@ -54,7 +54,7 @@ namespace Engine.Polyhedra.IcosahedronBased
         }
 
         private static IEnumerable<IEnumerable<Vertex>> CreateFacesFrom
-            (IEnumerable<Face> oldFaces, Func<Face, HashSet<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
+            (IEnumerable<Face> oldFaces, Func<Face, List<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
         {
             var newFaces = new List<IEnumerable<Vertex>>();
             foreach (var oldFace in oldFaces)
@@ -66,7 +66,7 @@ namespace Engine.Polyhedra.IcosahedronBased
         }
 
         private static IEnumerable<IEnumerable<Vertex>> CreateNewFacesFrom
-            (Face oldFace, Func<Face, HashSet<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
+            (Face oldFace, Func<Face, List<Edge>> oldFacesToOldEdges, Dictionary<Edge, Vertex> oldEdgesToNewVertices)
         {
             var newFaces = new List<IEnumerable<Vertex>>();
 

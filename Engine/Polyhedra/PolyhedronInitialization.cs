@@ -65,21 +65,27 @@ namespace Engine.Polyhedra
         #endregion
 
         #region BuildDictionary methods
-        public static Dictionary<Vertex, HashSet<Edge>> VertexToEdgeDictionary(IEnumerable<Vertex> vertices, IEnumerable<Edge> edges)
+        public static Dictionary<Vertex, List<Edge>> VertexToEdgeDictionary(IEnumerable<Vertex> vertices, IEnumerable<Edge> edges)
         {
-            var vertexToEdges = vertices.ToDictionary(vertex => vertex, vertex => new HashSet<Edge>());
+            var vertexToEdges = vertices.ToDictionary(vertex => vertex, vertex => new List<Edge>());
             foreach (var edge in edges)
             {
                 vertexToEdges[edge.A].Add(edge);
                 vertexToEdges[edge.B].Add(edge);
             }
 
+            foreach (var vertex in vertexToEdges.Keys)
+            {
+                var comparer = new ClockwiseCompare(vertex.Position);
+                vertexToEdges[vertex] = vertexToEdges[vertex].OrderBy(edge => edge.SphericalCenter(), comparer).ToList();
+            }
+
             return vertexToEdges;
         }
 
-        public static Dictionary<Vertex, HashSet<Face>> VertexToFaceDictionary(IEnumerable<Vertex> vertices, IEnumerable<Face> faces)
+        public static Dictionary<Vertex, List<Face>> VertexToFaceDictionary(IEnumerable<Vertex> vertices, IEnumerable<Face> faces)
         {
-            var vertexToFaces = vertices.ToDictionary(vertex => vertex, vertex => new HashSet<Face>());
+            var vertexToFaces = vertices.ToDictionary(vertex => vertex, vertex => new List<Face>());
             foreach (var face in faces)
             {
                 foreach (var vertex in face.Vertices)
@@ -88,34 +94,46 @@ namespace Engine.Polyhedra
                 }
             }
 
+            foreach (var vertex in vertexToFaces.Keys)
+            {
+                var comparer = new ClockwiseCompare(vertex.Position);
+                vertexToFaces[vertex] = vertexToFaces[vertex].OrderBy(face => face.SphericalCenter(), comparer).ToList();
+            }
+
             return vertexToFaces;
         }
 
-        public static Dictionary<Face, HashSet<Edge>> FaceToEdgeDictionary(IEnumerable<Face> faces, Func<Vertex, HashSet<Edge>> vertexToEdges)
+        public static Dictionary<Face, List<Edge>> FaceToEdgeDictionary(IEnumerable<Face> faces, Func<Vertex, List<Edge>> edgesOfVertex)
         {
-            var faceToEdges = new Dictionary<Face, HashSet<Edge>>();
+            var faceToEdges = new Dictionary<Face, List<Edge>>();
             foreach (var face in faces)
             {
-                var edges = new HashSet<Edge>();
-                var vertices = face.Vertices;
-                for (int i = 0; i < vertices.Count-1; i++)
-                {
-                    var edge = vertexToEdges(vertices[i]).Intersect(vertexToEdges(vertices[i + 1])).Single();
-                    edges.Add(edge);
-                }
-                var lastEdge = vertexToEdges(vertices[vertices.Count-1]).Intersect(vertexToEdges(vertices[0])).Single();
-                edges.Add(lastEdge);
-                faceToEdges.Add(face, edges);
+                faceToEdges.Add(face, EdgesOfFace(face, edgesOfVertex));
             }
             return faceToEdges;
         }
 
-        public static Dictionary<Edge, HashSet<Face>> EdgeToFaceDictionary(IEnumerable<Edge> edges, IEnumerable<Face> faces, Func<Face, HashSet<Edge>> faceToEdges)
+        private static List<Edge> EdgesOfFace(Face face, Func<Vertex, List<Edge>> edgesOf)
         {
-            var edgeToFaces = edges.ToDictionary(edge => edge, edge => new HashSet<Face>());
+            var edges = new List<Edge>();
+            var vertices = face.Vertices;
+            for (int i = 0; i < vertices.Count - 1; i++)
+            {
+                var edge = edgesOf(vertices[i]).Intersect(edgesOf(vertices[i + 1])).Single();
+                edges.Add(edge);
+            }
+            var lastEdge = edgesOf(vertices[vertices.Count - 1]).Intersect(edgesOf(vertices[0])).Single();
+            edges.Add(lastEdge);
+
+            return edges;
+        }
+
+        public static Dictionary<Edge, List<Face>> EdgeToFaceDictionary(IEnumerable<Edge> edges, IEnumerable<Face> faces, Func<Face, List<Edge>> edgesOf)
+        {
+            var edgeToFaces = edges.ToDictionary(edge => edge, edge => new List<Face>());
             foreach (var face in faces)
             {
-                foreach (var edge in faceToEdges(face))
+                foreach (var edge in edgesOf(face))
                 {
                     edgeToFaces[edge].Add(face);
                 }

@@ -14,10 +14,10 @@ namespace Engine.Polyhedra
         List<Edge> Edges { get; }
         List<Vertex> Vertices { get; }
 
-        HashSet<Edge> EdgesOf(Vertex vertex);
-        HashSet<Edge> EdgesOf(Face face);
-        HashSet<Face> FacesOf(Vertex vertex);
-        HashSet<Face> FacesOf(Edge edge);
+        List<Edge> EdgesOf(Vertex vertex);
+        List<Edge> EdgesOf(Face face);
+        List<Face> FacesOf(Vertex vertex);
+        List<Face> FacesOf(Edge edge);
 
         int IndexOf(Face face);
         int IndexOf(Edge edge);

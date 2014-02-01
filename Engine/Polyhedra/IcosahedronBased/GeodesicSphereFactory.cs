@@ -35,7 +35,7 @@ namespace Engine.Polyhedra.IcosahedronBased
             return vertexLists;
         }
 
-        private static IEnumerable<Vertex> CreateFaceAbout(Vertex oldVertex, Dictionary<Face, Vertex> newVertexDict, Func<Vertex, HashSet<Face>> oldFacesDict)
+        private static IEnumerable<Vertex> CreateFaceAbout(Vertex oldVertex, Dictionary<Face, Vertex> newVertexDict, Func<Vertex, List<Face>> oldFacesDict)
         {
             var oldFaces = oldFacesDict(oldVertex);
             var newVertices = oldFaces.Select(oldFace => newVertexDict[oldFace]);

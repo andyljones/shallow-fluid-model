@@ -18,5 +18,13 @@ namespace Engine.Polyhedra
 
             return neighbours.Where(neighbour => neighbour != face);
         }
+
+        public static IEnumerable<Vertex> NeighboursOf(this IPolyhedron polyhedron, Vertex vertex)
+        {
+            var edges = polyhedron.EdgesOf(vertex);
+            var neighbours = edges.SelectMany(edge => edge.Vertices());
+
+            return neighbours.Where(neighbour => neighbour != vertex);
+        }
     }
 }

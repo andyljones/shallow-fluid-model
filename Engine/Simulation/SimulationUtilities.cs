@@ -126,6 +126,16 @@ namespace Engine.Simulation
             return new ScalarField<Face>(surface.IndexOf, values);
         }
 
+        public static int[][] VertexNeighboursTable(IPolyhedron surface)
+        {
+            foreach (var vertex in surface.Vertices)
+            {
+                var neighbours = surface;
+            }
+
+            throw new NotImplementedException();
+        }
+
         public static Vector[][] EdgeNormalsTable(IPolyhedron surface)
         {
             throw new NotImplementedException();
@@ -137,11 +147,6 @@ namespace Engine.Simulation
         }
 
         public static double[] VertexAreasTable(IPolyhedron surface)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static int[][] VertexNeighboursTable(IPolyhedron surface)
         {
             throw new NotImplementedException();
         }

@@ -26,17 +26,17 @@ namespace Engine.Polyhedra
         private readonly List<Vertex> _vertices;
 
         #region Lookup functions
-        public HashSet<Edge> EdgesOf(Vertex vertex) { return _vertexToEdges[vertex]; }
-        private readonly Dictionary<Vertex, HashSet<Edge>> _vertexToEdges;
+        public List<Edge> EdgesOf(Vertex vertex) { return _vertexToEdges[vertex]; }
+        private readonly Dictionary<Vertex, List<Edge>> _vertexToEdges;
 
-        public HashSet<Edge> EdgesOf(Face face) { return _faceToEdges[face]; }
-        private readonly Dictionary<Face, HashSet<Edge>> _faceToEdges;
+        public List<Edge> EdgesOf(Face face) { return _faceToEdges[face]; }
+        private readonly Dictionary<Face, List<Edge>> _faceToEdges;
 
-        public HashSet<Face> FacesOf(Vertex vertex) { return _vertexToFaces[vertex]; } 
-        private readonly Dictionary<Vertex, HashSet<Face>> _vertexToFaces;
+        public List<Face> FacesOf(Vertex vertex) { return _vertexToFaces[vertex]; } 
+        private readonly Dictionary<Vertex, List<Face>> _vertexToFaces;
 
-        public HashSet<Face> FacesOf(Edge edge) { return _edgeToFaces[edge]; } 
-        private readonly Dictionary<Edge, HashSet<Face>> _edgeToFaces;
+        public List<Face> FacesOf(Edge edge) { return _edgeToFaces[edge]; } 
+        private readonly Dictionary<Edge, List<Face>> _edgeToFaces;
         #endregion
 
         #region Indexes
