@@ -60,7 +60,7 @@ namespace Engine.Simulation
 
         public ScalarField<Face> ZDependentField(double average, double deviation)
         {
-            var normals = FaceIndexedTableFactory.NormalsTable(_polyhedron);
+            var normals = FaceIndexedTableFactory.Normals(_polyhedron);
             var values = _polyhedron.Faces.Select(face => average + deviation*normals[_polyhedron.IndexOf(face)][2]).ToArray();
 
             return new ScalarField<Face>(_polyhedron.IndexOf, values);
@@ -68,7 +68,7 @@ namespace Engine.Simulation
 
         public ScalarField<Face> XDependentField(double average, double deviation)
         {
-            var normals = FaceIndexedTableFactory.NormalsTable(_polyhedron);
+            var normals = FaceIndexedTableFactory.Normals(_polyhedron);
             var values = _polyhedron.Faces.Select(face => average + deviation * normals[_polyhedron.IndexOf(face)][0]).ToArray();
 
             return new ScalarField<Face>(_polyhedron.IndexOf, values);

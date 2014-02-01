@@ -46,7 +46,7 @@ namespace Assets.Rendering
 
         private int[] CreateTriangleArray()
         {
-            return _polyhedron.Faces.SelectMany(face => Face(face)).ToArray();
+            return _polyhedron.Faces.SelectMany(face => Triangles(face)).ToArray();
         }
 
         private int[] CreateLineArray()
@@ -54,7 +54,7 @@ namespace Assets.Rendering
             return _polyhedron.Edges.SelectMany(edge => Line(edge)).ToArray();
         }
 
-        private IEnumerable<int> Face(Face face)
+        private IEnumerable<int> Triangles(Face face)
         {
             var vertices = face.Vertices;
             var center = _polyhedron.Vertices.Count + _polyhedron.IndexOf(face);
@@ -76,6 +76,8 @@ namespace Assets.Rendering
                 _polyhedron.IndexOf(vertices[0]),
             };
             triangles.AddRange(lastTriangle);
+
+            triangles.Reverse();
 
             return triangles;
         }

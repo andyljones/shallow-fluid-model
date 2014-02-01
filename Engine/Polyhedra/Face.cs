@@ -13,21 +13,17 @@ namespace Engine.Polyhedra
 
         public Face(IEnumerable<Vertex> vertices)
         {
-            Vertices = SortVerticesClockwise(vertices).ToList();
+            Vertices = SortVertices(vertices);
         }
 
-        private static IEnumerable<Vertex> SortVerticesClockwise(IEnumerable<Vertex> vertices)
+        private static List<Vertex> SortVertices(IEnumerable<Vertex> vertices)
         {
             var vertexList = vertices.ToList();
-            var centroid = vertexList.Aggregate(Vector.Zeros(3), (c, v) => c + v.Position) / vertexList.Count;
+            var center = vertexList.Aggregate(Vector.Zeros(3), (c, v) => c + v.Position).Normalize();
+            var view = -center;
+            var comparer = new AnticlockwiseComparer(vertexList.First().Position, view);
 
-            if (centroid == Vector.Zeros(3))
-            {
-                Debug.WriteLine("Centroid of face was the zero vector! Picking an arbitrary centroid instead");
-                centroid = new Vector(new[] { 0, 0, 1.0 });
-            }
-
-            var sortedVertices = vertexList.OrderBy(vertex => vertex.Position, new ClockwiseCompare(centroid));
+            var sortedVertices = vertexList.OrderBy(vertex => vertex.Position, comparer).ToList();
 
             return sortedVertices;
         }

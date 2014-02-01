@@ -10,7 +10,6 @@ namespace EngineTests.AutoFixtureCustomizations
         public AutoFieldIntegratorDataAttribute(int iterations)
         {
             Fixture.Customize(new CubeCustomization());
-            Fixture.Customize(new FaceIndexCustomization());
             Fixture.Customize(new ScalarFieldCustomization());
 
             var simulationParameters = new SimulationParameters {NumberOfRelaxationIterations = iterations};

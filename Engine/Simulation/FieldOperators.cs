@@ -24,10 +24,10 @@ namespace Engine.Simulation
         /// </summary>
         public FieldOperators(IPolyhedron surface)
         {
-            _areas =       FaceIndexedTableFactory.AreasTable(surface);
-            _neighbours =  FaceIndexedTableFactory.NeighboursTable(surface);
-            _edgeLengths = FaceIndexedTableFactory.EdgeLengthsTable(surface);
-            _distances =   FaceIndexedTableFactory.DistancesTable(surface);
+            _areas =       FaceIndexedTableFactory.Areas(surface);
+            _neighbours =  FaceIndexedTableFactory.Neighbours(surface);
+            _edgeLengths = FaceIndexedTableFactory.EdgeLengths(surface);
+            _distances =   FaceIndexedTableFactory.Distances(surface);
             _numberOfFaces = surface.Faces.Count;
         }
 
@@ -55,16 +55,16 @@ namespace Engine.Simulation
             var lastNeighbour = neighbours[neighbours.Length - 1];
 
             var result = 0.0;
-            result += (A[face] + A[firstNeighbour]) * (B[secondNeighbour] - B[lastNeighbour]);
+            result += (A[face] + A[firstNeighbour]) * (B[lastNeighbour] - B[secondNeighbour]);
             for (int j = 1; j < neighbours.Length - 1; j++)
             {
                 var previousNeighbour = neighbours[j - 1];
                 var currentNeighbour = neighbours[j];
                 var nextNeighbour = neighbours[j + 1];
 
-                result += (A[face] + A[currentNeighbour]) * (B[nextNeighbour] - B[previousNeighbour]);
+                result += (A[face] + A[currentNeighbour]) * (B[previousNeighbour] - B[nextNeighbour]);
             }
-            result += (A[face] + A[lastNeighbour]) * (B[firstNeighbour] - B[secondToLastNeighbour]);
+            result += (A[face] + A[lastNeighbour]) * (B[secondToLastNeighbour] - B[firstNeighbour]);
 
             return result / (6 * _areas[face]);
         }

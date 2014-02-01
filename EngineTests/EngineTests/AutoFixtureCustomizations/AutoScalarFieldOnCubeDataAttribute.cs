@@ -8,7 +8,6 @@ namespace EngineTests.AutoFixtureCustomizations
         public AutoScalarFieldOnCubeDataAttribute()
         {
             Fixture.Customize(new CubeCustomization());
-            Fixture.Customize(new FaceIndexCustomization());
             Fixture.Customize(new ScalarFieldCustomization());
         }
     }

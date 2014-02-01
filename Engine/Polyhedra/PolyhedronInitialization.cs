@@ -39,30 +39,12 @@ namespace Engine.Polyhedra
         }
         #endregion
 
-        #region InitializeFaces methods
         public static List<Face> Faces(List<List<Vertex>> vertexLists)
         {
-            var faces = vertexLists.Select(vertexList => new Face(SortVertices(vertexList))).ToList();
+            var faces = vertexLists.Select(vertexList => new Face(vertexList)).ToList();
 
             return faces;
         }
-
-        private static IEnumerable<Vertex> SortVertices(List<Vertex> vertices)
-        {
-            var vertexList = vertices.ToList();
-            var centroid = vertexList.Aggregate(Vector.Zeros(3), (c, v) => c + v.Position) / vertexList.Count;
-
-            if (centroid == Vector.Zeros(3))
-            {
-                Debug.WriteLine("Centroid of face was the zero vector! Picking an arbitrary centroid instead");
-                centroid = new Vector(new[] { 0, 0, 1.0 });
-            }
-
-            var sortedVertices = vertexList.OrderBy(vertex => vertex.Position, new ClockwiseCompare(centroid));
-
-            return sortedVertices;
-        }
-        #endregion
 
         #region BuildDictionary methods
         public static Dictionary<Vertex, List<Edge>> VertexToEdgeDictionary(List<Vertex> vertices, List<Edge> edges)
@@ -74,12 +56,12 @@ namespace Engine.Polyhedra
                 vertexToEdges[edge.B].Add(edge);
             }
 
-            //foreach (var vertex in vertices)
-            //{
-            //    var comparer = new ClockwiseCompare(vertex.Position);
-            //    var sortedEdges = vertexToEdges[vertex].OrderBy(edge => edge.SphericalCenter(), comparer);
-            //    vertexToEdges[vertex] = sortedEdges.ToList();
-            //}
+            foreach (var vertex in vertices)
+            {
+                var comparer = new AnticlockwiseComparer(vertex.Position, -vertex.Position);
+                var sortedEdges = vertexToEdges[vertex].OrderBy(edge => edge.SphericalCenter(), comparer);
+                vertexToEdges[vertex] = sortedEdges.ToList();
+            }
 
             return vertexToEdges;
         }
@@ -97,7 +79,7 @@ namespace Engine.Polyhedra
 
             foreach (var vertex in vertices)
             {
-                var comparer = new ClockwiseCompare(vertex.Position);
+                var comparer = new AnticlockwiseComparer(vertex.Position, -vertex.Position);
                 vertexToFaces[vertex] = vertexToFaces[vertex].OrderBy(face => face.SphericalCenter(), comparer).ToList();
             }
 

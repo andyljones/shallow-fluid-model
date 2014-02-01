@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Engine.Polyhedra;
@@ -13,7 +12,7 @@ namespace EngineTests.PolyhedraTests
     public class PolyhedronTests
     {
         [Theory]
-        [AutoPolyhedronData]
+        [AutoCubeData]
         public void Vertices_ShouldBeThoseGivenToTheConstructor
             (IPolyhedron polyhedron, List<List<Vertex>> vertexLists)
         {
@@ -31,7 +30,7 @@ namespace EngineTests.PolyhedraTests
         }
 
         [Theory]
-        [AutoPolyhedronData]
+        [AutoCubeData]
         public void Faces_ShouldBeThoseGivenToTheConstructor
             (IPolyhedron polyhedron, List<List<Vertex>> vertexLists)
         {
@@ -50,7 +49,29 @@ namespace EngineTests.PolyhedraTests
         }
 
         [Theory]
-        [AutoPolyhedronData]
+        [AutoCubeData]
+        public void Faces_ShouldHaveVerticesInAnticlockwiseOrder
+            (IPolyhedron polyhedron)
+        {
+            // Fixture setup
+
+            // Exercise system
+            var faces = polyhedron.Faces;
+
+            // Verify outcome
+            foreach (var face in faces)
+            {
+                var center = face.SphericalCenter();
+                var viewDirection = -face.SphericalCenter();
+                var vectors = face.Vertices.Select(vertex => vertex.Position).ToList();
+                Assert.True(TestUtilities.AreInAntiClockwiseOrder(vectors, center, viewDirection));
+            }
+
+            // Teardown
+        }
+
+        [Theory]
+        [AutoCubeData]
         public void EdgesOf_OverAllVertices_ReturnsAllEdges
             (IPolyhedron polyhedron)
         {
@@ -68,7 +89,32 @@ namespace EngineTests.PolyhedraTests
         }
 
         [Theory]
-        [AutoPolyhedronData]
+        [AutoCubeData]
+        public void EdgesOf_OverEachVertex_ReturnsEdgesInAnticlockwiseOrder
+            (IPolyhedron polyhedron)
+        {
+            // Fixture setup
+
+            // Exercise system
+            var facesAndEdges = polyhedron.Vertices.ToDictionary(vertex => vertex, vertex => polyhedron.EdgesOf(vertex));
+
+            // Verify outcome
+            foreach (var vertexAndEdges in facesAndEdges)
+            {
+                var vertex = vertexAndEdges.Key;
+                var center = vertex.Position;
+                var viewDirection = -center;
+
+                var edges = vertexAndEdges.Value;
+                var vectors = edges.Select(edge => edge.SphericalCenter()).ToList();
+                Assert.True(TestUtilities.AreInAntiClockwiseOrder(vectors, center, viewDirection));
+            }
+
+            // Teardown
+        }
+
+        [Theory]
+        [AutoCubeData]
         public void EdgesOf_OverAllFaces_ReturnsAllEdges
             (IPolyhedron polyhedron)
         {
@@ -85,10 +131,33 @@ namespace EngineTests.PolyhedraTests
             // Teardown
         }
 
-        //TODO: Check edges are given in clockwise order.
+        [Theory]
+        [AutoCubeData]
+        public void EdgesOf_OverEachFace_ReturnsEdgesInAnticlockwiseOrder
+            (IPolyhedron polyhedron)
+        {
+            // Fixture setup
+
+            // Exercise system
+            var facesAndEdges = polyhedron.Faces.ToDictionary(face => face, face => polyhedron.EdgesOf(face));
+            
+            // Verify outcome
+            foreach (var faceAndEdges in facesAndEdges)
+            {
+                var face = faceAndEdges.Key;
+                var center = face.SphericalCenter();
+                var viewDirection = -center;
+
+                var edges = faceAndEdges.Value;
+                var vectors = edges.Select(edge => edge.SphericalCenter()).ToList();
+                Assert.True(TestUtilities.AreInAntiClockwiseOrder(vectors, center, viewDirection));    
+            }
+
+            // Teardown
+        }
 
         [Theory]
-        [AutoPolyhedronData]
+        [AutoCubeData]
         public void FacesOf_OverAllVertices_ReturnsAllFaces
             (IPolyhedron polyhedron)
         {
@@ -106,7 +175,7 @@ namespace EngineTests.PolyhedraTests
         }
 
         [Theory]
-        [AutoPolyhedronData]
+        [AutoCubeData]
         public void FacesOf_OverAllEdges_ReturnsAllFaces
             (IPolyhedron polyhedron)
         {
@@ -124,7 +193,7 @@ namespace EngineTests.PolyhedraTests
         }
 
         [Theory]
-        [AutoPolyhedronData]
+        [AutoCubeData]
         public void NumberOfVertexAndEdgeAndFaces_ShouldSatisfyEulersFormula
             (IPolyhedron polyhedron)
         {

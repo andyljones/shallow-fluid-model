@@ -66,5 +66,25 @@ namespace EngineTests.Utilities
             Debug.WriteLine("Expected: " + expected);
             Debug.WriteLine("Actual: " + actual);
         }
+
+        public static bool AreInAntiClockwiseOrder(List<Vector> vectors, Vector center, Vector viewDirection)
+        {
+            var areInOrder = true;
+            for (int i = 0; i < vectors.Count() - 1; i++)
+            {
+                var thisVector = vectors[i];
+                var nextVector = vectors[i + 1];
+                var crossProduct = Vector.CrossProduct(thisVector - center, nextVector - center);
+                var componentAlongView = Vector.ScalarProduct(crossProduct, viewDirection);
+
+                if (componentAlongView > 0)
+                {
+                    areInOrder = false;
+                }
+
+            }
+
+            return areInOrder;
+        }
     }
 }

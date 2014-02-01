@@ -13,18 +13,18 @@ using Xunit.Extensions;
 
 namespace EngineTests.ModelTests
 {
-    public class FaceIndexedTableFactoryTests
+    public class VertexIndexedTableFactoryTests
     {
         [Theory]
         [AutoCubeData]
-        public void Distances_OnACube_ShouldCreateSixListsOfFourElements
+        public void Distances_OnACube_ShouldCreateRightNumberAndLengthsOfLists
             (IPolyhedron polyhedron)
         {
             // Fixture setup
-            var expected = Enumerable.Repeat(4, 6).ToList();
+            var expected = Enumerable.Repeat(3, 8).ToList();
 
             // Exercise system
-            var distances = FaceIndexedTableFactory.Distances(polyhedron);
+            var distances = VertexIndexedTableFactory.Distances(polyhedron);
 
             var actual = distances.Select(list => list.Count()).ToList();
 
@@ -37,15 +37,15 @@ namespace EngineTests.ModelTests
 
         [Theory]
         [AutoCubeData]
-        public void Distances_OnACube_ShouldCalculateTheCorrectDistances
+        public void DistancesTable_OnACube_ShouldCalculateTheCorrectDistances
             (IPolyhedron polyhedron)
         {
             // Fixture setup
-            var correctDistance = Math.Sqrt(3)*Math.PI/2;
+            var correctDistance = Math.Sqrt(3) * Math.Acos(1.0/3.0);
             var expected = Enumerable.Repeat(correctDistance, 24).ToList();
 
             // Exercise system
-            var distances = FaceIndexedTableFactory.Distances(polyhedron);
+            var distances = VertexIndexedTableFactory.Distances(polyhedron);
 
             var actual = distances.SelectMany(list => list).ToList();
 
@@ -58,14 +58,14 @@ namespace EngineTests.ModelTests
 
         [Theory]
         [AutoCubeData]
-        public void EdgeLengths_OnACube_ShouldCreateSixListsOfFourElements
+        public void BisectorDistances_OnACube_ShouldCreateTheRightNumberAndLengthsOfLists
             (IPolyhedron polyhedron)
         {
             // Fixture setup
-            var expected = Enumerable.Repeat(4, 6).ToList();
+            var expected = Enumerable.Repeat(3, 8).ToList();
 
             // Exercise system
-            var edgeLengths = FaceIndexedTableFactory.EdgeLengths(polyhedron);
+            var edgeLengths = VertexIndexedTableFactory.BisectorDistances(polyhedron);
 
             var actual = edgeLengths.Select(list => list.Count()).ToList();
 
@@ -78,15 +78,15 @@ namespace EngineTests.ModelTests
 
         [Theory]
         [AutoCubeData]
-        public void EdgeLengths_OnACube_ShouldCalculateTheCorrectLengths
+        public void BisectorDistances_OnACube_ShouldCalculateTheCorrectDistancesToBisectors
             (IPolyhedron polyhedron)
         {
             // Fixture setup
-            var correctLength = Math.Sqrt(3)*Trig.InverseCosine(1.0/3.0);
+            var correctLength = 1.0;
             var expected = Enumerable.Repeat(correctLength, 24).ToList();
 
             // Exercise system
-            var edgeLengths = FaceIndexedTableFactory.EdgeLengths(polyhedron);
+            var edgeLengths = VertexIndexedTableFactory.BisectorDistances(polyhedron);
 
             var actual = edgeLengths.SelectMany(list => list).ToList();
 
@@ -99,14 +99,14 @@ namespace EngineTests.ModelTests
 
         [Theory]
         [AutoCubeData]
-        public void Neighbours_OnACube_ShouldCreateSixListsOfFourElements
+        public void Neighbours_OnACube_ShouldCreateTheRightNumberAndLengthsOfLists
             (IPolyhedron polyhedron)
         {
             // Fixture setup
-            var expected = Enumerable.Repeat(4, 6).ToList();
+            var expected = Enumerable.Repeat(3, 8).ToList();
 
             // Exercise system
-            var neighbours = FaceIndexedTableFactory.Neighbours(polyhedron);
+            var neighbours = VertexIndexedTableFactory.Neighbours(polyhedron);
 
             var actual = neighbours.Select(list => list.Count()).ToList();
 
@@ -119,14 +119,14 @@ namespace EngineTests.ModelTests
 
         [Theory]
         [AutoCubeData]
-        public void Neighbours_OnACube_ShouldHaveEachIndexAppearFourTimesTotal
+        public void Neighbours_OnACube_ShouldHaveEachIndexAppearTheRightNumberOfTimes
             (IPolyhedron polyhedron)
         {
             // Fixture setup
-            var expected = Enumerable.Repeat(Enumerable.Range(0, 6), 4).SelectMany(list => list).ToList();
+            var expected = Enumerable.Repeat(Enumerable.Range(0, 8), 3).SelectMany(list => list).ToList();
 
             // Exercise system
-            var neighbours = FaceIndexedTableFactory.Neighbours(polyhedron);
+            var neighbours = VertexIndexedTableFactory.Neighbours(polyhedron);
 
             var actual = neighbours.SelectMany(list => list).ToList();
 
@@ -145,7 +145,7 @@ namespace EngineTests.ModelTests
             // Fixture setup
 
             // Exercise system
-            var neighbourTable = FaceIndexedTableFactory.Neighbours(polyhedron);
+            var neighbourTable = VertexIndexedTableFactory.Neighbours(polyhedron);
 
             // Verify outcome
             for (int face = 0; face < neighbourTable.Length; face++)
@@ -167,18 +167,14 @@ namespace EngineTests.ModelTests
             // Fixture setup
 
             // Exercise system
-            var neighbourTable = FaceIndexedTableFactory.Neighbours(polyhedron);
-
+            var neighbourTable = VertexIndexedTableFactory.Neighbours(polyhedron);
             // Verify outcome
             for (int i = 0; i < neighbourTable.Length; i++)
             {
-                var centerOfFace = polyhedron.Faces[i].SphericalCenter();
-                var viewVector = -centerOfFace.Normalize();
-
-                var neighbours = neighbourTable[i].Select(index => polyhedron.Faces[index]);
-                var centersOfNeighbours = neighbours.Select(neighbour => neighbour.SphericalCenter()).ToList();
-
-                Assert.True(TestUtilities.AreInAntiClockwiseOrder(centersOfNeighbours, centerOfFace, viewVector));
+                var vector = polyhedron.Vertices[i].Position;
+                var neighbours = neighbourTable[i].Select(index => polyhedron.Vertices[index]);
+                var vectors = neighbours.Select(neighbour => neighbour.Position).ToList();
+                Assert.True(TestUtilities.AreInAntiClockwiseOrder(vectors, vector, -vector));
             }
 
             // Teardown
@@ -186,15 +182,15 @@ namespace EngineTests.ModelTests
 
         [Theory]
         [AutoCubeData]
-        public void Areas_OnACube_ShouldCalculateTheCorrectAreas
+        public void AreasTable_OnACube_ShouldCalculateTheCorrectAreas
             (IPolyhedron polyhedron)
         {
             // Fixture setup
-            var correctArea = 4.0;
-            var expected = Enumerable.Repeat(correctArea, 6).ToList();
+            var correctArea = 1.5*Math.Sqrt(3);
+            var expected = Enumerable.Repeat(correctArea, 8).ToList();
 
             // Exercise system
-            var actual = FaceIndexedTableFactory.Areas(polyhedron);
+            var actual = VertexIndexedTableFactory.Areas(polyhedron);
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
@@ -205,24 +201,24 @@ namespace EngineTests.ModelTests
 
         [Theory]
         [AutoCubeData]
-        public void Normals_OnACube_ShouldCalculateTheCorrectNormals
+        public void EdgeNormals_OnTheAllPositiveVertexOfACube_ShouldCalculateTheCorrectNormals
             (IPolyhedron polyhedron)
         {
             // Fixture setup
             var expected = new List<Vector>
             {
-                VectorUtilities.NewVector(1, 0, 0),
-                VectorUtilities.NewVector(-1, 0, 0),
-                VectorUtilities.NewVector(0, 1, 0),
-                VectorUtilities.NewVector(0, -1, 0),
-                VectorUtilities.NewVector(0, 0, 1),
-                VectorUtilities.NewVector(0, 0, -1)
+                VectorUtilities.NewVector(0, -1, 1).Normalize(),
+                VectorUtilities.NewVector(1, 0, -1).Normalize(),
+                VectorUtilities.NewVector(-1, 1, 0).Normalize(),
             };
 
             // Exercise system
-            var actual = FaceIndexedTableFactory.Normals(polyhedron);
-
+            var normals = VertexIndexedTableFactory.EdgeNormals(polyhedron);
+            
             // Verify outcome
+            var vertex = polyhedron.Vertices.First(v => Vector.AlmostEqual(v.Position, VectorUtilities.NewVector(1, 1, 1)));
+            var actual = normals[polyhedron.IndexOf(vertex)];
+            
             TestUtilities.WriteExpectedAndActual(expected, actual);
             Assert.True(TestUtilities.UnorderedEquals(expected, actual, TestUtilities.RelativeAccuracy));
 
@@ -231,25 +227,20 @@ namespace EngineTests.ModelTests
 
         [Theory]
         [AutoCubeData]
-        public void Directions_OfTheTopFaceOfACube_ShouldCalculateTheCorrectDirections
+        public void EdgeNormals_OnACube_ShouldCreateTheRightNumberAndLengthsOfLists
             (IPolyhedron polyhedron)
         {
             // Fixture setup
-            var expected = new List<Vector>
-            {
-                VectorUtilities.NewVector(1, 0, 0),
-                VectorUtilities.NewVector(-1, 0, 0),
-                VectorUtilities.NewVector(0, 1, 0),
-                VectorUtilities.NewVector(0, -1, 0)
-            };
+            var expected = Enumerable.Repeat(3, 8).ToList();
 
             // Exercise system
-            var topFace = polyhedron.Faces.First(face => face.Vertices.All(vertex => vertex.Position[2] > 0.5));
-            var actual = FaceIndexedTableFactory.Directions(polyhedron)[polyhedron.Faces.IndexOf(topFace)];
+            var edgeNormals = VertexIndexedTableFactory.EdgeNormals(polyhedron);
+
+            var actual = edgeNormals.Select(list => list.Count()).ToList();
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(TestUtilities.UnorderedEquals(expected, actual, TestUtilities.RelativeAccuracy));
+            Assert.True(TestUtilities.UnorderedEquals(expected, actual));
 
             // Teardown
         }
