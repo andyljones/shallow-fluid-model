@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EngineTests.PolyhedraTests;
+﻿using EngineTests.PolyhedraTests;
 using Ploeh.AutoFixture;
 
 namespace EngineTests.AutoFixtureCustomizations

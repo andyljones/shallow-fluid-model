@@ -42,6 +42,9 @@ namespace Engine.Utilities
             return new Vector(new [] {x, y, z});
         }
 
+        /// <summary>
+        /// Calculates the vector in the direction of destination that's perpendicular to origin.
+        /// </summary>
         public static Vector LocalDirection(Vector origin, Vector destination)
         {
             var direction = destination - origin;
