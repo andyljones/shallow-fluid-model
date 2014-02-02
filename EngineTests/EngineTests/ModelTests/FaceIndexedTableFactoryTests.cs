@@ -253,5 +253,55 @@ namespace EngineTests.ModelTests
 
             // Teardown
         }
+
+        [Theory]
+        [AutoCubeData]
+        public void Vertices_ShouldBeCorrectIndices
+            (IPolyhedron polyhedron)
+        {
+            // Fixture setup
+
+            // Exercise system
+            var vertexIndices = FaceIndexedTableFactory.Vertices(polyhedron);
+
+            // Verify outcome
+            for (int i = 0; i < polyhedron.Faces.Count; i++)
+            {
+                var face = polyhedron.Faces[i];
+                var expected = face.Vertices;
+                var actual = vertexIndices[i].Select(j => polyhedron.Vertices[j]).ToList();
+                TestUtilities.WriteExpectedAndActual(expected, actual);
+                Assert.True(Enumerable.SequenceEqual(expected, actual));
+            }
+
+            // Teardown
+        }
+
+        [Theory]
+        [AutoCubeData]
+        public void FaceInVertices_ShouldBeCorrectIndices
+            (IPolyhedron polyhedron)
+        {
+            // Fixture setup
+
+            // Exercise system
+            var vertexIndices = FaceIndexedTableFactory.FaceInVertices(polyhedron);
+
+            // Verify outcome
+            for (int i = 0; i < polyhedron.Faces.Count; i++)
+            {
+                var face = polyhedron.Faces[i];
+                var expected = Enumerable.Repeat(face, face.Vertices.Count).ToList();
+
+                var indices = vertexIndices[i];
+                var vertices = face.Vertices;
+                var actual = vertices.Select((v, j) => polyhedron.FacesOf(v)[indices[j]]).ToList();
+
+                TestUtilities.WriteExpectedAndActual(expected, actual);
+                Assert.True(Enumerable.SequenceEqual(expected, actual));
+            }
+
+            // Teardown
+        }
     }
 }

@@ -60,12 +60,7 @@ namespace Engine.Simulation2
         }
         #endregion
 
-        public ScalarField<Face> Divergence(VectorField<Face> field)
-        {
-            throw new NotImplementedException();
-        }
-
-        public VectorField<Face> Curl(VectorField<Face> field)
+        public ScalarField<Face> Divergence(VectorField<Vertex> V, ScalarField<Face> f)
         {
             throw new NotImplementedException();
         }

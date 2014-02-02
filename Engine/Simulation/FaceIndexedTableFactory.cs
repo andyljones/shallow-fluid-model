@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Engine.Polyhedra;
 using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
@@ -111,6 +112,46 @@ namespace Engine.Simulation
         private static Vector Direction(Face from, Face to)
         {
             return VectorUtilities.LocalDirection(from.SphericalCenter(), to.SphericalCenter());
+        }
+        #endregion
+
+        /// <summary>
+        /// Constructs a table of the indices of the vertices around each face. 
+        /// </summary>
+        public static int[][] Vertices(IPolyhedron surface)
+        {
+            var indices = new int[surface.Faces.Count][];
+            foreach (var face in surface.Faces)
+            {
+                var vertexIndices = face.Vertices.Select(vertex => surface.IndexOf(vertex)).ToArray();
+                indices[surface.IndexOf(face)] = vertexIndices;
+            }
+
+            return indices;
+        }
+
+        #region IndicesOfFaceInVertices methods.
+        /// <summary>
+        /// Constructs a table of the index of each face in surface.Faces(vertex) for each vertex around that face.
+        /// </summary>
+        public static int[][] FaceInVertices(IPolyhedron surface)
+        {
+            var indices = new int[surface.Faces.Count][];
+            foreach (var face in surface.Faces)
+            {
+                var indicesOfFace = face.Vertices.Select(vertex => IndexOfFaceInVertex(surface, face, vertex)).ToArray();
+                indices[surface.IndexOf(face)] = indicesOfFace;
+            }
+
+            return indices;
+        }
+
+        private static int IndexOfFaceInVertex(IPolyhedron surface, Face face, Vertex vertex)
+        {
+            var facesAroundVertex = surface.FacesOf(vertex);
+            var indexOfFace = facesAroundVertex.IndexOf(face);
+
+            return indexOfFace;
         }
         #endregion
     }
