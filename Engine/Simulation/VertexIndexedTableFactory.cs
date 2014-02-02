@@ -125,19 +125,31 @@ namespace Engine.Simulation
             var edges = surface.EdgesOf(vertex);
 
             var faces = new List<int>();
-            for (int i = 0; i < edges.Count - 1; i++)
+            var firstFace = surface.FacesOf(edges[edges.Count - 1]).Intersect(surface.FacesOf(edges[0])).First();
+            var indexOfFirstFace = surface.IndexOf(firstFace);
+            faces.Add(indexOfFirstFace);
+            for (int i = 1; i < edges.Count; i++)
             {
+                var previousEdge = edges[i-1];
                 var thisEdge = edges[i];
-                var nextEdge = edges[i + 1];
-                var faceInCommon = surface.FacesOf(thisEdge).Intersect(surface.FacesOf(nextEdge)).First();
+                var faceInCommon = surface.FacesOf(previousEdge).Intersect(surface.FacesOf(thisEdge)).First();
                 var indexOfFace = surface.IndexOf(faceInCommon);
                 faces.Add(indexOfFace);
             }
-            var lastFace = surface.FacesOf(edges[edges.Count - 1]).Intersect(surface.FacesOf(edges[0])).First();
-            var indexOfLastFace = surface.IndexOf(lastFace);
-            faces.Add(indexOfLastFace);
 
             return faces.ToArray();
+        }
+
+        public static Vector[] Normals(IPolyhedron surface)
+        {
+            var normals = new Vector[surface.Vertices.Count];
+            foreach (var vertex in surface.Vertices)
+            {
+                var normal = vertex.Position.Normalize();
+                normals[surface.IndexOf(vertex)] = normal;
+            }
+
+            return normals;
         }
     }
 }

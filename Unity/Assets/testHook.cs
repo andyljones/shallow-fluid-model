@@ -45,8 +45,8 @@ namespace Assets
             fieldRenderer = new VectorFieldRenderer(polyhedron, "vectors", "Materials/Vectors");
 
             fieldsFactory = new PrognosticFieldsFactory(polyhedron);
-            fieldsFactory.Height = fieldsFactory.ConstantField(10);
-            fieldsFactory.AbsoluteVorticity = fieldsFactory.XDependentField(0, 0.00001);
+            fieldsFactory.Height = fieldsFactory.XDependentField(10, .1);
+            fieldsFactory.AbsoluteVorticity = fieldsFactory.XDependentField(0, 0.000005);
             fields = fieldsFactory.Build();
 
             parameters = new SimulationParameters

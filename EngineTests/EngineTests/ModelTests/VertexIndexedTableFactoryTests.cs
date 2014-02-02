@@ -261,14 +261,20 @@ namespace EngineTests.ModelTests
                 var faceList = faces[vertex];
                 var edgeList = polyhedron.EdgesOf(polyhedron.Vertices[vertex]);
 
-                for (int i = 0; i < edgeList.Count-1; i++)
+                var firstFace = polyhedron.Faces[faceList[0]];
+                var lastEdge = edgeList[edgeList.Count - 1];
+                var firstEdge = edgeList[0];
+                Assert.True(polyhedron.EdgesOf(firstFace).Contains(lastEdge));
+                Assert.True(polyhedron.EdgesOf(firstFace).Contains(firstEdge));
+                
+                for (int i = 1; i < edgeList.Count; i++)
                 {
                     var thisFace = polyhedron.Faces[faceList[i]];
+                    var previousEdge = edgeList[i-1];
                     var thisEdge = edgeList[i];
-                    var nextEdge = edgeList[i + 1];
 
+                    Assert.True(polyhedron.EdgesOf(thisFace).Contains(previousEdge));
                     Assert.True(polyhedron.EdgesOf(thisFace).Contains(thisEdge));
-                    Assert.True(polyhedron.EdgesOf(thisFace).Contains(nextEdge));
                 }
             }
 
