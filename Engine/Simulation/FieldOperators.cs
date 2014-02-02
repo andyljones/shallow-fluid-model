@@ -49,22 +49,15 @@ namespace Engine.Simulation
         {
             var neighbours = _neighbours[face];
 
-            var firstNeighbour = neighbours[0];
-            var secondNeighbour = neighbours[1];
-            var secondToLastNeighbour = neighbours[neighbours.Length - 2];
-            var lastNeighbour = neighbours[neighbours.Length - 1];
-
             var result = 0.0;
-            result += (A[face] + A[firstNeighbour]) * (B[lastNeighbour] - B[secondNeighbour]);
-            for (int j = 1; j < neighbours.Length - 1; j++)
+            for (int j = 0; j < neighbours.Length; j++)
             {
-                var previousNeighbour = neighbours[j - 1];
+                var previousNeighbour = neighbours.AtCyclicIndex(j - 1);
                 var currentNeighbour = neighbours[j];
-                var nextNeighbour = neighbours[j + 1];
+                var nextNeighbour = neighbours.AtCyclicIndex(j + 1);
 
                 result += (A[face] + A[currentNeighbour]) * (B[previousNeighbour] - B[nextNeighbour]);
             }
-            result += (A[face] + A[lastNeighbour]) * (B[secondToLastNeighbour] - B[firstNeighbour]);
 
             return result / (6 * _areas[face]);
         }

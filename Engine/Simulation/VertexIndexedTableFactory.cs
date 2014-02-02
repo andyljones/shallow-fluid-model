@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Engine.Polyhedra;
+using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Simulation
@@ -107,7 +108,7 @@ namespace Engine.Simulation
         /// <summary>
         /// Constructs a table of the faces around each vertex.
         /// 
-        /// The ith face listed is the face anticlockwise of the ith edge given by surface.EdgesOf
+        /// The ith edge given by surface.EdgesOf is anticlockwise of the ith face. 
         /// </summary>
         public static int[][] Faces(IPolyhedron surface)
         {
@@ -125,12 +126,9 @@ namespace Engine.Simulation
             var edges = surface.EdgesOf(vertex);
 
             var faces = new List<int>();
-            var firstFace = surface.FacesOf(edges[edges.Count - 1]).Intersect(surface.FacesOf(edges[0])).First();
-            var indexOfFirstFace = surface.IndexOf(firstFace);
-            faces.Add(indexOfFirstFace);
-            for (int i = 1; i < edges.Count; i++)
+            for (int i = 0; i < edges.Count; i++)
             {
-                var previousEdge = edges[i-1];
+                var previousEdge = edges.AtCyclicIndex(i-1);
                 var thisEdge = edges[i];
                 var faceInCommon = surface.FacesOf(previousEdge).Intersect(surface.FacesOf(thisEdge)).First();
                 var indexOfFace = surface.IndexOf(faceInCommon);

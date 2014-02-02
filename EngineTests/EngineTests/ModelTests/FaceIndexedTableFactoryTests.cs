@@ -269,7 +269,9 @@ namespace EngineTests.ModelTests
             {
                 var face = polyhedron.Faces[i];
                 var expected = face.Vertices;
+
                 var actual = vertexIndices[i].Select(j => polyhedron.Vertices[j]).ToList();
+
                 TestUtilities.WriteExpectedAndActual(expected, actual);
                 Assert.True(Enumerable.SequenceEqual(expected, actual));
             }

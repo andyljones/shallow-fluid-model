@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Engine.Polyhedra;
 using Engine.Simulation;
+using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Simulation2
@@ -50,10 +51,10 @@ namespace Engine.Simulation2
             var edgeNormals = _edgeNormals[vertex];
 
             var result = Vector.Zeros(3);
-            result += A[faces[0]] * (bisectorDistances[faces.Length - 1] * edgeNormals[faces.Length - 1] - bisectorDistances[0] * edgeNormals[0]);            
-            for (int j = 1; j < faces.Length; j++)
+            //result += A[faces[0]] * (bisectorDistances[faces.Length - 1] * edgeNormals[faces.Length - 1] - bisectorDistances[0] * edgeNormals[0]);            
+            for (int j = 0; j < faces.Length; j++)
             {
-                result += A[faces[j]]*(bisectorDistances[j - 1]*edgeNormals[j - 1] - bisectorDistances[j]*edgeNormals[j]);
+                result += A[faces[j]]*(bisectorDistances.AtCyclicIndex(j-1)*edgeNormals.AtCyclicIndex(j-1) - bisectorDistances[j]*edgeNormals[j]);
             }
 
             return result / _areas[vertex];
