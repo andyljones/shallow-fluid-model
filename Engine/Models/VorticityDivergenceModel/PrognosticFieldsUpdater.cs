@@ -32,15 +32,15 @@ namespace Engine.Models.VorticityDivergenceModel
             ScalarField<Face> height;
             if (oldFields != null && olderFields != null)
             {
-                absoluteVorticity = DifferentialStepper.AdamsBashforth(_parameters.Timestep, fields.AbsoluteVorticity, derivativeOfAbsoluteVorticity, oldFields.DerivativeOfAbsoluteVorticity, olderFields.DerivativeOfAbsoluteVorticity);
-                divergence = DifferentialStepper.AdamsBashforth(_parameters.Timestep, fields.Divergence, derivativeOfDivergence, oldFields.DerivativeOfDivergence, olderFields.DerivativeOfDivergence);
-                height = DifferentialStepper.AdamsBashforth(_parameters.Timestep, fields.Height, derivativeOfHeight, oldFields.DerivativeOfHeight, olderFields.DerivativeOfHeight);
+                absoluteVorticity = NumericalDerivatives.AdamsBashforth(_parameters.Timestep, fields.AbsoluteVorticity, derivativeOfAbsoluteVorticity, oldFields.DerivativeOfAbsoluteVorticity, olderFields.DerivativeOfAbsoluteVorticity);
+                divergence = NumericalDerivatives.AdamsBashforth(_parameters.Timestep, fields.Divergence, derivativeOfDivergence, oldFields.DerivativeOfDivergence, olderFields.DerivativeOfDivergence);
+                height = NumericalDerivatives.AdamsBashforth(_parameters.Timestep, fields.Height, derivativeOfHeight, oldFields.DerivativeOfHeight, olderFields.DerivativeOfHeight);
             }
             else
             {
-                absoluteVorticity = DifferentialStepper.Euler(_parameters.Timestep, fields.AbsoluteVorticity, derivativeOfAbsoluteVorticity);
-                divergence = DifferentialStepper.Euler(_parameters.Timestep, fields.Divergence, derivativeOfDivergence);
-                height = DifferentialStepper.Euler(_parameters.Timestep, (fields.Height, derivativeOfHeight);
+                absoluteVorticity = NumericalDerivatives.Euler(_parameters.Timestep, fields.AbsoluteVorticity, derivativeOfAbsoluteVorticity);
+                divergence = NumericalDerivatives.Euler(_parameters.Timestep, fields.Divergence, derivativeOfDivergence);
+                height = NumericalDerivatives.Euler(_parameters.Timestep, (fields.Height, derivativeOfHeight);
             }
 
             // Integral fields.

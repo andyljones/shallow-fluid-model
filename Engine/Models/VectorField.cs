@@ -22,6 +22,7 @@ namespace Engine.Models
             Values = values;
         }
 
+        #region Operators
         public static VectorField<T> operator +(VectorField<T> a, VectorField<T> b)
         {
             var newValues = new Vector[a.Values.Length];
@@ -31,6 +32,27 @@ namespace Engine.Models
             }
             return new VectorField<T>(a.IndexOf, newValues);
         }
+
+        public static VectorField<T> operator -(VectorField<T> a, VectorField<T> b)
+        {
+            var newValues = new Vector[a.Values.Length];
+            for (int i = 0; i < a.Values.Length; i++)
+            {
+                newValues[i] = a.Values[i] - b.Values[i];
+            }
+            return new VectorField<T>(a.IndexOf, newValues);
+        }
+
+        public static VectorField<T> operator *(double c, VectorField<T> a)
+        {
+            var newValues = new Vector[a.Values.Length];
+            for (int i = 0; i < a.Values.Length; i++)
+            {
+                newValues[i] = c * a.Values[i];
+            }
+            return new VectorField<T>(a.IndexOf, newValues);
+        }
+        #endregion
 
         public static VectorField<T> CrossProduct(VectorField<T> a, VectorField<T> b)
         {

@@ -27,15 +27,7 @@ namespace Engine.Models
             Values = values;
         }
 
-        private static Dictionary<T, int> GenerateIndices(IEnumerable<T> items)
-        {
-            var itemList = items.ToList();
-            var indices = Enumerable.Range(0, itemList.Count);
-            var dictionary = indices.ToDictionary(i => itemList[i], i => i);
-
-            return dictionary;
-        }
-
+        #region Operators
         /// <summary>
         /// Returns a new field containing the sum of the two fields.
         /// </summary>
@@ -83,7 +75,6 @@ namespace Engine.Models
             return new ScalarField<T>(a.IndexOf, newValues);
         }
 
-
         /// <summary>
         /// Returns a new field containing the field scaled by <param name="c">c</param>.
         /// </summary>
@@ -96,7 +87,7 @@ namespace Engine.Models
             }
             return new ScalarField<T>(a.IndexOf, newValues);
         }
-
+        #endregion
 
 
         public IEnumerator<double> GetEnumerator()
