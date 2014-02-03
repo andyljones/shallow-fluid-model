@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Polyhedra
@@ -32,9 +33,10 @@ namespace Engine.Polyhedra
             return neighbours.Where(neighbour => neighbour != vertex);
         }
 
-
-        //TODO: test.
-        public static Vector BisectionPoint(this IPolyhedron polyhedron, Edge edge)
+        /// <summary>
+        /// Calculates the point at which the specified edge is closest to the line between its neighbouring faces' centers.
+        /// </summary>
+        public static Vector BisectionPoint(IPolyhedron polyhedron, Edge edge)
         {
             var aFace = polyhedron.FacesOf(edge).First();
             var origin = edge.A.Position;
@@ -45,6 +47,38 @@ namespace Engine.Polyhedra
             var vectorToBisector = Vector.ScalarProduct(vectorToFace, edgeVector.Normalize())*edgeVector.Normalize();
 
             return vectorToBisector + origin;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static double AreaSharedByVertexAndFace(IPolyhedron surface, Vertex vertex, Face face)
+        {
+            var vertexPosition = vertex.Position;
+            var faces = surface.FacesOf(vertex);
+            var edges = surface.EdgesOf(vertex);
+            var index = faces.IndexOf(face);
+
+            if (!faces.Contains(face))
+            {
+                return 0.0;
+            }
+
+            var midpointOfFace = face.Center();
+
+            var previousEdge = edges.AtCyclicIndex(index - 1);
+            var midpointOfPreviousEdge = BisectionPoint(surface, previousEdge);
+
+            var nextEdge = edges.AtCyclicIndex(index);
+            var midpointOfNextEdge = BisectionPoint(surface, nextEdge);
+
+            var crossProductOfFirstSegment = Vector.CrossProduct(midpointOfPreviousEdge - vertexPosition, midpointOfFace - vertexPosition);
+            var areaOfFirstSegment = Vector.ScalarProduct(crossProductOfFirstSegment, midpointOfFace) / 2;
+
+            var crossProductOfSecondSegment = Vector.CrossProduct(midpointOfFace - vertexPosition, midpointOfNextEdge - vertexPosition);
+            var areaOfSecondSegment = Vector.ScalarProduct(crossProductOfSecondSegment, midpointOfFace) / 2;
+
+            return areaOfFirstSegment + areaOfSecondSegment;
         }
     }
 }

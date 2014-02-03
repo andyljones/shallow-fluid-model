@@ -34,29 +34,5 @@ namespace EngineTests.PolyhedraTests
 
             // Teardown
         }
-
-        [Fact]
-        public void Area_OfASquareFace_ShouldBeCorrect()
-        {
-            // Fixture setup
-            var fakeFace = new Face(new[]
-            {
-                VertexUtilities.NewVertex(1, 1, 1),
-                VertexUtilities.NewVertex(1, -1, 1),
-                VertexUtilities.NewVertex(-1, -1, 1),
-                VertexUtilities.NewVertex(-1, 1, 1)
-            });
-
-            var expected = 4.0;
-
-            // Exercise system
-            var actual = fakeFace.Area();
-
-            // Verify outcome
-            TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.Equal(expected, actual);
-
-            // Teardown
-        }
     }
 }

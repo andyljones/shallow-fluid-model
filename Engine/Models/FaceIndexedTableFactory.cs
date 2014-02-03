@@ -48,20 +48,6 @@ namespace Engine.Models
         }
 
         /// <summary>
-        /// Constructs a table of the areas of the faces.
-        /// </summary>
-        public static double[] Areas(IPolyhedron surface)
-        {
-            var areas = new double[surface.Faces.Count];
-            foreach (var face in surface.Faces)
-            {
-                areas[surface.IndexOf(face)] = face.Area();
-            }
-
-            return areas;
-        }
-
-        /// <summary>
         /// Constructs a table of the neighbours of each face. 
         /// Neighbours are listed in the same order as given by surface.NeighboursOf.
         /// </summary>
@@ -153,5 +139,33 @@ namespace Engine.Models
             return indexOfFace;
         }
         #endregion
+
+        /// <summary>
+        /// Constructs a table of the area of intersection between each face and the vertices around it.
+        /// </summary>
+        public static double[][] AreaInEachVertex(IPolyhedron surface)
+        {
+            var allAreas = new double[surface.Faces.Count][];
+            foreach (var face in surface.Faces)
+            {
+                var vertices = face.Vertices;
+                var areas = vertices.Select(vertex => PolyhedronUtilities.AreaSharedByVertexAndFace(surface, vertex, face)).ToArray();
+
+                allAreas[surface.IndexOf(face)] = areas;
+            }
+
+            return allAreas;
+        }
+
+        /// <summary>
+        /// Constructs a table of the areas of the faces.
+        /// </summary>
+        public static double[] Areas(IPolyhedron surface)
+        {
+            var areasInEachVertex = AreaInEachVertex(surface);
+            var areas = surface.Faces.Select((face, i) => areasInEachVertex[i].Sum()).ToArray();
+
+            return areas;
+        }
     }
 }

@@ -304,5 +304,25 @@ namespace EngineTests.ModelsTests
 
             // Teardown
         }
+
+        [Theory]
+        [AutoCubeData]
+        public void AreasInEachVertex_OnACube_ShouldAllBeCorrect
+            (IPolyhedron polyhedron)
+        {
+            // Fixture setup
+            var expected = Enumerable.Repeat(1.0, 24).ToList();
+
+            // Exercise system
+            var areas = FaceIndexedTableFactory.AreaInEachVertex(polyhedron);
+
+            // Verify outcome
+            var actual = areas.SelectMany(listOfAreas => listOfAreas).ToList();
+
+            TestUtilities.WriteExpectedAndActual(expected, actual);
+            Assert.True(TestUtilities.UnorderedEquals(expected, actual, TestUtilities.RelativeAccuracy));
+
+            // Teardown
+        }
     }
 }

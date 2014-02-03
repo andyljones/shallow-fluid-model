@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Engine.Polyhedra;
 using Engine.Utilities;
@@ -59,7 +58,7 @@ namespace Engine.Models
                 foreach (var edge in edges)
                 {
                     var neighbour = edge.Vertices().First(v => v != vertex);
-                    var bisectionPoint = surface.BisectionPoint(edge);
+                    var bisectionPoint = PolyhedronUtilities.BisectionPoint(surface, edge);
                     var length = (neighbour.Position - bisectionPoint).Norm();
                     //TODO: This is planar distance, not geodesic.
                     lengths.Add(length);
@@ -131,7 +130,6 @@ namespace Engine.Models
             return normals;
         }
 
-        #region AreaInEachFace methods
         /// <summary>
         /// Constructs a table of the area of intersection between each vertex and the faces around it.
         /// </summary>
@@ -141,41 +139,13 @@ namespace Engine.Models
             foreach (var vertex in surface.Vertices)
             {
                 var faces = surface.FacesOf(vertex);
-                var areas = new double[faces.Count];
-                for (int index = 0; index < faces.Count; index++)
-                {
-                    areas[index] = AreaSharedByVertexAndFace(surface, vertex, index);
-                }
+                var areas = faces.Select(face => PolyhedronUtilities.AreaSharedByVertexAndFace(surface, vertex, face)).ToArray();
 
                 allAreas[surface.IndexOf(vertex)] = areas;
             }
 
             return allAreas;
         }
-
-        private static double AreaSharedByVertexAndFace(IPolyhedron surface, Vertex vertex, int index)
-        {
-            var vertexPosition = vertex.Position;
-            var edges = surface.EdgesOf(vertex);
-
-            var face = surface.FacesOf(vertex)[index];
-            var midpointOfFace = face.Center();
-
-            var previousEdge = edges.AtCyclicIndex(index - 1);         
-            var midpointOfPreviousEdge = surface.BisectionPoint(previousEdge);
-
-            var nextEdge = edges.AtCyclicIndex(index);
-            var midpointOfNextEdge = surface.BisectionPoint(nextEdge);
-
-            var crossProductOfFirstSegment = Vector.CrossProduct(midpointOfPreviousEdge - vertexPosition, midpointOfFace - vertexPosition);
-            var areaOfFirstSegment = Vector.ScalarProduct(crossProductOfFirstSegment, midpointOfFace) / 2;
-
-            var crossProductOfSecondSegment = Vector.CrossProduct(midpointOfFace - vertexPosition, midpointOfNextEdge - vertexPosition);
-            var areaOfSecondSegment = Vector.ScalarProduct(crossProductOfSecondSegment, midpointOfFace) / 2;
-
-            return areaOfFirstSegment + areaOfSecondSegment;
-        }
-        #endregion
 
 
         /// <summary>
@@ -186,12 +156,7 @@ namespace Engine.Models
         public static double[] Areas(IPolyhedron surface)
         {
             var areasInEachFace = AreaInEachFace(surface);
-            var areas = new double[surface.Vertices.Count];
-            foreach (var vertex in surface.Vertices)
-            {
-                var vertexIndex = surface.IndexOf(vertex);
-                areas[vertexIndex] = areasInEachFace[vertexIndex].Sum();
-            }
+            var areas = surface.Vertices.Select((vertex, i) => areasInEachFace[i].Sum()).ToArray();
 
             return areas;
         }
