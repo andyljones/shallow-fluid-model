@@ -16,7 +16,7 @@ namespace EngineTests.ModelsTests.VorticityDivergenceModelTests
         [Theory]
         [AutoFieldsOnCubeData]
         public void Jacobian_OfAnyTwoFieldsOnACube_ShouldSumToZero
-            (FieldOperators operators, ScalarField<Face> A, ScalarField<Face> B)
+            (ScalarFieldOperators operators, ScalarField<Face> A, ScalarField<Face> B)
         {
             // Fixture setup
             var expected = 0.0;
@@ -36,7 +36,7 @@ namespace EngineTests.ModelsTests.VorticityDivergenceModelTests
         [Theory]
         [AutoFieldsOnCubeData]
         public void FluxDivergence_OfAnyTwoFieldsOnACube_ShouldSumToZero
-            (FieldOperators operators, ScalarField<Face> A, ScalarField<Face> B)
+            (ScalarFieldOperators operators, ScalarField<Face> A, ScalarField<Face> B)
         {
             // Fixture setup
             var expected = 0.0;
@@ -56,7 +56,7 @@ namespace EngineTests.ModelsTests.VorticityDivergenceModelTests
         [Theory]
         [AutoFieldsOnCubeData]
         public void Laplacian_OfAnyTwoFieldsOnACube_ShouldSumToZero
-            (FieldOperators operators, ScalarField<Face> A)
+            (ScalarFieldOperators operators, ScalarField<Face> A)
         {
             // Fixture setup
             var expected = 0.0;

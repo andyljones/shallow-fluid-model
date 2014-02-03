@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Engine.Polyhedra;
 
 namespace Engine.Models.VorticityDivergenceModel
@@ -12,15 +13,16 @@ namespace Engine.Models.VorticityDivergenceModel
         public static ScalarField<Face> CoriolisField(IPolyhedron surface, double rotationFrequency)
         {
             var angularVelocity = 2*Math.PI*rotationFrequency;
-
-            var values = new double[surface.Faces.Count];
-            foreach (var face in surface.Faces)
-            {
-                var faceIndex = surface.IndexOf(face);
-                values[faceIndex] = 2*angularVelocity*face.SphericalCenter().Normalize()[2];
-            }
+            var values = surface.Faces.Select(face => 2*angularVelocity*face.SphericalCenter().Normalize()[2]).ToArray();
 
             return new ScalarField<Face>(surface.IndexOf, values);
+        }
+
+        public static VectorField<Face> NormalsField(IPolyhedron surface)
+        {
+            var values = surface.Faces.Select(face => face.SphericalCenter().Normalize()).ToArray();
+
+            return new VectorField<Face>(surface.IndexOf, values);
         }
     }
 }

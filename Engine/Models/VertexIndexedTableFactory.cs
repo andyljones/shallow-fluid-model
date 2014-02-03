@@ -48,7 +48,7 @@ namespace Engine.Models
         /// <summary>
         /// Constructs a table of the distances from each vertex to the bisectors running across each neighbouring edge.
         /// </summary>
-        public static double[][] BisectorDistances(IPolyhedron surface)
+        public static double[][] HalfEdgeLengths(IPolyhedron surface)
         {
             var halfLengthsTable = new double[surface.Vertices.Count][];
             foreach (var vertex in surface.Vertices)
@@ -58,9 +58,9 @@ namespace Engine.Models
                 foreach (var edge in edges)
                 {
                     var neighbour = edge.Vertices().First(v => v != vertex);
-                    var center = surface.FacesOf(edge).First().SphericalCenter();
-                    var length = Vector.ScalarProduct(center - vertex.Position, (neighbour.Position - vertex.Position).Normalize());
-                    //TODO: This is a flat distance, not a geodesic
+                    var bisectionPoint = surface.BisectionPoint(edge);
+                    var length = (neighbour.Position - bisectionPoint).Norm();
+                    //TODO: This is planar distance, not geodesic.
                     lengths.Add(length);
                 }
                 halfLengthsTable[surface.IndexOf(vertex)] = lengths.ToArray();
@@ -149,5 +149,18 @@ namespace Engine.Models
 
             return normals;
         }
+
+        //public static double[][] AreaInEachFace(IPolyhedron surface)
+        //{
+        //    var areas = new double[surface.Vertices.Count][];
+        //    foreach (var vertex in surface.Vertices)
+        //    {
+        //        var faces = surface.FacesOf(vertex);
+        //        for (int face = 0; face < faces.Count; face++)
+        //        {
+        //            var previousEdge = 
+        //        }
+        //    }
+        //}
     }
 }

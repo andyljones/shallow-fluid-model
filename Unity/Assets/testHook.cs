@@ -29,7 +29,7 @@ namespace Assets
         private PrognosticFields<Face> oldFields;
         private PrognosticFields<Face> olderFields;
 
-        private FieldOperators _operators;
+        private ScalarFieldOperators _operators;
         private FieldIntegrator _integrator;
         private PrognosticFieldsFactory fieldsFactory;
 
@@ -64,7 +64,7 @@ namespace Assets
 
             fieldRenderer.Update(velocityField);
 
-            _operators = new FieldOperators(polyhedron);
+            _operators = new ScalarFieldOperators(polyhedron);
             _integrator = new FieldIntegrator(polyhedron, parameters);
         }
 

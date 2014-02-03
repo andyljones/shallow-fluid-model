@@ -4,7 +4,7 @@ namespace Engine.Models.VorticityDivergenceModel
 {
     public class PrognosticFieldsUpdater
     {
-        private readonly FieldOperators _operators;
+        private readonly ScalarFieldOperators _operators;
         private readonly FieldIntegrator _integrator;
         private readonly SimulationParameters _parameters;
 
@@ -12,7 +12,7 @@ namespace Engine.Models.VorticityDivergenceModel
 
         public PrognosticFieldsUpdater(IPolyhedron surface, SimulationParameters parameters)
         {
-            _operators = new FieldOperators(surface);
+            _operators = new ScalarFieldOperators(surface);
             _integrator = new FieldIntegrator(surface, parameters);
             _parameters = parameters;
 
@@ -40,7 +40,7 @@ namespace Engine.Models.VorticityDivergenceModel
             {
                 absoluteVorticity = NumericalDerivatives.Euler(_parameters.Timestep, fields.AbsoluteVorticity, derivativeOfAbsoluteVorticity);
                 divergence = NumericalDerivatives.Euler(_parameters.Timestep, fields.Divergence, derivativeOfDivergence);
-                height = NumericalDerivatives.Euler(_parameters.Timestep, (fields.Height, derivativeOfHeight);
+                height = NumericalDerivatives.Euler(_parameters.Timestep, fields.Height, derivativeOfHeight);
             }
 
             // Integral fields.

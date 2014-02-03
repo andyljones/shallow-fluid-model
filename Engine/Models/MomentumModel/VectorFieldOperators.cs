@@ -23,7 +23,7 @@ namespace Engine.Models.MomentumModel
             _polyhedron = polyhedron;
 
             _edgeNormals = VertexIndexedTableFactory.EdgeNormals(polyhedron);
-            _halfEdgeLengths = VertexIndexedTableFactory.BisectorDistances(polyhedron);
+            _halfEdgeLengths = VertexIndexedTableFactory.HalfEdgeLengths(polyhedron);
             _faces = VertexIndexedTableFactory.Faces(polyhedron);
             _areas = VertexIndexedTableFactory.Areas(polyhedron);
 
@@ -56,6 +56,7 @@ namespace Engine.Models.MomentumModel
             var result = Vector.Zeros(3);
             for (int j = 0; j < faces.Length; j++)
             {
+
                 result += A[faces[j]]*(bisectorDistances.AtCyclicIndex(j-1)*edgeNormals.AtCyclicIndex(j-1) - bisectorDistances[j]*edgeNormals[j]);
             }
 
@@ -193,6 +194,38 @@ namespace Engine.Models.MomentumModel
 
             return Vector.CrossProduct(sumOfNormals, V[vertex]);
         }
+        #endregion
+
+        #region VertexAverages methods.
+        public ScalarField<Vertex> VertexAverages(ScalarField<Face> F)
+        {
+            var numberOfVertices = _polyhedron.Vertices.Count;
+
+            var averages = new double[numberOfVertices];
+            for (int vertex = 0; vertex < numberOfVertices; vertex++)
+            {
+                averages[vertex] = VertexAverage(vertex, F);
+            }
+
+            return new ScalarField<Vertex>(_polyhedron.IndexOf, averages);
+        }
+
+        private double VertexAverage(int vertex, ScalarField<Face> F)
+        {
+            var faces = _faces[vertex];
+
+            var sum = 0.0;
+            for (int index = 0; index < faces.Length; index++)
+            {
+                sum += F[faces[index]];
+            }
+            
+            return sum / faces.Length;
+        }
+        #endregion
+
+        #region Kinetic energy
+
         #endregion
     }
 }

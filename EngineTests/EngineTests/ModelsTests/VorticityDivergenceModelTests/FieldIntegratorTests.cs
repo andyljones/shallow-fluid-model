@@ -16,7 +16,7 @@ namespace EngineTests.ModelsTests.VorticityDivergenceModelTests
         [Theory]
         [AutoFieldIntegratorData(20)]
         public void Integrate_ingAFieldWithALargeNumberOfIterations_ShouldReturnAFieldWhoseDerivativeMatchesTheInputField
-            (FieldIntegrator integrator, ScalarField<Face> randomField, FieldOperators operators)
+            (FieldIntegrator integrator, ScalarField<Face> randomField, ScalarFieldOperators operators)
         {
             // Fixture setup
             var zero = new ScalarField<Face>(randomField.IndexOf, Enumerable.Repeat(0.0, randomField.Count).ToArray());

@@ -7,7 +7,7 @@ namespace Engine.Models.VorticityDivergenceModel
     /// <summary>
     /// Difference functions for use in the simulation.
     /// </summary>
-    public class FieldOperators
+    public class ScalarFieldOperators
     {
         private readonly double[] _areas;
         private readonly int[][] _neighbours;
@@ -19,7 +19,7 @@ namespace Engine.Models.VorticityDivergenceModel
         /// <summary>
         /// Constructs a set of difference functions for use over the given surface, with faces indexed by Index. 
         /// </summary>
-        public FieldOperators(IPolyhedron surface)
+        public ScalarFieldOperators(IPolyhedron surface)
         {
             _areas =       FaceIndexedTableFactory.Areas(surface);
             _neighbours =  FaceIndexedTableFactory.Neighbours(surface);

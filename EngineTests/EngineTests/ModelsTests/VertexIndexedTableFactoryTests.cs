@@ -63,7 +63,7 @@ namespace EngineTests.ModelsTests
             var expected = Enumerable.Repeat(3, 8).ToList();
 
             // Exercise system
-            var edgeLengths = VertexIndexedTableFactory.BisectorDistances(polyhedron);
+            var edgeLengths = VertexIndexedTableFactory.HalfEdgeLengths(polyhedron);
 
             var actual = edgeLengths.Select(list => list.Count()).ToList();
 
@@ -84,7 +84,7 @@ namespace EngineTests.ModelsTests
             var expected = Enumerable.Repeat(correctLength, 24).ToList();
 
             // Exercise system
-            var edgeLengths = VertexIndexedTableFactory.BisectorDistances(polyhedron);
+            var edgeLengths = VertexIndexedTableFactory.HalfEdgeLengths(polyhedron);
 
             var actual = edgeLengths.SelectMany(list => list).ToList();
 

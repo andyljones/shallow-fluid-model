@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Polyhedra
 {
@@ -29,6 +30,21 @@ namespace Engine.Polyhedra
             var neighbours = edges.SelectMany(edge => edge.Vertices().Except(vertexSingleton));
 
             return neighbours.Where(neighbour => neighbour != vertex);
+        }
+
+
+        //TODO: test.
+        public static Vector BisectionPoint(this IPolyhedron polyhedron, Edge edge)
+        {
+            var aFace = polyhedron.FacesOf(edge).First();
+            var origin = edge.A.Position;
+
+            var edgeVector = edge.B.Position - origin;
+            var vectorToFace = aFace.SphericalCenter() - origin;
+
+            var vectorToBisector = Vector.ScalarProduct(vectorToFace, edgeVector.Normalize())*edgeVector.Normalize();
+
+            return vectorToBisector + origin;
         }
     }
 }

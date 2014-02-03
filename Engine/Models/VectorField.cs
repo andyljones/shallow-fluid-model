@@ -64,6 +64,16 @@ namespace Engine.Models
             return new VectorField<T>(a.IndexOf, newValues);
         }
 
+        public static ScalarField<T> ScalarProduct(VectorField<T> a, VectorField<T> b)
+        {
+            var newValues = new double[a.Values.Length];
+            for (int i = 0; i < a.Values.Length; i++)
+            {
+                newValues[i] = Vector.ScalarProduct(a.Values[i], b.Values[i]);
+            }
+            return new ScalarField<T>(a.IndexOf, newValues);
+        }
+
         public IEnumerator<Vector> GetEnumerator()
         {
             return Values.ToList().GetEnumerator();
