@@ -11,13 +11,15 @@ namespace Engine.Models.MomentumModel
         private readonly IPolyhedron _polyhedron;
 
         private readonly int[][] _faces;
-        private readonly double[] _areas;
+        private readonly double[] _vertexAreas;
         private readonly double[][] _areaInEachFace;
         private readonly double[][] _halfEdgeLengths;        
         private readonly Vector[][] _edgeNormals;
 
+        private readonly double[][] _areaInEachVertex;
         private readonly int[][] _faceInFacesOfVertices;
         private readonly int[][] _vertices;
+        private readonly double[] _faceAreas;
 
         public VectorFieldOperators(IPolyhedron polyhedron)
         {
@@ -26,9 +28,11 @@ namespace Engine.Models.MomentumModel
             _edgeNormals = VertexIndexedTableFactory.EdgeNormals(polyhedron);
             _halfEdgeLengths = VertexIndexedTableFactory.HalfEdgeLengths(polyhedron);
             _faces = VertexIndexedTableFactory.Faces(polyhedron);
-            _areas = VertexIndexedTableFactory.Areas(polyhedron);
+            _vertexAreas = VertexIndexedTableFactory.Areas(polyhedron);
             _areaInEachFace = VertexIndexedTableFactory.AreaInEachFace(polyhedron);
 
+            _faceAreas = FaceIndexedTableFactory.Areas(polyhedron);
+            _areaInEachVertex = FaceIndexedTableFactory.AreaInEachVertex(polyhedron);
             _faceInFacesOfVertices = FaceIndexedTableFactory.FaceInFacesOfVertices(polyhedron);
             _vertices = FaceIndexedTableFactory.Vertices(polyhedron);
         }
@@ -62,13 +66,13 @@ namespace Engine.Models.MomentumModel
                 result += A[faces[j]]*(bisectorDistances.AtCyclicIndex(j-1)*edgeNormals.AtCyclicIndex(j-1) - bisectorDistances[j]*edgeNormals[j]);
             }
 
-            return result / _areas[vertex];
+            return result / _vertexAreas[vertex];
         }
         #endregion
 
         #region Divergence methods
         /// <summary>
-        /// The discrete divergence, as described in Randall & Ringler 2001.
+        /// The discrete divergence, as described in Randall & Ringler 2001 (p7)
         /// </summary>
         public ScalarField<Face> FluxDivergence(VectorField<Vertex> V, ScalarField<Face> F)
         {
@@ -99,7 +103,7 @@ namespace Engine.Models.MomentumModel
                 result += ContributionOfVertexToFluxAtFace(vertex, faceInFacesOfVertex, fluxes, F);
             }
 
-            return result / _areas[face];
+            return result / _faceAreas[face];
         }
 
         private double ContributionOfVertexToFluxAtFace(int vertex, int faceInFacesOfVertex, double[][] fluxes, ScalarField<Face> F)
@@ -154,7 +158,7 @@ namespace Engine.Models.MomentumModel
 
         #region Curl methods.
         /// <summary>
-        /// The discrete curl, as described in Randall & Ringler 2001.
+        /// The discrete curl, as described in Randall & Ringler 2001 (p7)
         /// </summary>
         public VectorField<Face> Curl(VectorField<Vertex> V)
         {
@@ -181,7 +185,7 @@ namespace Engine.Models.MomentumModel
                 result += ContributionOfVertexToCurlAtFace(vertices[index], indexOfFaceInVertex, V);
             }
 
-            return result/_areas[face];
+            return result/_faceAreas[face];
         }
 
         private Vector ContributionOfVertexToCurlAtFace(int vertex, int indexOfFaceInVertex, VectorField<Vertex> V)
@@ -199,6 +203,9 @@ namespace Engine.Models.MomentumModel
         #endregion
 
         #region VertexAverages methods.
+        /// <summary>
+        /// The vertex averaging operator, as described in Randall & Ringler 2001 (p16)
+        /// </summary>
         public ScalarField<Vertex> VertexAverages(ScalarField<Face> F)
         {
             var numberOfVertices = _polyhedron.Vertices.Count;
@@ -230,7 +237,36 @@ namespace Engine.Models.MomentumModel
         #endregion
 
         #region Kinetic energy
+        /// <summary>
+        /// The kinetic energy, as described in Randall & Ringler 2001 (p44)
+        /// </summary>
+        public ScalarField<Face> KineticEnergy(VectorField<Vertex> V)
+        {
+            var numberOfFaces = _polyhedron.Faces.Count;
 
+            var results = new double[numberOfFaces];
+            for (int face = 0; face < numberOfFaces; face++)
+            {
+                results[face] = KineticEnergyAtFace(face, V);
+            }
+
+            return new ScalarField<Face>(_polyhedron.IndexOf, results);
+        }
+
+        private double KineticEnergyAtFace(int face, VectorField<Vertex> V)
+        {
+            var vertices = _vertices[face];
+            var areasInVertices = _areaInEachVertex[face];
+
+            var result = 0.0;
+            for (int index = 0; index < vertices.Length; index++)
+            {
+                var vertex = vertices[index];
+                result += areasInVertices[index]*Vector.ScalarProduct(V[vertex], V[vertex])/2;
+            }
+
+            return result/_faceAreas[face];
+        }
         #endregion
     }
 }

@@ -56,5 +56,27 @@ namespace EngineTests.ModelsTests.MomentumModelTests
 
             // Teardown
         }
+
+        [Theory]
+        [AutoFieldsOnCubeData]
+        public void KineticEnergy_OverACube_ShouldSumToTheCorrectValue
+            (IPolyhedron polyhedron, VectorField<Vertex> V)
+        {
+            // Fixture setup
+            var operators = new VectorFieldOperators(polyhedron);
+
+            // Exercise system
+            var energy = operators.KineticEnergy(V);
+
+            // Verify outcome
+            var expected = 3.0 / 8.0 * V.Values.Select(v => v.Norm()*v.Norm()).Sum();
+
+            var actual = energy.Values.Sum();
+
+            TestUtilities.WriteExpectedAndActual(expected, actual);
+            Assert.True(Number.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
+
+            // Teardown
+        }
     }
 }

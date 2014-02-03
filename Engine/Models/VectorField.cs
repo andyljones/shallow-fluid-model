@@ -52,6 +52,16 @@ namespace Engine.Models
             }
             return new VectorField<T>(a.IndexOf, newValues);
         }
+
+        public static VectorField<T> operator *(ScalarField<T> a, VectorField<T> b)
+        {
+            var newValues = new Vector[a.Values.Length];
+            for (int i = 0; i < a.Values.Length; i++)
+            {
+                newValues[i] = a.Values[i] * b.Values[i];
+            }
+            return new VectorField<T>(a.IndexOf, newValues);
+        }
         #endregion
 
         public static VectorField<T> CrossProduct(VectorField<T> a, VectorField<T> b)
@@ -73,7 +83,7 @@ namespace Engine.Models
             }
             return new ScalarField<T>(a.IndexOf, newValues);
         }
-
+        
         public IEnumerator<Vector> GetEnumerator()
         {
             return Values.ToList().GetEnumerator();

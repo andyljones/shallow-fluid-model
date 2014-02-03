@@ -29,5 +29,13 @@ namespace Engine.Models
 
             return newField;
         }
+
+        public static VectorField<T> Euler<T>(double timestep, VectorField<T> field, VectorField<T> derivative)
+        {
+            var step = derivative;
+            var newField = field + timestep * step;
+
+            return newField;
+        }
     }
 }

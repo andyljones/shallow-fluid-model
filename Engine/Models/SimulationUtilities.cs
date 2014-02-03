@@ -18,11 +18,18 @@ namespace Engine.Models.VorticityDivergenceModel
             return new ScalarField<Face>(surface.IndexOf, values);
         }
 
-        public static VectorField<Face> NormalsField(IPolyhedron surface)
+        public static VectorField<Face> FaceNormalsField(IPolyhedron surface)
         {
             var values = surface.Faces.Select(face => face.SphericalCenter().Normalize()).ToArray();
 
             return new VectorField<Face>(surface.IndexOf, values);
+        }
+
+        public static VectorField<Vertex> VertexNormalsField(IPolyhedron surface)
+        {
+            var values = surface.Vertices.Select(vertex => vertex.Position.Normalize()).ToArray();
+
+            return new VectorField<Vertex>(surface.IndexOf, values);
         }
     }
 }
