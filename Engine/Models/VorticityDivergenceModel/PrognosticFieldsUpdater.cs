@@ -32,15 +32,15 @@ namespace Engine.Models.VorticityDivergenceModel
             ScalarField<Face> height;
             if (oldFields != null && olderFields != null)
             {
-                absoluteVorticity = AdamsBashforthUpdate(fields.AbsoluteVorticity, derivativeOfAbsoluteVorticity, oldFields.DerivativeOfAbsoluteVorticity, olderFields.DerivativeOfAbsoluteVorticity);
-                divergence = AdamsBashforthUpdate(fields.Divergence, derivativeOfDivergence, oldFields.DerivativeOfDivergence, olderFields.DerivativeOfDivergence);
-                height = AdamsBashforthUpdate(fields.Height, derivativeOfHeight, oldFields.DerivativeOfHeight, olderFields.DerivativeOfHeight);
+                absoluteVorticity = DifferentialStepper.AdamsBashforth(_parameters.Timestep, fields.AbsoluteVorticity, derivativeOfAbsoluteVorticity, oldFields.DerivativeOfAbsoluteVorticity, olderFields.DerivativeOfAbsoluteVorticity);
+                divergence = DifferentialStepper.AdamsBashforth(_parameters.Timestep, fields.Divergence, derivativeOfDivergence, oldFields.DerivativeOfDivergence, olderFields.DerivativeOfDivergence);
+                height = DifferentialStepper.AdamsBashforth(_parameters.Timestep, fields.Height, derivativeOfHeight, oldFields.DerivativeOfHeight, olderFields.DerivativeOfHeight);
             }
             else
             {
-                absoluteVorticity = EulerUpdate(fields.AbsoluteVorticity, derivativeOfAbsoluteVorticity);
-                divergence = EulerUpdate(fields.Divergence, derivativeOfDivergence);
-                height = EulerUpdate(fields.Height, derivativeOfHeight);
+                absoluteVorticity = DifferentialStepper.Euler(_parameters.Timestep, fields.AbsoluteVorticity, derivativeOfAbsoluteVorticity);
+                divergence = DifferentialStepper.Euler(_parameters.Timestep, fields.Divergence, derivativeOfDivergence);
+                height = DifferentialStepper.Euler(_parameters.Timestep, (fields.Height, derivativeOfHeight);
             }
 
             // Integral fields.
@@ -101,25 +101,6 @@ namespace Engine.Models.VorticityDivergenceModel
 
             return derivative;
         }
-
-        private ScalarField<Face> AdamsBashforthUpdate
-            (ScalarField<Face> field, ScalarField<Face> derivative, ScalarField<Face> oldDerivative, ScalarField<Face> olderDerivative)
-        {
-            var step = 1.0/12.0*(23*derivative - 16*oldDerivative + 5*olderDerivative);
-            var newField = field + _parameters.Timestep*step;
-
-            return newField;
-        }
-
-
-        private ScalarField<Face> EulerUpdate(ScalarField<Face> field, ScalarField<Face> derivative)
-        {
-            var step = derivative;
-            var newField = field + _parameters.Timestep*step;
-
-            return newField;
-        }
-
 
         private ScalarField<Face> NewStreamfunction(ScalarField<Face> streamfunction, ScalarField<Face> absoluteVorticity)
         {

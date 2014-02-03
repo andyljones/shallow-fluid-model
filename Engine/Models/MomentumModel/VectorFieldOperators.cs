@@ -9,15 +9,14 @@ namespace Engine.Models.MomentumModel
     public class VectorFieldOperators
     {
         private readonly IPolyhedron _polyhedron;
-                 
-        private readonly Vector[][] _edgeNormals;
-        private readonly double[][] _halfEdgeLengths;
+
         private readonly int[][] _faces;
         private readonly double[] _areas;
+        private readonly double[][] _halfEdgeLengths;        
+        private readonly Vector[][] _edgeNormals;
 
         private readonly int[][] _faceInFacesOfVertices;
         private readonly int[][] _vertices;
-        private readonly Vector[] _normals;
 
         public VectorFieldOperators(IPolyhedron polyhedron)
         {
@@ -30,7 +29,6 @@ namespace Engine.Models.MomentumModel
 
             _faceInFacesOfVertices = FaceIndexedTableFactory.FaceInFacesOfVertices(polyhedron);
             _vertices = FaceIndexedTableFactory.Vertices(polyhedron);
-            _normals = FaceIndexedTableFactory.Normals(polyhedron);
         }
 
         #region Gradient methods
@@ -66,6 +64,9 @@ namespace Engine.Models.MomentumModel
         #endregion
 
         #region Divergence methods
+        /// <summary>
+        /// The discrete divergence, as described in Randall & Ringler 2001.
+        /// </summary>
         public ScalarField<Face> FluxDivergence(VectorField<Vertex> V, ScalarField<Face> F)
         {
             var numberOfFaces = _polyhedron.Faces.Count;
@@ -149,6 +150,9 @@ namespace Engine.Models.MomentumModel
         #endregion
 
         #region Curl methods.
+        /// <summary>
+        /// The discrete curl, as described in Randall & Ringler 2001.
+        /// </summary>
         public VectorField<Face> Curl(VectorField<Vertex> V)
         {
             var numberOfFaces = _polyhedron.Faces.Count;
