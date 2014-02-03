@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Engine.Polyhedra;
 using Engine.Utilities;
-using EngineTests.Utilities;
 using Xunit;
 
 namespace EngineTests.PolyhedraTests

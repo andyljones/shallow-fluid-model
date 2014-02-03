@@ -3,11 +3,10 @@ using System.Linq;
 using Engine.Polyhedra;
 using Engine.Simulation;
 using EngineTests.AutoFixtureCustomizations;
-using EngineTests.Utilities;
 using Xunit;
 using Xunit.Extensions;
 
-namespace EngineTests.ModelTests
+namespace EngineTests.SimulationTests
 {
     public class FieldIntegratorTests
     {

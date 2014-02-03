@@ -1,6 +1,5 @@
 ﻿using System;
 using Engine.Utilities;
-using EngineTests.Utilities;
 using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;

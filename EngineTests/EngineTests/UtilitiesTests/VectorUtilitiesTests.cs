@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using Engine.Utilities;
-using EngineTests.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 using Ploeh.AutoFixture.Xunit;
 using Xunit;

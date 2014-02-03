@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using Engine.Polyhedra;
 using EngineTests.AutoFixtureCustomizations;
-using EngineTests.Utilities;
 using Xunit;
 using Xunit.Extensions;
 

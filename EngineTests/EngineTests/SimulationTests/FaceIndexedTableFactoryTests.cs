@@ -5,13 +5,12 @@ using Engine.Polyhedra;
 using Engine.Simulation;
 using Engine.Utilities;
 using EngineTests.AutoFixtureCustomizations;
-using EngineTests.Utilities;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Xunit;
 using Xunit.Extensions;
 
-namespace EngineTests.ModelTests
+namespace EngineTests.SimulationTests
 {
     public class FaceIndexedTableFactoryTests
     {

@@ -1,22 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using Engine.Polyhedra;
 using Engine.Simulation;
 using EngineTests.AutoFixtureCustomizations;
-using EngineTests.Utilities;
 using MathNet.Numerics;
 using Xunit;
 using Xunit.Extensions;
 
-namespace EngineTests.ModelTests
+namespace EngineTests.SimulationTests
 {
-    public class FieldOperatorsTests
+    public class ScalarFieldOperatorsTests
     {
         //TODO: Write more FieldOperators tests.
 
         [Theory]
-        [AutoScalarFieldOnCubeData]
+        [AutoFieldsOnCubeData]
         public void Jacobian_OfAnyTwoFieldsOnACube_ShouldSumToZero
             (FieldOperators operators, ScalarField<Face> A, ScalarField<Face> B)
         {
@@ -36,7 +33,7 @@ namespace EngineTests.ModelTests
         }
 
         [Theory]
-        [AutoScalarFieldOnCubeData]
+        [AutoFieldsOnCubeData]
         public void FluxDivergence_OfAnyTwoFieldsOnACube_ShouldSumToZero
             (FieldOperators operators, ScalarField<Face> A, ScalarField<Face> B)
         {
@@ -56,7 +53,7 @@ namespace EngineTests.ModelTests
         }
 
         [Theory]
-        [AutoScalarFieldOnCubeData]
+        [AutoFieldsOnCubeData]
         public void Laplacian_OfAnyTwoFieldsOnACube_ShouldSumToZero
             (FieldOperators operators, ScalarField<Face> A)
         {

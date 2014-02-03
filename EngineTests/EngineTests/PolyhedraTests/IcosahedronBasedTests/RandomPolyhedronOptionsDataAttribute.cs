@@ -1,6 +1,7 @@
 ﻿using System;
 using Engine;
 using Engine.Polyhedra;
+using Engine.Polyhedra.IcosahedronBased;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
 

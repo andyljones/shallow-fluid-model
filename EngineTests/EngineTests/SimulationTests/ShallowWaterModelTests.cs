@@ -1,4 +1,4 @@
-﻿namespace EngineTests.ModelTests
+﻿namespace EngineTests.SimulationTests
 {
     public class ShallowWaterModelTests
     {

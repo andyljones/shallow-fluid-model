@@ -3,12 +3,13 @@ using Ploeh.AutoFixture.Xunit;
 
 namespace EngineTests.AutoFixtureCustomizations
 {
-    public class AutoScalarFieldOnCubeDataAttribute : AutoDataAttribute
+    public class AutoFieldsOnCubeDataAttribute : AutoDataAttribute
     {
-        public AutoScalarFieldOnCubeDataAttribute()
+        public AutoFieldsOnCubeDataAttribute()
         {
             Fixture.Customize(new CubeCustomization());
             Fixture.Customize(new ScalarFieldCustomization());
+            Fixture.Customize(new VectorFieldCustomization());
         }
     }
 }

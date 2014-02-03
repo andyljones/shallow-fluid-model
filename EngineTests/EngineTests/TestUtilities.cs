@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
-using Xunit;
-using Xunit.Sdk;
 
-namespace EngineTests.Utilities
+namespace EngineTests
 {
     public static class TestUtilities
     {

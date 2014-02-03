@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using Engine.Polyhedra.IcosahedronBased;
-using EngineTests.Utilities;
 using MathNet.Numerics;
 using Xunit;
 

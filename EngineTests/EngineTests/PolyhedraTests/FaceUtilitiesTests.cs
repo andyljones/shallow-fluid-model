@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Engine.Polyhedra;
-using EngineTests.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 using Xunit;
 

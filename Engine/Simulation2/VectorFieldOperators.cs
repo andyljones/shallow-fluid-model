@@ -67,7 +67,7 @@ namespace Engine.Simulation2
         #endregion
 
         #region Divergence methods
-        public ScalarField<Face> Divergence(VectorField<Vertex> V, ScalarField<Face> F)
+        public ScalarField<Face> FluxDivergence(VectorField<Vertex> V, ScalarField<Face> F)
         {
             var numberOfFaces = _polyhedron.Faces.Count;
             var fluxes = FluxesAcrossHalfEdges(V);

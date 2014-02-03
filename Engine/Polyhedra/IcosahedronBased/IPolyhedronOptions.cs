@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Engine.Polyhedra
+﻿namespace Engine.Polyhedra.IcosahedronBased
 {
     public interface IPolyhedronOptions
     {
