@@ -18,7 +18,7 @@ namespace Engine.Simulation2
         private readonly int[][] _faces;
         private readonly double[] _areas;
 
-        private readonly int[][] _facesInVertices;
+        private readonly int[][] _faceInFacesOfVertices;
         private readonly int[][] _vertices;
         
         public VectorFieldOperators(IPolyhedron polyhedron)
@@ -30,7 +30,7 @@ namespace Engine.Simulation2
             _faces = VertexIndexedTableFactory.Faces(polyhedron);
             _areas = VertexIndexedTableFactory.Areas(polyhedron);
 
-            _facesInVertices = FaceIndexedTableFactory.FaceInVertices(polyhedron);
+            _faceInFacesOfVertices = FaceIndexedTableFactory.FaceInFacesOfVertices(polyhedron);
             _vertices = FaceIndexedTableFactory.Vertices(polyhedron);
         }
 
@@ -66,10 +66,11 @@ namespace Engine.Simulation2
         }
         #endregion
 
+        #region Divergence methods
         public ScalarField<Face> Divergence(VectorField<Vertex> V, ScalarField<Face> F)
         {
             var numberOfFaces = _polyhedron.Faces.Count;
-            var fluxes = HalfEdgeFluxes(V);
+            var fluxes = FluxesAcrossHalfEdges(V);
 
             var results = new double[numberOfFaces];
             for (int face = 0; face < numberOfFaces; face++)
@@ -80,7 +81,49 @@ namespace Engine.Simulation2
             return new ScalarField<Face>(_polyhedron.IndexOf, results);
         }
 
-        private double[][] HalfEdgeFluxes(VectorField<Vertex> V)
+        #region DivergenceAtFace methods
+        private double DivergenceAtFace(int face, double[][] fluxes, ScalarField<Face> F)
+        {
+            var vertices = _vertices[face];
+            var faceInFacesOfVertices = _faceInFacesOfVertices[face];
+
+            var result = 0.0;
+            for (int j = 0; j < faceInFacesOfVertices.Length; j++)
+            {
+                var thisVertex = vertices[j];
+                var faceInFacesOfVertex = faceInFacesOfVertices[j];
+
+                result += FieldFluxFromFaceNearVertex(thisVertex, faceInFacesOfVertex, fluxes, F);
+            }
+
+            return result / _areas[face];
+        }
+
+        private double FieldFluxFromFaceNearVertex(int vertex, int faceInFacesOfVertex, double[][] fluxes, ScalarField<Face> F)
+        {
+            var facesOfVertex = _faces[vertex];
+
+            var indexOfThisFace = facesOfVertex.AtCyclicIndex(faceInFacesOfVertex);
+            var valueAtThisFace = F[indexOfThisFace];
+
+            var indexOfNextFace = facesOfVertex.AtCyclicIndex(faceInFacesOfVertex + 1);
+            var valueAtNextFace = F[indexOfNextFace];
+            var valueAtNextHalfEdge = (valueAtNextFace + valueAtThisFace) / 2;
+            var fluxAtNextHalfEdge = fluxes[vertex][faceInFacesOfVertex];
+            var fieldFluxAtNextHalfEdge = valueAtNextHalfEdge*fluxAtNextHalfEdge;
+
+            var indexOfPreviousFace = facesOfVertex.AtCyclicIndex(faceInFacesOfVertex - 1);
+            var valueAtPreviousFace = F[indexOfPreviousFace];
+            var valueAtPreviousHalfEdge = (valueAtThisFace + valueAtPreviousFace) / 2;
+            var fluxAtPreviousHalfEdge = -fluxes[vertex].AtCyclicIndex(faceInFacesOfVertex - 1);
+            var fieldFluxAtPreviousHalfEdge = valueAtPreviousHalfEdge*fluxAtPreviousHalfEdge;
+
+            return fieldFluxAtNextHalfEdge + fieldFluxAtPreviousHalfEdge;
+        }
+        #endregion
+
+        #region FluxesAcrossHalfEdges methods
+        private double[][] FluxesAcrossHalfEdges(VectorField<Vertex> V)
         {
             var numberOfVertices = _polyhedron.Vertices.Count;
 
@@ -98,43 +141,12 @@ namespace Engine.Simulation2
             var fluxesAroundVertex = new double[edgeNormals.Length];
             for (int j = 0; j < edgeNormals.Length; j++)
             {
-                fluxesAroundVertex[j] = Vector.ScalarProduct(v, edgeNormals[j])*halfEdgeLengths[j];
+                fluxesAroundVertex[j] = Vector.ScalarProduct(v, edgeNormals[j]) * halfEdgeLengths[j];
             }
 
             return fluxesAroundVertex;
         }
-
-        private double DivergenceAtFace(int face, double[][] fluxes, ScalarField<Face> F)
-        {
-            var vertices = _vertices[face];
-            var indexOfFaceInVertices = _facesInVertices[face];
-
-            var result = 0.0;
-            for (int j = 0; j < indexOfFaceInVertices.Length; j++)
-            {
-                var thisVertex = vertices[j];
-                var indexOfFaceInVertex = indexOfFaceInVertices[j];
-
-                result += FieldFluxFromFaceAcrossVertex(thisVertex, indexOfFaceInVertex, fluxes, F);
-            }
-
-            return result / _areas[face];
-        }
-
-        private double FieldFluxFromFaceAcrossVertex(int vertex, int indexOfFaceInVertex, double[][] fluxes, ScalarField<Face> F)
-        {
-            var facesAroundVertex = _faces[vertex];
-            var valueAtThisFace = F[facesAroundVertex.AtCyclicIndex(indexOfFaceInVertex)];
-
-            var valueAtNextFace = F[facesAroundVertex.AtCyclicIndex(indexOfFaceInVertex + 1)];
-            var valueAtThisEdge = (valueAtNextFace + valueAtThisFace) / 2;
-            var fluxAtThisEdge = fluxes[vertex][indexOfFaceInVertex];
-
-            var valueAtPreviousFace = F[facesAroundVertex.AtCyclicIndex(indexOfFaceInVertex - 1)];
-            var valuesAtPreviousEdge = (valueAtThisFace + valueAtPreviousFace) / 2;
-            var fluxAtPreviousEdge = -fluxes[vertex].AtCyclicIndex(indexOfFaceInVertex - 1);
-
-            return valueAtThisEdge * fluxAtThisEdge + valuesAtPreviousEdge * fluxAtPreviousEdge;
-        }
+        #endregion
+        #endregion
     }
 }

@@ -287,7 +287,7 @@ namespace EngineTests.ModelTests
             // Fixture setup
 
             // Exercise system
-            var vertexIndices = FaceIndexedTableFactory.FaceInVertices(polyhedron);
+            var vertexIndices = FaceIndexedTableFactory.FaceInFacesOfVertices(polyhedron);
 
             // Verify outcome
             for (int i = 0; i < polyhedron.Faces.Count; i++)
