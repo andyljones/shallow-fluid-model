@@ -1,4 +1,4 @@
-﻿using Engine.Simulation;
+﻿using Engine.Models;
 using EngineTests.PolyhedraTests;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;

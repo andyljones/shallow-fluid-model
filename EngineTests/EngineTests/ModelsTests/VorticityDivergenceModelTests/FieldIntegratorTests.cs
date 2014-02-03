@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
+using Engine.Models;
+using Engine.Models.VorticityDivergenceModel;
 using Engine.Polyhedra;
-using Engine.Simulation;
 using EngineTests.AutoFixtureCustomizations;
 using Xunit;
 using Xunit.Extensions;
 
-namespace EngineTests.SimulationTests
+namespace EngineTests.ModelsTests.VorticityDivergenceModelTests
 {
     public class FieldIntegratorTests
     {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Engine.Simulation
+namespace Engine.Models
 {
     /// <summary>
     /// Represents a scalar field over a set of items.

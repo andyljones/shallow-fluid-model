@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Engine.Models;
 using Engine.Polyhedra;
-using Engine.Simulation;
 using Engine.Utilities;
 using EngineTests.AutoFixtureCustomizations;
 using MathNet.Numerics;
@@ -10,7 +10,7 @@ using MathNet.Numerics.LinearAlgebra;
 using Xunit;
 using Xunit.Extensions;
 
-namespace EngineTests.SimulationTests
+namespace EngineTests.ModelsTests
 {
     public class FaceIndexedTableFactoryTests
     {

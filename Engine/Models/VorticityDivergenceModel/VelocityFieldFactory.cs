@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Engine.Models.MomentumModel;
 using Engine.Polyhedra;
-using Engine.Simulation2;
-using MathNet.Numerics.LinearAlgebra;
 
-namespace Engine.Simulation
+namespace Engine.Models.VorticityDivergenceModel
 {
     public class VelocityFieldFactory
     {

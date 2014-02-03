@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace Engine.Simulation
+namespace Engine.Models
 {
     public class VectorField<T> : IEnumerable<Vector>
     {

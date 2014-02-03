@@ -1,14 +1,13 @@
 ﻿using System.Linq;
+using Engine.Models;
+using Engine.Models.MomentumModel;
 using Engine.Polyhedra;
-using Engine.Simulation;
-using Engine.Simulation2;
 using EngineTests.AutoFixtureCustomizations;
-using EngineTests.Utilities;
 using MathNet.Numerics;
 using Xunit;
 using Xunit.Extensions;
 
-namespace EngineTests.Simulation2Tests
+namespace EngineTests.ModelsTests.MomentumModelTests
 {
     public class VectorFieldOperatorsTests
     {

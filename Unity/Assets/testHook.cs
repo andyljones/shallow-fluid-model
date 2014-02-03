@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.Rendering;
 using Engine;
+using Engine.Models;
+using Engine.Models.VorticityDivergenceModel;
 using Engine.Polyhedra;
 using Engine.Polyhedra.IcosahedronBased;
-using Engine.Simulation;
 using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 

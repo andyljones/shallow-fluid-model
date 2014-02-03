@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Engine.Polyhedra;
 using Engine.Utilities;
 
-namespace Engine.Simulation
+namespace Engine.Models.VorticityDivergenceModel
 {
     /// <summary>
     /// Difference functions for use in the simulation.

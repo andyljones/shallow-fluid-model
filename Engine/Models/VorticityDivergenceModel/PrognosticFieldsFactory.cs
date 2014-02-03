@@ -2,7 +2,7 @@
 using System.Linq;
 using Engine.Polyhedra;
 
-namespace Engine.Simulation
+namespace Engine.Models.VorticityDivergenceModel
 {
     public class PrognosticFieldsFactory
     {

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Engine.Polyhedra;
+﻿using Engine.Polyhedra;
 
-namespace Engine.Simulation
+namespace Engine.Models.VorticityDivergenceModel
 {
     public class FieldUpdater
     {

@@ -4,7 +4,7 @@ using Engine.Polyhedra;
 using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace Engine.Simulation
+namespace Engine.Models
 {
     /// <summary>
     /// Static methods for constructing fast-access tables to geometric information about a surface.
