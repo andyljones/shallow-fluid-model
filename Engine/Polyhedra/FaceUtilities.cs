@@ -29,20 +29,28 @@ namespace Engine.Polyhedra
         public static Vector SphericalCenter(this Face face)
         {
             var vectors = face.Vertices.Select(v => v.Position).ToArray();
+
+            var center = face.Center();
+            var radius = vectors.Average(vector => vector.Norm());
+
+            return radius*center.Normalize();
+        }
+
+        public static Vector Center(this Face face)
+        {
+            var vectors = face.Vertices.Select(v => v.Position).ToArray();
             var centroid = Vector.Zeros(3);
             var area = 0.0;
             for (int i = 1; i < vectors.Length - 1; i++)
             {
-                var centroidOfTriangle = (vectors[0] + vectors[i] + vectors[i + 1])/3;
-                var areaOfTriangle = Vector.CrossProduct(vectors[i] - vectors[0], vectors[i + 1] - vectors[0]).Norm()/2;
-                centroid += areaOfTriangle*centroidOfTriangle;
+                var centroidOfTriangle = (vectors[0] + vectors[i] + vectors[i + 1]) / 3;
+                var areaOfTriangle = Vector.CrossProduct(vectors[i] - vectors[0], vectors[i + 1] - vectors[0]).Norm() / 2;
+                centroid += areaOfTriangle * centroidOfTriangle;
                 area += areaOfTriangle;
             }
-            centroid = centroid/area;
+            centroid = centroid / area;
 
-            var radius = vectors.Average(vector => vector.Norm());
-
-            return radius*centroid.Normalize();
+            return centroid;
         }
     }
 }

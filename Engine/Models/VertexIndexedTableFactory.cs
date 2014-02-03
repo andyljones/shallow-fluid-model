@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Engine.Polyhedra;
 using Engine.Utilities;
@@ -70,26 +71,6 @@ namespace Engine.Models
         }
 
         /// <summary>
-        /// Constructs a table of the spherical areas associated with each vertex. 
-        /// 
-        /// Only valid for degree-3 vertices.
-        /// </summary>
-        public static double[] Areas(IPolyhedron surface)
-        {
-            //TODO: Does not actually calculate spherical areas.
-            var areas = new double[surface.Vertices.Count];
-            foreach (var vertex in surface.Vertices)
-            {
-                var centers = surface.FacesOf(vertex).Select(face => face.SphericalCenter()).ToList();
-                var crossProduct = Vector.CrossProduct(centers[0] - centers[1], centers[2] - centers[1]);
-                var area = crossProduct.Norm()/2;
-                areas[surface.IndexOf(vertex)] = area;
-            }
-
-            return areas;
-        }
-
-        /// <summary>
         /// Constructs a table of the spherical distances from each vertex to its neighbours.
         /// </summary>
         public static double[][] Distances(IPolyhedron surface)
@@ -150,17 +131,69 @@ namespace Engine.Models
             return normals;
         }
 
-        //public static double[][] AreaInEachFace(IPolyhedron surface)
-        //{
-        //    var areas = new double[surface.Vertices.Count][];
-        //    foreach (var vertex in surface.Vertices)
-        //    {
-        //        var faces = surface.FacesOf(vertex);
-        //        for (int face = 0; face < faces.Count; face++)
-        //        {
-        //            var previousEdge = 
-        //        }
-        //    }
-        //}
+        #region AreaInEachFace methods
+        /// <summary>
+        /// Constructs a table of the area of intersection between each vertex and the faces around it.
+        /// </summary>
+        public static double[][] AreaInEachFace(IPolyhedron surface)
+        {
+            var allAreas = new double[surface.Vertices.Count][];
+            foreach (var vertex in surface.Vertices)
+            {
+                var faces = surface.FacesOf(vertex);
+                var areas = new double[faces.Count];
+                for (int index = 0; index < faces.Count; index++)
+                {
+                    areas[index] = AreaSharedByVertexAndFace(surface, vertex, index);
+                }
+
+                allAreas[surface.IndexOf(vertex)] = areas;
+            }
+
+            return allAreas;
+        }
+
+        private static double AreaSharedByVertexAndFace(IPolyhedron surface, Vertex vertex, int index)
+        {
+            var vertexPosition = vertex.Position;
+            var edges = surface.EdgesOf(vertex);
+
+            var face = surface.FacesOf(vertex)[index];
+            var midpointOfFace = face.Center();
+
+            var previousEdge = edges.AtCyclicIndex(index - 1);         
+            var midpointOfPreviousEdge = surface.BisectionPoint(previousEdge);
+
+            var nextEdge = edges.AtCyclicIndex(index);
+            var midpointOfNextEdge = surface.BisectionPoint(nextEdge);
+
+            var crossProductOfFirstSegment = Vector.CrossProduct(midpointOfPreviousEdge - vertexPosition, midpointOfFace - vertexPosition);
+            var areaOfFirstSegment = Vector.ScalarProduct(crossProductOfFirstSegment, midpointOfFace) / 2;
+
+            var crossProductOfSecondSegment = Vector.CrossProduct(midpointOfFace - vertexPosition, midpointOfNextEdge - vertexPosition);
+            var areaOfSecondSegment = Vector.ScalarProduct(crossProductOfSecondSegment, midpointOfFace) / 2;
+
+            return areaOfFirstSegment + areaOfSecondSegment;
+        }
+        #endregion
+
+
+        /// <summary>
+        /// Constructs a table of the spherical areas associated with each vertex. 
+        /// 
+        /// Only valid for degree-3 vertices.
+        /// </summary>
+        public static double[] Areas(IPolyhedron surface)
+        {
+            var areasInEachFace = AreaInEachFace(surface);
+            var areas = new double[surface.Vertices.Count];
+            foreach (var vertex in surface.Vertices)
+            {
+                var vertexIndex = surface.IndexOf(vertex);
+                areas[vertexIndex] = areasInEachFace[vertexIndex].Sum();
+            }
+
+            return areas;
+        }
     }
 }

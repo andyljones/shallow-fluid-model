@@ -12,6 +12,7 @@ namespace Engine.Models.MomentumModel
 
         private readonly int[][] _faces;
         private readonly double[] _areas;
+        private readonly double[][] _areaInEachFace;
         private readonly double[][] _halfEdgeLengths;        
         private readonly Vector[][] _edgeNormals;
 
@@ -26,6 +27,7 @@ namespace Engine.Models.MomentumModel
             _halfEdgeLengths = VertexIndexedTableFactory.HalfEdgeLengths(polyhedron);
             _faces = VertexIndexedTableFactory.Faces(polyhedron);
             _areas = VertexIndexedTableFactory.Areas(polyhedron);
+            _areaInEachFace = VertexIndexedTableFactory.AreaInEachFace(polyhedron);
 
             _faceInFacesOfVertices = FaceIndexedTableFactory.FaceInFacesOfVertices(polyhedron);
             _vertices = FaceIndexedTableFactory.Vertices(polyhedron);
@@ -213,14 +215,17 @@ namespace Engine.Models.MomentumModel
         private double VertexAverage(int vertex, ScalarField<Face> F)
         {
             var faces = _faces[vertex];
+            var areaPerFace = _areaInEachFace[vertex];
 
-            var sum = 0.0;
+            var weightedSum = 0.0;
+            var totalArea = 0.0;
             for (int index = 0; index < faces.Length; index++)
             {
-                sum += F[faces[index]];
+                weightedSum += F[faces[index]]*areaPerFace[index];
+                totalArea += areaPerFace[index];
             }
             
-            return sum / faces.Length;
+            return weightedSum / totalArea;
         }
         #endregion
 

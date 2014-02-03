@@ -26,12 +26,21 @@ namespace Engine.Polyhedra
         private readonly List<Vertex> _vertices;
 
         #region Lookup functions
+        /// <summary>
+        /// The edges of each vertex, ordered so that the ith edge in EdgesOf(v) is anticlockwise of the ith face in FacesOf(v)
+        /// </summary>
         public List<Edge> EdgesOf(Vertex vertex) { return _vertexToEdges[vertex]; }
         private readonly Dictionary<Vertex, List<Edge>> _vertexToEdges;
 
+        /// <summary>
+        /// The edges of each face, ordered so that the ith vertex in VerticesOf(f) is anticlockwise of the ith edge in EdgesOf(v)
+        /// </summary>
         public List<Edge> EdgesOf(Face face) { return _faceToEdges[face]; }
         private readonly Dictionary<Face, List<Edge>> _faceToEdges;
 
+        /// <summary>
+        /// The faces of each vertex, ordered so that the ith edge in EdgesOf(v) is clockwise of the ith face in FacesOf(v)
+        /// </summary>
         public List<Face> FacesOf(Vertex vertex) { return _vertexToFaces[vertex]; } 
         private readonly Dictionary<Vertex, List<Face>> _vertexToFaces;
 
@@ -60,7 +69,7 @@ namespace Engine.Polyhedra
             _edges = PolyhedronInitialization.Edges(Faces);
 
             _vertexToEdges = PolyhedronInitialization.VertexToEdgeDictionary(Vertices, Edges);
-            _vertexToFaces = PolyhedronInitialization.VertexToFaceDictionary(Vertices, Faces);
+            _vertexToFaces = PolyhedronInitialization.VertexToFaceDictionary(Vertices, Faces, _vertexToEdges);
             _faceToEdges = PolyhedronInitialization.FaceToEdgeDictionary(Faces, EdgesOf);
             _edgeToFaces = PolyhedronInitialization.EdgeToFaceDictionary(Edges, Faces, EdgesOf);
 

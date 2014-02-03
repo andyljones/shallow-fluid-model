@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Engine.Models;
 using Engine.Polyhedra;
@@ -184,7 +185,7 @@ namespace EngineTests.ModelsTests
             (IPolyhedron polyhedron)
         {
             // Fixture setup
-            var correctArea = 1.5*Math.Sqrt(3);
+            var correctArea = 3.0;
             var expected = Enumerable.Repeat(correctArea, 8).ToList();
 
             // Exercise system
@@ -275,6 +276,26 @@ namespace EngineTests.ModelsTests
                     Assert.True(polyhedron.EdgesOf(thisFace).Contains(thisEdge));
                 }
             }
+
+            // Teardown
+        }
+
+        [Theory]
+        [AutoCubeData]
+        public void AreasInEachFace_OnACube_ShouldAllBeCorrect
+            (IPolyhedron polyhedron)
+        {
+            // Fixture setup
+            var expected = Enumerable.Repeat(1.0, 24).ToList();
+
+            // Exercise system
+            var areas = VertexIndexedTableFactory.AreaInEachFace(polyhedron);
+
+            // Verify outcome
+            var actual = areas.SelectMany(listOfAreas => listOfAreas).ToList();
+
+            TestUtilities.WriteExpectedAndActual(expected, actual);
+            Assert.True(TestUtilities.UnorderedEquals(expected, actual, TestUtilities.RelativeAccuracy));
 
             // Teardown
         }

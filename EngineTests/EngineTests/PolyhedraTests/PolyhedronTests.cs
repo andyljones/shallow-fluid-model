@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Engine.Polyhedra;
+using Engine.Utilities;
 using EngineTests.AutoFixtureCustomizations;
 using Xunit;
 using Xunit.Extensions;
@@ -155,6 +156,31 @@ namespace EngineTests.PolyhedraTests
             // Teardown
         }
 
+
+        [Theory]
+        [AutoCubeData]
+        public void EdgesOf_OverEachFace_IsInCorrectOrderWithRespectToTheVerticesOfTheFace
+            (IPolyhedron polyhedron)
+        {
+            // Fixture setup
+
+            // Exercise system
+
+            // Verify outcome
+            foreach (var face in polyhedron.Faces)
+            {
+                var expected = face.Vertices;
+
+                var edges = polyhedron.EdgesOf(face);
+                var actual = edges.SelectMany((edge, i) => edge.Vertices().Intersect(edges.AtCyclicIndex(i - 1).Vertices())).ToList();
+
+                TestUtilities.WriteExpectedAndActual(expected, actual);
+                Assert.True(Enumerable.SequenceEqual(expected, actual));
+            }
+
+            // Teardown
+        }
+
         [Theory]
         [AutoCubeData]
         public void FacesOf_OverAllVertices_ReturnsAllFaces
@@ -208,6 +234,30 @@ namespace EngineTests.PolyhedraTests
             Debug.WriteLine("Number of edges: " + e);
             Debug.WriteLine("Number of faces: " + f);
             Assert.True(v - e + f == 2);
+
+            // Teardown
+        }
+
+        [Theory]
+        [AutoCubeData]
+        public void FacesOf_OnEachVertex_IsInCorrectOrderWithRespectToEdgesOf
+            (IPolyhedron polyhedron)
+        {
+            // Fixture setup
+
+            // Exercise system
+
+            // Verify outcome
+            foreach (var vertex in polyhedron.Vertices)
+            {
+                var edges = polyhedron.EdgesOf(vertex);
+                var expected = edges.SelectMany((edge, i) => polyhedron.FacesOf(edge).Intersect(polyhedron.FacesOf(edges.AtCyclicIndex(i-1)))).ToList();
+
+                var actual = polyhedron.FacesOf(vertex);
+
+                TestUtilities.WriteExpectedAndActual(expected, actual);
+                Assert.True(Enumerable.SequenceEqual(expected, actual));
+            }
 
             // Teardown
         }

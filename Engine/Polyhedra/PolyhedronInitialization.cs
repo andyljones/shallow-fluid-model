@@ -66,7 +66,8 @@ namespace Engine.Polyhedra
             return vertexToEdges;
         }
 
-        public static Dictionary<Vertex, List<Face>> VertexToFaceDictionary(List<Vertex> vertices, List<Face> faces)
+        public static Dictionary<Vertex, List<Face>> 
+            VertexToFaceDictionary(List<Vertex> vertices, List<Face> faces, Dictionary<Vertex, List<Edge>> vertexToEdges)
         {
             var vertexToFaces = vertices.ToDictionary(vertex => vertex, vertex => new List<Face>());
             foreach (var face in faces)
@@ -79,11 +80,28 @@ namespace Engine.Polyhedra
 
             foreach (var vertex in vertices)
             {
-                var comparer = new AnticlockwiseComparer(vertex.Position, -vertex.Position);
-                vertexToFaces[vertex] = vertexToFaces[vertex].OrderBy(face => face.SphericalCenter(), comparer).ToList();
+                var edgesAroundVertex = vertexToEdges[vertex];
+                var facesAroundVertex = vertexToFaces[vertex];
+
+                vertexToFaces[vertex] = SortFacesToMatchEdgeOrder(vertex, edgesAroundVertex, facesAroundVertex);
             }
 
             return vertexToFaces;
+        }
+
+        private static List<Face> SortFacesToMatchEdgeOrder(Vertex vertex, List<Edge> edges, List<Face> faces)
+        {
+            var orderedFaces = new List<Face>();
+            for (int index = 0; index < edges.Count; index++)
+            {
+                var previousNeighbour = edges.AtCyclicIndex(index).Vertices().First(v => v != vertex);
+                var nextNeighbour = edges.AtCyclicIndex(index - 1).Vertices().First(v => v != vertex);
+
+                var faceBetween = faces.First(face => face.Vertices.Contains(previousNeighbour) && face.Vertices.Contains(nextNeighbour));
+                orderedFaces.Add(faceBetween);
+            }
+
+            return orderedFaces;
         }
 
         #region FaceToEdgeDictionary methods
