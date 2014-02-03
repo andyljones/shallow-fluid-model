@@ -23,7 +23,7 @@ namespace Assets
 
         private PolyhedronRenderer polyhedronRenderer;
         private VelocityFieldFactory velocityFieldFactory;
-        private FieldUpdater updater;
+        private PrognosticFieldsUpdater updater;
 
         private PrognosticFields<Face> fields;
         private PrognosticFields<Face> oldFields;
@@ -58,7 +58,7 @@ namespace Assets
                 Timestep = 300
             };
 
-            updater = new FieldUpdater(polyhedron, parameters);
+            updater = new PrognosticFieldsUpdater(polyhedron, parameters);
 
             var velocityField = velocityFieldFactory.VelocityField(fields.Streamfunction, fields.VelocityPotential);
 

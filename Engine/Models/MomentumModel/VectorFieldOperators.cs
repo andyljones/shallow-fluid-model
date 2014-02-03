@@ -1,37 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using Engine.Polyhedra;
-using Engine.Simulation;
 using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace Engine.Simulation2
+namespace Engine.Models.MomentumModel
 {
     public class VectorFieldOperators
     {
         private readonly IPolyhedron _polyhedron;
                  
         private readonly Vector[][] _edgeNormals;
-        private readonly double[][] _bisectorDistances;
+        private readonly double[][] _halfEdgeLengths;
         private readonly int[][] _faces;
         private readonly double[] _areas;
 
         private readonly int[][] _faceInFacesOfVertices;
         private readonly int[][] _vertices;
-        
+        private readonly Vector[] _normals;
+
         public VectorFieldOperators(IPolyhedron polyhedron)
         {
             _polyhedron = polyhedron;
 
             _edgeNormals = VertexIndexedTableFactory.EdgeNormals(polyhedron);
-            _bisectorDistances = VertexIndexedTableFactory.BisectorDistances(polyhedron);
+            _halfEdgeLengths = VertexIndexedTableFactory.BisectorDistances(polyhedron);
             _faces = VertexIndexedTableFactory.Faces(polyhedron);
             _areas = VertexIndexedTableFactory.Areas(polyhedron);
 
             _faceInFacesOfVertices = FaceIndexedTableFactory.FaceInFacesOfVertices(polyhedron);
             _vertices = FaceIndexedTableFactory.Vertices(polyhedron);
+            _normals = FaceIndexedTableFactory.Normals(polyhedron);
         }
 
         #region Gradient methods
@@ -53,7 +52,7 @@ namespace Engine.Simulation2
         private Vector GradientAtVertex(int vertex, ScalarField<Face> A)
         {
             var faces = _faces[vertex];
-            var bisectorDistances = _bisectorDistances[vertex];
+            var bisectorDistances = _halfEdgeLengths[vertex];
             var edgeNormals = _edgeNormals[vertex];
 
             var result = Vector.Zeros(3);
@@ -90,16 +89,16 @@ namespace Engine.Simulation2
             var result = 0.0;
             for (int j = 0; j < faceInFacesOfVertices.Length; j++)
             {
-                var thisVertex = vertices[j];
+                var vertex = vertices[j];
                 var faceInFacesOfVertex = faceInFacesOfVertices[j];
 
-                result += FieldFluxFromFaceNearVertex(thisVertex, faceInFacesOfVertex, fluxes, F);
+                result += ContributionOfVertexToFluxAtFace(vertex, faceInFacesOfVertex, fluxes, F);
             }
 
             return result / _areas[face];
         }
 
-        private double FieldFluxFromFaceNearVertex(int vertex, int faceInFacesOfVertex, double[][] fluxes, ScalarField<Face> F)
+        private double ContributionOfVertexToFluxAtFace(int vertex, int faceInFacesOfVertex, double[][] fluxes, ScalarField<Face> F)
         {
             var facesOfVertex = _faces[vertex];
 
@@ -128,9 +127,9 @@ namespace Engine.Simulation2
             var numberOfVertices = _polyhedron.Vertices.Count;
 
             var fluxes = new double[numberOfVertices][];
-            for (int i = 0; i < numberOfVertices; i++)
+            for (int vertex = 0; vertex < numberOfVertices; vertex++)
             {
-                fluxes[i] = HalfEdgeFluxesAroundVertex(V[i], _edgeNormals[i], _bisectorDistances[i]);
+                fluxes[vertex] = HalfEdgeFluxesAroundVertex(V[vertex], _edgeNormals[vertex], _halfEdgeLengths[vertex]);
             }
 
             return fluxes;
@@ -138,15 +137,58 @@ namespace Engine.Simulation2
 
         private double[] HalfEdgeFluxesAroundVertex(Vector v, Vector[] edgeNormals, double[] halfEdgeLengths)
         {
-            var fluxesAroundVertex = new double[edgeNormals.Length];
-            for (int j = 0; j < edgeNormals.Length; j++)
+            var fluxes = new double[edgeNormals.Length];
+            for (int halfEdge = 0; halfEdge < edgeNormals.Length; halfEdge++)
             {
-                fluxesAroundVertex[j] = Vector.ScalarProduct(v, edgeNormals[j]) * halfEdgeLengths[j];
+                fluxes[halfEdge] = Vector.ScalarProduct(v, edgeNormals[halfEdge]) * halfEdgeLengths[halfEdge];
             }
 
-            return fluxesAroundVertex;
+            return fluxes;
         }
         #endregion
+        #endregion
+
+        #region Curl methods.
+        public VectorField<Face> Curl(VectorField<Vertex> V)
+        {
+            var numberOfFaces = _polyhedron.Faces.Count;
+
+            var results = new Vector[numberOfFaces];
+            for (int face = 0; face < numberOfFaces; face++)
+            {
+                results[face] = CurlAtFace(face, V);
+            }
+
+            return new VectorField<Face>(_polyhedron.IndexOf, results);
+        }
+
+        private Vector CurlAtFace(int face, VectorField<Vertex> V)
+        {
+            var vertices = _vertices[face];
+            var faceInFacesOfVertex = _faceInFacesOfVertices[face];
+
+            var result = Vector.Zeros(3);
+            for (int index = 0; index < vertices.Length; index++)
+            {
+                var indexOfFaceInVertex = faceInFacesOfVertex[index];
+                result += ContributionOfVertexToCurlAtFace(vertices[index], indexOfFaceInVertex, V);
+            }
+
+            return result/_areas[face];
+        }
+
+        private Vector ContributionOfVertexToCurlAtFace(int vertex, int indexOfFaceInVertex, VectorField<Vertex> V)
+        {
+            var normalAtNextHalfEdge = _edgeNormals[vertex].AtCyclicIndex(indexOfFaceInVertex);
+            var lengthOfNextHalfEdge = _halfEdgeLengths[vertex].AtCyclicIndex(indexOfFaceInVertex);
+
+            var normalAtPreviousHalfEdge = _edgeNormals[vertex].AtCyclicIndex(indexOfFaceInVertex - 1);
+            var lengthOfPreviousHalfEdge = _halfEdgeLengths[vertex].AtCyclicIndex(indexOfFaceInVertex - 1);
+
+            var sumOfNormals = (normalAtNextHalfEdge * lengthOfNextHalfEdge + normalAtPreviousHalfEdge * lengthOfPreviousHalfEdge);
+
+            return Vector.CrossProduct(sumOfNormals, V[vertex]);
+        }
         #endregion
     }
 }

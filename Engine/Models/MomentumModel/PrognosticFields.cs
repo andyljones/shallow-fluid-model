@@ -1,6 +1,10 @@
-﻿namespace Engine.Models.MomentumModel
+﻿using Engine.Polyhedra;
+
+namespace Engine.Models.MomentumModel
 {
-    class PrognosticFields
+    public class PrognosticFields
     {
+        public VectorField<Vertex> Velocity;
+        public ScalarField<Face> Height;
     }
 }

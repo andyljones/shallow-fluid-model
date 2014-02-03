@@ -2,7 +2,7 @@
 
 namespace Engine.Models.VorticityDivergenceModel
 {
-    public class FieldUpdater
+    public class PrognosticFieldsUpdater
     {
         private readonly FieldOperators _operators;
         private readonly FieldIntegrator _integrator;
@@ -10,7 +10,7 @@ namespace Engine.Models.VorticityDivergenceModel
 
         private readonly ScalarField<Face> _coriolisField; 
 
-        public FieldUpdater(IPolyhedron surface, SimulationParameters parameters)
+        public PrognosticFieldsUpdater(IPolyhedron surface, SimulationParameters parameters)
         {
             _operators = new FieldOperators(surface);
             _integrator = new FieldIntegrator(surface, parameters);

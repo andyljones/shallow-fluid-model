@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using Engine.Models;
 using Engine.Models.MomentumModel;
 using Engine.Polyhedra;
 using EngineTests.AutoFixtureCustomizations;
 using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
 using Xunit;
 using Xunit.Extensions;
 
@@ -29,6 +31,28 @@ namespace EngineTests.ModelsTests.MomentumModelTests
 
             TestUtilities.WriteExpectedAndActual(expected, actual);
             Assert.True(Number.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
+
+            // Teardown
+        }
+
+        [Theory]
+        [AutoFieldsOnCubeData]
+        public void Curl_OverACube_ShouldSumToZero
+            (IPolyhedron polyhedron, VectorField<Vertex> V)
+        {
+            // Fixture setup
+            var operators = new VectorFieldOperators(polyhedron);
+
+            // Exercise system
+            var divergence = operators.Curl(V);
+
+            // Verify outcome
+            var expected = Vector.Zeros(3);
+
+            var actual = divergence.Values.Aggregate(Vector.Zeros(3), (c, v) => c + v);
+
+            TestUtilities.WriteExpectedAndActual(expected, actual);
+            Assert.True(Vector.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
 
             // Teardown
         }
