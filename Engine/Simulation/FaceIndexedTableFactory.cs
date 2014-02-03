@@ -134,7 +134,7 @@ namespace Engine.Simulation
         /// <summary>
         /// Constructs a table of the index of each face in surface.Faces(vertex) for each vertex around that face.
         /// </summary>
-        public static int[][] FacesAroundVertices(IPolyhedron surface)
+        public static int[][] FaceInFacesOfVertices(IPolyhedron surface)
         {
             var indices = new int[surface.Faces.Count][];
             foreach (var face in surface.Faces)
