@@ -38,7 +38,7 @@ namespace Assets
         // Use this for initialization
         void Start ()
         {
-            var options = new Options {MinimumNumberOfFaces = 800, Radius = 6000};
+            var options = new Options {MinimumNumberOfFaces = 400, Radius = 6000};
             polyhedron = GeodesicSphereFactory.Build(options);
             polyhedronRenderer = new PolyhedronRenderer(polyhedron, "Surface", "Materials/Wireframe", "Materials/Surface");
 
@@ -46,17 +46,17 @@ namespace Assets
 
 
             fieldsFactory = new PrognosticFieldsFactory(polyhedron);
-            fieldsFactory.Height = fieldsFactory.RandomScalarField(10, .1);
-            _constantVectorField = fieldsFactory.ConstantVectorField(.01, 0);            
+            fieldsFactory.Height = fieldsFactory.RandomScalarField(10, 1);
+            _constantVectorField = fieldsFactory.ConstantVectorField(0, 0);            
             fieldsFactory.Velocity = _constantVectorField;
             fields = fieldsFactory.Build();
 
 
             parameters = new SimulationParameters
             {
-                RotationFrequency = .3/(24*3600),
+                RotationFrequency = 1.0/(24*3600),
                 Gravity = 10.0 / 1000.0,
-                Timestep = 200
+                Timestep = 400
             };
 
             updater = new PrognosticFieldsUpdater(polyhedron, parameters);

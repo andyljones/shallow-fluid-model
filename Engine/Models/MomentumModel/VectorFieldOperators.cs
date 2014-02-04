@@ -15,13 +15,14 @@ namespace Engine.Models.MomentumModel
         private readonly double[][] _areaInEachFace;
         private readonly double[][] _halfEdgeLengths;        
         private readonly Vector[][] _edgeNormals;
-        private readonly Vector[][] _normalsTimesWidths;
 
         private readonly double[][] _areaInEachVertex;
         private readonly int[][] _faceInFacesOfVertices;
         private readonly int[][] _vertices;
         private readonly double[] _faceAreas;
 
+        private readonly Vector[][] _gradientCoefficients;
+        private readonly Vector[][] _curlCoefficients;
 
         public VectorFieldOperators(IPolyhedron polyhedron)
         {
@@ -32,12 +33,32 @@ namespace Engine.Models.MomentumModel
             _faces = VertexIndexedTableFactory.Faces(polyhedron);
             _vertexAreas = VertexIndexedTableFactory.Areas(polyhedron);
             _areaInEachFace = VertexIndexedTableFactory.AreaInEachFace(polyhedron);
-            _normalsTimesWidths = NormalsTimesWidths();
 
             _faceAreas = FaceIndexedTableFactory.Areas(polyhedron);
             _areaInEachVertex = FaceIndexedTableFactory.AreaInEachVertex(polyhedron);
             _faceInFacesOfVertices = FaceIndexedTableFactory.FaceInFacesOfVertices(polyhedron);
             _vertices = FaceIndexedTableFactory.Vertices(polyhedron);
+
+            _gradientCoefficients = GradientPrecomputation();
+            _curlCoefficients = CurlPrecomputation();
+        }
+
+        private Vector[][] NormalsTimesWidths()
+        {
+            var results = new Vector[_polyhedron.Vertices.Count][];
+            for (int i = 0; i < _polyhedron.Vertices.Count; i++)
+            {
+                var lengths = _halfEdgeLengths[i];
+                var normals = _edgeNormals[i];
+                var result = new Vector[lengths.Length];
+                for (int j = 0; j < lengths.Length; j++)
+                {
+                    result[j] = lengths[j] * normals[j];
+                }
+                results[i] = result;
+            }
+
+            return results;
         }
 
         #region Gradient methods
@@ -59,18 +80,18 @@ namespace Engine.Models.MomentumModel
         private Vector GradientAtVertex(int vertex, ScalarField<Face> A)
         {
             var faces = _faces[vertex];
-            var normalsTimesWidths = _normalsTimesWidths[vertex];
+            var coefficients = _gradientCoefficients[vertex];
 
             var result = Vector.Zeros(3);
             for (int j = 0; j < faces.Length; j++)
             {
-                result += A[faces[j]]*(normalsTimesWidths.AtCyclicIndex(j-1) - normalsTimesWidths[j]);
+                result += A[faces[j]]*coefficients[j];
             }
 
             return result / _vertexAreas[vertex];
         }
 
-        private Vector[][] NormalsTimesWidths()
+        private Vector[][] GradientPrecomputation()
         {
             var results = new Vector[_polyhedron.Vertices.Count][];
             for (int i = 0; i < _polyhedron.Vertices.Count; i++)
@@ -80,7 +101,7 @@ namespace Engine.Models.MomentumModel
                 var result = new Vector[lengths.Length];
                 for (int j = 0; j < lengths.Length; j++)
                 {
-                    result[j] = lengths[j]*normals[j];
+                    result[j] = lengths.AtCyclicIndex(j-1)*normals.AtCyclicIndex(j-1) - lengths[j] * normals[j];
                 }
                 results[i] = result;
             }
@@ -209,18 +230,25 @@ namespace Engine.Models.MomentumModel
 
         private Vector ContributionOfVertexToCurlAtFace(int vertex, int indexOfFaceInVertex, VectorField<Vertex> V)
         {
-            var normalsTimesWidths = _normalsTimesWidths[vertex];
+            return Vector.CrossProduct(_curlCoefficients[vertex][indexOfFaceInVertex], V[vertex]);
+        }
 
-            //var normalAtNextHalfEdge = _edgeNormals[vertex].AtCyclicIndex(indexOfFaceInVertex);
-            //var lengthOfNextHalfEdge = _halfEdgeLengths[vertex].AtCyclicIndex(indexOfFaceInVertex);
+        private Vector[][] CurlPrecomputation()
+        {
+            var results = new Vector[_polyhedron.Vertices.Count][];
+            for (int i = 0; i < _polyhedron.Vertices.Count; i++)
+            {
+                var lengths = _halfEdgeLengths[i];
+                var normals = _edgeNormals[i];
+                var result = new Vector[lengths.Length];
+                for (int j = 0; j < lengths.Length; j++)
+                {
+                    result[j] = lengths.AtCyclicIndex(j - 1) * normals.AtCyclicIndex(j - 1) + lengths[j] * normals[j];
+                }
+                results[i] = result;
+            }
 
-            //var normalAtPreviousHalfEdge = _edgeNormals[vertex].AtCyclicIndex(indexOfFaceInVertex - 1);
-            //var lengthOfPreviousHalfEdge = _halfEdgeLengths[vertex].AtCyclicIndex(indexOfFaceInVertex - 1);
-
-            //var sumOfNormals = (normalAtNextHalfEdge * lengthOfNextHalfEdge + normalAtPreviousHalfEdge * lengthOfPreviousHalfEdge);
-            var sumOfNormals = normalsTimesWidths[indexOfFaceInVertex] + normalsTimesWidths.AtCyclicIndex(indexOfFaceInVertex-1);
-
-            return Vector.CrossProduct(sumOfNormals, V[vertex]);
+            return results;
         }
         #endregion
 
