@@ -12,55 +12,83 @@ namespace Assets.Rendering
         private readonly MeshFilter _meshFilter;
         private readonly IPolyhedron _polyhedron;
 
-        private List<double> _maxes = new List<double>();
-        private List<double> _mins = new List<double>();
+        private List<double> _maxes = new List<double> {double.MinValue};
+        private List<double> _mins = new List<double> {double.MaxValue};
+
+        private int[][] _faces;
 
         public ColorMap(GameObject surface, IPolyhedron polyhedron)
         {
             _meshFilter = surface.GetComponent<MeshFilter>();
             _polyhedron = polyhedron;
+
+            _faces = VertexIndexedTableFactory.Faces(polyhedron);
         }
 
         public void Update(ScalarField<Face> field)
         {
-            var valuesAtVertices = _polyhedron.Vertices.Select(vertex => AverageAt(vertex, field));
-            var valuesAtFaces = field.Values;
-            var values = valuesAtVertices.Concat(valuesAtFaces).ToArray();
-
-            AddMaxAndMin(values);
-
             var max = _maxes.Average();
             var min = _mins.Average();
             var gap = max - min <= 0 ? 1 : max - min; 
 
             Debug.Log(String.Format("Min: {0,3:N2}, Max: {1,3:N2}", min, max));
 
-            var normalizedValues = values.Select(value => (value - min)/gap).ToArray();
-            var colors = normalizedValues.Select(average => ColorFromValue((float)average)).ToArray();
+        
+            var colors = new Color[_polyhedron.Vertices.Count + _polyhedron.Faces.Count];
+            var vertices = _polyhedron.Vertices;
+            for (int index = 0; index < vertices.Count; index++)
+            {
+                var value = AverageAt(index, field);
+                var color = ColorFromValue((float) ((value - min)/gap));
+                colors[index] = color;
+
+                max = max < value ? value : max;
+                min = min > value ? value : min;
+            }
+
+            var faces = _polyhedron.Faces;
+            for (int index = 0; index < faces.Count; index++)
+            {
+                var value = field[index];
+                var color = ColorFromValue((float) ((value - min)/gap));
+                colors[vertices.Count + index] = color;
+
+                max = max < value ? value : max;
+                min = min > value ? value : min;
+            }
+
+            AddMaxAndMin(max, min);
+
 
             _meshFilter.mesh.colors = colors;
         }
 
-        private void AddMaxAndMin(double[] values)
+        private void AddMaxAndMin(double max, double min)
         {
-            _maxes.Add(values.Max());
-            _mins.Add(values.Min());
+            _maxes.Add(max);
+            _mins.Add(min);
 
-            if (_maxes.Count > 1000)
+            if (_maxes.Count == 2 || _maxes.Count > 100)
             {
                 _maxes = _maxes.Skip(1).ToList();
                 _mins = _mins.Skip(1).ToList();
             }
         }
 
-        private double AverageAt(Vertex vertex, ScalarField<Face> field)
-        {
-            return _polyhedron.FacesOf(vertex).Average(face => field[face]);
-        }
+        //private double Average(IList<double> list)
+        //{
+        //    var sum = 0.0;
+        //    for (int i = 0; i < list.Count; i++)
+        //    {
+        //        sum += list[i];
+        //    }
+        //    return sum/list.Count;
+        //}
 
-        private double AverageAt(Edge edge, ScalarField<Face> field)
+        private double AverageAt(int vertex, ScalarField<Face> field)
         {
-            return _polyhedron.FacesOf(edge).Average(face => field[face]);
+            var faces = _faces[vertex];
+            return faces.Average(i => field[i]);
         }
 
         private Color ColorFromValue(float x)
