@@ -68,23 +68,16 @@ namespace Assets.Rendering
 
         public void Update(VectorField<Vertex> field)
         {
-            var scaleFactor = (float) (1000/.2);
-            //var numberOfFaces = _polyhedron.Faces.Count;
+            var scaleFactor = 250f;
+            var max = (float)field.Values.Max(v => v.Norm());
+
             var numberOfVertices = _polyhedron.Vertices.Count;
 
-            //var newVertices = new Vector3[2*(numberOfFaces + numberOfVertices)];
-            //for (int i = 0; i < numberOfFaces; i++)
-            //{
-            //    newVertices[2*i] = _origins[i];
-            //    newVertices[2*i + 1] = _origins[i] + scaleFactor * GraphicsUtilities.Vector3(field[i]);
-            //}
             var newVertices = new Vector3[2*numberOfVertices];
-
             for (int i = 0; i < numberOfVertices; i++)
             {
-                var average = field[i];
-                newVertices[2*i] = _origins[i];
-                newVertices[2*i + 1] = _origins[i] + scaleFactor*GraphicsUtilities.Vector3(average);
+                newVertices[2*i + 1] = 1.01f*_origins[i];
+                newVertices[2*i] = 1.01f*_origins[i] + (scaleFactor/max)*GraphicsUtilities.Vector3(field[i]);
             }
 
 

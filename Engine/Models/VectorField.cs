@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Models
@@ -92,6 +93,17 @@ namespace Engine.Models
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+
+        public override string ToString()
+        {
+            return String.Join(", ", Values.Select(value => VectorString(value)).ToArray());
+        }
+
+        private string VectorString(Vector v)
+        {
+            return String.Format("({0,3:N2}, {1,3:N2}, {2,3:N2})", v[0], v[1], v[2]);
         }
     }
 }

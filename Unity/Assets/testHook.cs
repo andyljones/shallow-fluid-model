@@ -4,7 +4,7 @@ using System.Linq;
 using Assets.Rendering;
 using Engine;
 using Engine.Models;
-using Engine.Models.VorticityDivergenceModel;
+using Engine.Models.MomentumModel;
 using Engine.Polyhedra;
 using Engine.Polyhedra.IcosahedronBased;
 using MathNet.Numerics.LinearAlgebra;
@@ -22,50 +22,50 @@ namespace Assets
         private IPolyhedron polyhedron;
 
         private PolyhedronRenderer polyhedronRenderer;
-        private VelocityFieldFactory velocityFieldFactory;
         private PrognosticFieldsUpdater updater;
 
-        private PrognosticFields<Face> fields;
-        private PrognosticFields<Face> oldFields;
-        private PrognosticFields<Face> olderFields;
+        private PrognosticFields fields;
+        private PrognosticFields oldFields;
+        private PrognosticFields olderFields;
 
-        private ScalarFieldOperators _operators;
-        private FieldIntegrator _integrator;
         private PrognosticFieldsFactory fieldsFactory;
 
         private SimulationParameters parameters;
 
+        private VectorFieldOperators _vOperators;
+        private VectorField<Vertex> _constantVectorField;
+
         // Use this for initialization
         void Start ()
         {
-            var options = new Options {MinimumNumberOfFaces = 200, Radius = 6000};
+            var options = new Options {MinimumNumberOfFaces = 800, Radius = 6000};
             polyhedron = GeodesicSphereFactory.Build(options);
             polyhedronRenderer = new PolyhedronRenderer(polyhedron, "Surface", "Materials/Wireframe", "Materials/Surface");
 
-            velocityFieldFactory = new VelocityFieldFactory(polyhedron);
             fieldRenderer = new VectorFieldRenderer(polyhedron, "vectors", "Materials/Vectors");
 
+
             fieldsFactory = new PrognosticFieldsFactory(polyhedron);
-            fieldsFactory.Height = fieldsFactory.XDependentField(10, .1);
-            fieldsFactory.AbsoluteVorticity = fieldsFactory.XDependentField(0, 0.000005);
+            fieldsFactory.Height = fieldsFactory.RandomScalarField(10, .1);
+            _constantVectorField = fieldsFactory.ConstantVectorField(.01, 0);            
+            fieldsFactory.Velocity = _constantVectorField;
             fields = fieldsFactory.Build();
+
 
             parameters = new SimulationParameters
             {
-                RotationFrequency = 1.0/(24.0*3600.0)*0.3,
-                Gravity = 10.0/1000.0,
-                NumberOfRelaxationIterations = polyhedron.Faces.Count/4,
-                Timestep = 300
+                RotationFrequency = .3/(24*3600),
+                Gravity = 10.0 / 1000.0,
+                Timestep = 200
             };
 
             updater = new PrognosticFieldsUpdater(polyhedron, parameters);
 
-            var velocityField = velocityFieldFactory.VelocityField(fields.Streamfunction, fields.VelocityPotential);
+            fieldRenderer.Update(fields.Velocity);
 
-            fieldRenderer.Update(velocityField);
+            _vOperators = new VectorFieldOperators(polyhedron);
+            //Debug.Log(_vOperators.Gradient(fields.Height));
 
-            _operators = new ScalarFieldOperators(polyhedron);
-            _integrator = new FieldIntegrator(polyhedron, parameters);
         }
 
         void Update()
@@ -80,17 +80,19 @@ namespace Assets
                 for (int i = 0; i < 1; i++)
                 {
                     counter++;
-                    var seconds = (int)(counter*parameters.Timestep);
-                    var days = seconds/(3600*24);
-                    var hours = seconds/3600 - 24*days;
+                    var seconds = (int)(counter * parameters.Timestep);
+                    var days = seconds / (3600 * 24);
+                    var hours = seconds / 3600 - 24 * days;
                     Debug.Log(String.Format("{0}D {1}H", days, hours));
+
+                    //fields.Velocity = _constantVectorField;
+
                     olderFields = oldFields;
                     oldFields = fields;
                     fields = updater.Update(fields, oldFields, olderFields);
+                    //Debug.Log(_vOperators.FluxDivergence(fields.Velocity, fields.Height).Values.Sum());
 
-                    var velocityField = velocityFieldFactory.VelocityField(fields.Streamfunction, fields.VelocityPotential);
-
-                    fieldRenderer.Update(velocityField);
+                    fieldRenderer.Update(fields.Velocity);
                     polyhedronRenderer.Update(fields.Height);
                 }
             }

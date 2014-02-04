@@ -1,11 +1,15 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
+using Engine;
 using Engine.Models;
 using Engine.Models.MomentumModel;
 using Engine.Polyhedra;
+using Engine.Polyhedra.IcosahedronBased;
 using EngineTests.AutoFixtureCustomizations;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
+using Ploeh.AutoFixture;
 using Xunit;
 using Xunit.Extensions;
 
@@ -13,6 +17,28 @@ namespace EngineTests.ModelsTests.MomentumModelTests
 {
     public class VectorFieldOperatorsTests
     {
+        //[Theory]
+        //[AutoFieldsOnCubeData]
+        //public void Test
+        //    ()
+        //{
+        //    // Fixture setup
+        //    var polyhedron = IcosasphereFactory.Build(new Options {MinimumNumberOfFaces = 1, Radius = 10});
+        //    var operators = new VectorFieldOperators(polyhedron);
+        //    var factory = new PrognosticFieldsFactory(polyhedron);
+        //    // Exercise system
+        //    //var gradient = operators.Gradient(factory.RandomScalarField(10, 20));
+        //    //Debug.WriteLine(gradient);
+        //    var lengths = FaceIndexedTableFactory.Areas(polyhedron);
+
+        //    Debug.WriteLine(String.Join(", ", lengths.Select(l => l)));
+
+        //    // Verify outcome
+        //    Assert.True(false, "Test not implemented");
+
+        //    // Teardown
+        //}
+
         [Theory]
         [AutoFieldsOnCubeData]
         public void FluxDivergence_OverACube_ShouldSumToZero
@@ -78,5 +104,21 @@ namespace EngineTests.ModelsTests.MomentumModelTests
 
             // Teardown
         }
+
+        //[Fact]
+        //public void Test()
+        //{
+        //    // Fixture setup
+        //    var options = new Options { MinimumNumberOfFaces = 200, Radius = 6000 };
+        //    var polyhedron = GeodesicSphereFactory.Build(options);
+
+        //    // Exercise system
+        //    var fieldsFactory = new PrognosticFieldsFactory(polyhedron);
+
+        //    // Verify outcome
+        //    Assert.True(false, "Test not implemented");
+
+        //    // Teardown
+        //}
     }
 }

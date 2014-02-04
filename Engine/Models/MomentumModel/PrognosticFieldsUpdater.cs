@@ -65,7 +65,7 @@ namespace Engine.Models.MomentumModel
 
             var potentialEnergyGradient = _operators.Gradient(_gravity*height);
 
-            return -absoluteVorticity*curlOfVelocity - kineticEnergyGradient - potentialEnergyGradient;
+            return (-absoluteVorticity)*curlOfVelocity - kineticEnergyGradient - potentialEnergyGradient;
         }
 
         private ScalarField<Face> DerivativeOfHeight(VectorField<Vertex> velocity, ScalarField<Face> height)

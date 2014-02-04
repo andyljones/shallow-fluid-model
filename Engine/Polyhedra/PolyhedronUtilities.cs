@@ -73,10 +73,10 @@ namespace Engine.Polyhedra
             var midpointOfNextEdge = BisectionPoint(surface, nextEdge);
 
             var crossProductOfFirstSegment = Vector.CrossProduct(midpointOfPreviousEdge - vertexPosition, midpointOfFace - vertexPosition);
-            var areaOfFirstSegment = Vector.ScalarProduct(crossProductOfFirstSegment, midpointOfFace) / 2;
+            var areaOfFirstSegment = Vector.ScalarProduct(crossProductOfFirstSegment, midpointOfFace.Normalize()) / 2;
 
             var crossProductOfSecondSegment = Vector.CrossProduct(midpointOfFace - vertexPosition, midpointOfNextEdge - vertexPosition);
-            var areaOfSecondSegment = Vector.ScalarProduct(crossProductOfSecondSegment, midpointOfFace) / 2;
+            var areaOfSecondSegment = Vector.ScalarProduct(crossProductOfSecondSegment, midpointOfFace.Normalize()) / 2;
 
             return areaOfFirstSegment + areaOfSecondSegment;
         }

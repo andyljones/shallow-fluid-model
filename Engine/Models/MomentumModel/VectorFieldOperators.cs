@@ -56,14 +56,14 @@ namespace Engine.Models.MomentumModel
         private Vector GradientAtVertex(int vertex, ScalarField<Face> A)
         {
             var faces = _faces[vertex];
-            var bisectorDistances = _halfEdgeLengths[vertex];
+            var halfEdgeLengths = _halfEdgeLengths[vertex];
             var edgeNormals = _edgeNormals[vertex];
 
             var result = Vector.Zeros(3);
             for (int j = 0; j < faces.Length; j++)
             {
 
-                result += A[faces[j]]*(bisectorDistances.AtCyclicIndex(j-1)*edgeNormals.AtCyclicIndex(j-1) - bisectorDistances[j]*edgeNormals[j]);
+                result += A[faces[j]]*(halfEdgeLengths.AtCyclicIndex(j-1)*edgeNormals.AtCyclicIndex(j-1) - halfEdgeLengths[j]*edgeNormals[j]);
             }
 
             return result / _vertexAreas[vertex];

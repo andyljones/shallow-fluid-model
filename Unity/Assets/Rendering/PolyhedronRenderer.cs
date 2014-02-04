@@ -84,7 +84,7 @@ namespace Assets.Rendering
 
         private IEnumerable<int> Line(Edge edge)
         {
-            return new List<int> { _polyhedron.IndexOf(edge.A), _polyhedron.IndexOf(edge.B) };
+            return new List<int> { _polyhedron.IndexOf(edge.B), _polyhedron.IndexOf(edge.A) };
         }
         #endregion
 
