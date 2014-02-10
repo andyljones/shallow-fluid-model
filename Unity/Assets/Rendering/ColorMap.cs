@@ -9,17 +9,17 @@ namespace Assets.Rendering
 {
     public class ColorMap
     {
-        private readonly MeshFilter _meshFilter;
+        private readonly Mesh _mesh;
         private readonly IPolyhedron _polyhedron;
 
         private List<double> _maxes = new List<double> {double.MinValue};
         private List<double> _mins = new List<double> {double.MaxValue};
 
-        private int[][] _faces;
+        private readonly int[][] _faces;
 
-        public ColorMap(GameObject surface, IPolyhedron polyhedron)
+        public ColorMap(Mesh mesh, IPolyhedron polyhedron)
         {
-            _meshFilter = surface.GetComponent<MeshFilter>();
+            _mesh = mesh;
             _polyhedron = polyhedron;
 
             _faces = VertexIndexedTableFactory.Faces(polyhedron);
@@ -59,8 +59,7 @@ namespace Assets.Rendering
 
             AddMaxAndMin(max, min);
 
-
-            _meshFilter.mesh.colors = colors;
+            _mesh.colors = colors;
         }
 
         private void AddMaxAndMin(double max, double min)
@@ -74,16 +73,6 @@ namespace Assets.Rendering
                 _mins = _mins.Skip(1).ToList();
             }
         }
-
-        //private double Average(IList<double> list)
-        //{
-        //    var sum = 0.0;
-        //    for (int i = 0; i < list.Count; i++)
-        //    {
-        //        sum += list[i];
-        //    }
-        //    return sum/list.Count;
-        //}
 
         private double AverageAt(int vertex, ScalarField<Face> field)
         {

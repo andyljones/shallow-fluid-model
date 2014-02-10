@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Engine.Models;
+using Engine.Models.MomentumModel;
 using Engine.Polyhedra;
 using UnityEngine;
 
@@ -15,82 +16,32 @@ namespace Assets.Rendering
         private readonly GameObject _gameObject;
         private readonly ColorMap _colorMap;
 
-        private readonly IPolyhedron _polyhedron;
+        public PolyhedronRenderer(IPolyhedron polyhedron, Mesh mesh, IDisplayOptions options)
+        { 
+            _gameObject = CreatePolyhedronObject(mesh, options);
+            _colorMap = new ColorMap(mesh, polyhedron);
+        }
 
-        public PolyhedronRenderer(IPolyhedron polyhedron, String name, String wireframeMaterialName = "", String surfaceMaterialName = "")
+        private static GameObject CreatePolyhedronObject(Mesh mesh, IDisplayOptions options)
         {
-            _polyhedron = polyhedron;            
-            _gameObject = GraphicsUtilities.CreateRenderingObject(name, CreateVectorArray());
+            var polyhedronGameObject = new GameObject("Polyhedron");
+            
+            var meshFilter = polyhedronGameObject.AddComponent<MeshFilter>();
+            meshFilter.mesh = mesh;
 
-            if (wireframeMaterialName != "")
-            { 
-                GraphicsUtilities.AddWireframe(_gameObject, CreateLineArray(), wireframeMaterialName);
-            }
-
-            if (surfaceMaterialName != "")
+            var meshRenderer = polyhedronGameObject.AddComponent<MeshRenderer>();
+            meshRenderer.materials = new[]
             {
-                GraphicsUtilities.AddSurface(_gameObject, CreateTriangleArray(), surfaceMaterialName);
-            }
-
-            _colorMap = new ColorMap(_gameObject, polyhedron);
-        }
-
-        #region CreateMesh methods
-        private Vector3[] CreateVectorArray()
-        {
-            var vertexVectors = _polyhedron.Vertices.Select(vertex => GraphicsUtilities.Vector3(vertex.Position));
-            var faceVectors = _polyhedron.Faces.Select(face => GraphicsUtilities.Vector3(face.SphericalCenter()));
-
-            return vertexVectors.Concat(faceVectors).ToArray();
-        }
-
-        private int[] CreateTriangleArray()
-        {
-            return _polyhedron.Faces.SelectMany(face => Triangles(face)).ToArray();
-        }
-
-        private int[] CreateLineArray()
-        {
-            return _polyhedron.Edges.SelectMany(edge => Line(edge)).ToArray();
-        }
-
-        private IEnumerable<int> Triangles(Face face)
-        {
-            var vertices = face.Vertices;
-            var center = _polyhedron.Vertices.Count + _polyhedron.IndexOf(face);
-            var triangles = new List<int>();
-            for (int i = 0; i < vertices.Count-1; i++)
-            {
-                var triangle = new[]
-                {
-                    center,
-                    _polyhedron.IndexOf(vertices[i]),
-                    _polyhedron.IndexOf(vertices[i + 1])
-                };
-                triangles.AddRange(triangle);
-            }
-            var lastTriangle = new[]
-            {
-                center,
-                _polyhedron.IndexOf(vertices[vertices.Count - 1]),
-                _polyhedron.IndexOf(vertices[0]),
+                Resources.Load<Material>(options.SurfaceMaterialName),
+                Resources.Load<Material>(options.WireframeMaterialName)
             };
-            triangles.AddRange(lastTriangle);
 
-            triangles.Reverse();
-
-            return triangles;
+            return polyhedronGameObject;
         }
 
-        private IEnumerable<int> Line(Edge edge)
+        public void Update(PrognosticFields fields)
         {
-            return new List<int> { _polyhedron.IndexOf(edge.B), _polyhedron.IndexOf(edge.A) };
-        }
-        #endregion
-
-        public void Update(ScalarField<Face> field)
-        {
-            _colorMap.Update(field);
+            _colorMap.Update(fields.Height);
         }
     }
 }
