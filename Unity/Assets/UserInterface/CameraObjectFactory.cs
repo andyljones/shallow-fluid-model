@@ -2,10 +2,10 @@
 
 namespace Assets.UserInterface
 {
-    public static class CameraFactory
+    public static class CameraObjectFactory
     {
         public static float NearClipPlane = 1;
-        public static float FarClipPane = 10000;
+        public static float FarClipPane = 100000;
 
         public static GameObject Build()
         {

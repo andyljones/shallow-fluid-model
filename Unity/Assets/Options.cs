@@ -3,7 +3,7 @@ using Engine.Polyhedra.IcosahedronBased;
 
 namespace Assets
 {
-    public class Options : IPolyhedronOptions, IDisplayOptions
+    public class Options : IPolyhedronOptions, IPolyhedronRendererOptions
     {
         public double Radius { get; set; }
         public int MinimumNumberOfFaces { get; set; }

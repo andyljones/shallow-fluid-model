@@ -1,31 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Engine.Polyhedra;
+using Engine.Utilities;
 using UnityEngine;
 
 namespace Assets.Rendering
 {
-    public class PolyhedronMesh
+    public class PolyhedronMeshHandler
     {
         public readonly Mesh Mesh;
 
+        public Face FaceAtTriangleIndex(int index) { return _facesAtTriangleIndex[index]; } 
+        private readonly Face[] _facesAtTriangleIndex;
+
         private readonly IPolyhedron _polyhedron;
 
-        public PolyhedronMesh(IPolyhedron polyhedron)
+        public PolyhedronMeshHandler(IPolyhedron polyhedron)
         {
             _polyhedron = polyhedron;
-            Mesh = CreateMesh();
+
+            var lines = CreateLineArray();
+            var triangles = CreateTriangleArray(out _facesAtTriangleIndex);
+            Mesh = CreateMesh(triangles, lines);
         }
 
         #region CreateMesh methods
-        private Mesh CreateMesh()
+        private Mesh CreateMesh(int[] triangles, int[] lines)
         {
             var mesh = new Mesh();
             mesh.vertices = CreateVectorArray();
-            
-            mesh.subMeshCount = 2;
-            mesh.SetIndices(CreateTriangleArray(), MeshTopology.Triangles, 0);
-            mesh.SetIndices(CreateLineArray(), MeshTopology.Lines, 1);
+
+            mesh.subMeshCount = 1;//2;
+            mesh.SetIndices(triangles, MeshTopology.Triangles, 0);
+            //mesh.SetIndices(lines, MeshTopology.Lines, 1);
 
             mesh.uv = Enumerable.Repeat(new Vector2(), mesh.vertexCount).ToArray();
 
@@ -42,9 +50,12 @@ namespace Assets.Rendering
             return vertexVectors.Concat(faceVectors).ToArray();
         }
 
-        private int[] CreateTriangleArray()
+        private int[] CreateTriangleArray(out Face[] triangleIndexLookup)
         {
-            return _polyhedron.Faces.SelectMany(face => Triangles(face)).ToArray();
+            triangleIndexLookup = _polyhedron.Faces.SelectMany(face => Enumerable.Repeat(face, face.Vertices.Count)).ToArray();
+            var triangles = _polyhedron.Faces.SelectMany(face => Triangles(face)).ToArray();
+
+            return triangles;
         }
 
         private int[] CreateLineArray()
@@ -57,25 +68,16 @@ namespace Assets.Rendering
             var vertices = face.Vertices;
             var center = _polyhedron.Vertices.Count + _polyhedron.IndexOf(face);
             var triangles = new List<int>();
-            for (int i = 0; i < vertices.Count - 1; i++)
+            for (int i = 0; i < vertices.Count; i++)
             {
                 var triangle = new[]
                 {
                     center,
-                    _polyhedron.IndexOf(vertices[i]),
-                    _polyhedron.IndexOf(vertices[i + 1])
+                    _polyhedron.IndexOf(vertices.AtCyclicIndex(i + 1)),
+                    _polyhedron.IndexOf(vertices.AtCyclicIndex(i))
                 };
                 triangles.AddRange(triangle);
             }
-            var lastTriangle = new[]
-            {
-                center,
-                _polyhedron.IndexOf(vertices[vertices.Count - 1]),
-                _polyhedron.IndexOf(vertices[0]),
-            };
-            triangles.AddRange(lastTriangle);
-
-            triangles.Reverse();
 
             return triangles;
         }
@@ -85,5 +87,7 @@ namespace Assets.Rendering
             return new List<int> { _polyhedron.IndexOf(edge.B), _polyhedron.IndexOf(edge.A) };
         }
         #endregion
+
+
     }
 }
