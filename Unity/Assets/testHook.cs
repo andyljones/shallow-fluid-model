@@ -19,17 +19,26 @@ namespace Assets
 
         private CameraPositionController _cameraPositionController;
         private PrognosticFieldsFactory _fieldFactory;
-        private PrognosticFields _fields;
         private PolyhedronCollider _polyhedronCollider;
         private FieldManipulator _fieldManipulator;
+
+        private PrognosticFields _fields;
+        private PrognosticFields _oldFields;
+        private PrognosticFields _olderFields;
+        private VectorFieldRenderer _vectorFieldRenderer;
 
         // Use this for initialization
         void Start ()
         {
             var options = new Options
             {
-                MinimumNumberOfFaces = 400,
+                MinimumNumberOfFaces = 200,
                 Radius = 6000,
+
+                Gravity = 10.0 / 1000.0,
+                RotationFrequency = 1.0 / (3600.0*24.0),
+                Timestep = 300,
+
                 SurfaceMaterialName = "Materials/Surface",
                 WireframeMaterialName = "Materials/Wireframe"
             };
@@ -48,15 +57,36 @@ namespace Assets
             _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), polyhedronMesh);
 
             _fieldFactory = new PrognosticFieldsFactory(_polyhedron);
-            _fieldFactory.Height = _fieldFactory.ConstantScalarField(10);
+            _fieldFactory.Height = _fieldFactory.RandomScalarField(10, 0);
             _fields = _fieldFactory.Build();
 
+            _updater = new PrognosticFieldsUpdater(_polyhedron, options);
+
+            _vectorFieldRenderer = new VectorFieldRenderer(_polyhedron, "VF", "Materials/Vectors");
+
         }
+
+        private bool _isRunning = false;
 
         void Update()
         {
             _fields.Height = _fieldManipulator.Update(_fields.Height);
             _polyhedronRenderer.Update(_fields);
+            _vectorFieldRenderer.Update(_fields.Velocity);
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                _isRunning = !_isRunning;
+            }
+
+            if (_isRunning)
+            {
+                var oldestFields = _olderFields;
+                _olderFields = _oldFields;
+                _oldFields = _fields;
+                _fields = _updater.Update(_oldFields, _olderFields, oldestFields);
+            }
+
         }
 
         void LateUpdate()

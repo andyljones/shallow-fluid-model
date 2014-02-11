@@ -11,8 +11,8 @@ namespace Assets.UserInterface
         public KeyCode SurfaceRaiseButton = KeyCode.UpArrow;
         public KeyCode SurfaceLowerButton = KeyCode.DownArrow;
 
-        public Func<double, double> Raise = x => 1.01*x;
-        public Func<double, double> Lower = x => 0.99*x; 
+        public Func<double, double> Raise = x => 1.001*x;
+        public Func<double, double> Lower = x => 0.999*x; 
 
         private readonly Camera _camera;
         private PolyhedronMeshHandler _meshHandler;
@@ -27,7 +27,6 @@ namespace Assets.UserInterface
         {
             if (Input.GetKey(SurfaceRaiseButton))
             {
-                Debug.Log("hi");
                 return TryUpdateFieldUnderCursor(field, Raise);
             }
             else if (Input.GetKey(SurfaceLowerButton))

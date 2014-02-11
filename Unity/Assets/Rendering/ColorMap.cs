@@ -27,43 +27,43 @@ namespace Assets.Rendering
 
         public void Update(ScalarField<Face> field)
         {
-            var max = _maxes.Average();
-            var min = _mins.Average();
-            var gap = max - min <= 0 ? 1 : max - min; 
+            var averageMax = _maxes.Average();
+            var averageMin = _mins.Average();
+            var gap = averageMax - averageMin <= 0 ? 1 : averageMax - averageMin; 
 
-            Debug.Log(String.Format("Min: {0,3:N2}, Max: {1,3:N2}", min, max));
+            Debug.Log(String.Format("Min: {0,3:N2}, Max: {1,3:N2}", averageMin, averageMax));
 
-        
             var colors = new Color[_polyhedron.Vertices.Count + _polyhedron.Faces.Count];
             var vertices = _polyhedron.Vertices;
             for (int index = 0; index < vertices.Count; index++)
             {
                 var value = AverageAt(index, field);
-                var color = ColorFromValue((float) ((value - min)/gap));
+                var color = ColorFromValue((float) ((value - averageMin)/gap));
                 colors[index] = color;
 
-                max = max < value ? value : max;
-                min = min > value ? value : min;
+                averageMax = averageMax < value ? value : averageMax;
+                averageMin = averageMin > value ? value : averageMin;
             }
 
             var faces = _polyhedron.Faces;
             for (int index = 0; index < faces.Count; index++)
             {
                 var value = field[index];
-                var color = ColorFromValue((float) ((value - min)/gap));
+                var color = ColorFromValue((float) ((value - averageMin)/gap));
                 colors[vertices.Count + index] = color;
 
-                max = max < value ? value : max;
-                min = min > value ? value : min;
+                averageMax = averageMax < value ? value : averageMax;
+                averageMin = averageMin > value ? value : averageMin;
             }
 
-            AddMaxAndMin(max, min);
+            AddMaxAndMin(averageMax, averageMin);
 
             _mesh.colors = colors;
         }
 
         private void AddMaxAndMin(double max, double min)
         {
+            //TODO: Fix max/min scheme.
             _maxes.Add(max);
             _mins.Add(min);
 

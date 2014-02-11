@@ -5,7 +5,7 @@ namespace Engine.Models.MomentumModel
 {
     public class PrognosticFieldsUpdater
     {
-        private readonly SimulationParameters _parameters;
+        private readonly IMomentumModelParameters _parameters;
         private readonly ScalarField<Face> _coriolisField;
         private readonly VectorField<Face> _faceNormalsField;
         private readonly VectorField<Vertex> _vertexNormalsField; 
@@ -15,7 +15,7 @@ namespace Engine.Models.MomentumModel
         private readonly double _gravity;
 
 
-        public PrognosticFieldsUpdater(IPolyhedron surface, SimulationParameters parameters)
+        public PrognosticFieldsUpdater(IPolyhedron surface, IMomentumModelParameters parameters)
         {
             _parameters = parameters;
             _coriolisField = SimulationUtilities.CoriolisField(surface, _parameters.RotationFrequency);
