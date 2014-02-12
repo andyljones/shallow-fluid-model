@@ -21,5 +21,6 @@ namespace Assets
         public int ParticleCount { get; set; }
         public double RenewalRate { get; set; }
         public string WindMapMaterialName { get; set; }
+        public int TrailLength { get; set; }
     }
 }

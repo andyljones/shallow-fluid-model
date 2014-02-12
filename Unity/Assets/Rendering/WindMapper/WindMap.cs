@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Rendering.KDTree;
 using Engine.Models;
 using Engine.Polyhedra;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace Assets.Rendering.WindMapper
 
         private readonly IWindMapOptions _options;
 
-        private readonly KDTree _vertexPositions;
+        private readonly KdTree _vertexPositions;
 
         private Queue<int> _renewalQueue;  
 
@@ -23,7 +24,8 @@ namespace Assets.Rendering.WindMapper
         {
             _options = options;
  
-            _vertexPositions = KDTree.MakeFromPoints(FetchVertexPositions(surface));
+            _vertexPositions = new KdTree(FetchVertexPositions(surface));
+            //Debug.Log(_vertexPositions.Dump(2));
 
             _particlePositions = CreateParticles(options.ParticleCount, (float)options.Radius);
             _renewalQueue = CreateRenewalQueue(_particlePositions);
@@ -133,7 +135,7 @@ namespace Assets.Rendering.WindMapper
 
         private int GetIndexOfNearestVertex(Vector3 particlePosition)
         {
-            return _vertexPositions.FindNearest(particlePosition);
+            return _vertexPositions.GetIndicesOfNearestVectors(particlePosition, 1).First();
         }
 
         private void RenewVertices(ref Vector3[] particlePositions)

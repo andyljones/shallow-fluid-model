@@ -12,6 +12,7 @@ namespace Assets.Rendering.WindMapper
         double WindmapScaleFactor { get; }
         int ParticleCount { get; }
         double RenewalRate { get; }
+        int TrailLength { get; }
 
         String WindMapMaterialName { get; }
     }

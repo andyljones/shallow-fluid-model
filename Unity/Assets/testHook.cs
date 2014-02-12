@@ -35,18 +35,18 @@ namespace Assets
         {
             var options = new Options
             {
-                MinimumNumberOfFaces = 500,
+                MinimumNumberOfFaces = 13,
                 Radius = 6000,
 
                 Gravity = 10.0 / 1000.0,
                 RotationFrequency = 1.0 / (3600.0*24.0),
-                Timestep = 100,
+                Timestep = 350,
 
                 SurfaceMaterialName = "Materials/Surface",
                 WireframeMaterialName = "Materials/Wireframe",
                 WindMapMaterialName = "Materials/WindMap",
 
-                ParticleCount = 20000,
+                ParticleCount = 1000,
                 WindmapScaleFactor = 2000,
                 RenewalRate = 0.001
             };
@@ -67,7 +67,7 @@ namespace Assets
             _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), polyhedronMesh);
 
             _fieldFactory = new PrognosticFieldsFactory(_polyhedron);
-            _fieldFactory.Height = _fieldFactory.RandomScalarField(10, .01);
+            _fieldFactory.Height = _fieldFactory.RandomScalarField(10, .0);
             _fields = _fieldFactory.Build();
 
             _updater = new PrognosticFieldsUpdater(_polyhedron, options);
