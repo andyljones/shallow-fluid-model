@@ -35,18 +35,18 @@ namespace Assets
         {
             var options = new Options
             {
-                MinimumNumberOfFaces = 400,
+                MinimumNumberOfFaces = 500,
                 Radius = 6000,
 
                 Gravity = 10.0 / 1000.0,
                 RotationFrequency = 1.0 / (3600.0*24.0),
-                Timestep = 350,
+                Timestep = 100,
 
                 SurfaceMaterialName = "Materials/Surface",
                 WireframeMaterialName = "Materials/Wireframe",
 
                 WindMapMaterialName = "Materials/WindMap",
-                ParticleCount = 1000,
+                ParticleCount = 10000,
                 WindmapScaleFactor = 1000
             };
 

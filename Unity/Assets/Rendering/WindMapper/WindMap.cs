@@ -13,17 +13,15 @@ namespace Assets.Rendering.WindMapper
         private Vector3[] _particlePositions;
         private MeshFilter _particlesMeshFilter;
 
-        private readonly IPolyhedron _surface;
         private readonly IWindMapOptions _options;
 
-        private readonly Vector3[] _vertexPositions;
+        private readonly KDTree _vertexPositions;
 
         public WindMap(IPolyhedron surface, IWindMapOptions options)
         {
-            _surface = surface;
             _options = options;
-
-            _vertexPositions = FetchVertexPositions(surface);
+ 
+            _vertexPositions = KDTree.MakeFromPoints(FetchVertexPositions(surface));
 
             _particlePositions = CreateParticles(options.ParticleCount, (float)options.Radius);
 
@@ -114,22 +112,7 @@ namespace Assets.Rendering.WindMapper
 
         private int GetIndexOfNearestVertex(Vector3 particlePosition)
         {
-            var vertices = _surface.Vertices;
-
-            var indexOfNearestVertex = 0;
-            var lowestDistanceSoFar = float.MaxValue;
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                var distance = (particlePosition - _vertexPositions[i]).magnitude;
-
-                if (distance <= lowestDistanceSoFar)
-                {
-                    indexOfNearestVertex = i;
-                    lowestDistanceSoFar = distance;
-                }
-            }
-
-            return indexOfNearestVertex;
+            return _vertexPositions.FindNearest(particlePosition);
         }
     }
 }
