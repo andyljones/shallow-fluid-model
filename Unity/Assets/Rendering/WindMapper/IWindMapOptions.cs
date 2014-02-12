@@ -11,6 +11,7 @@ namespace Assets.Rendering.WindMapper
         double Timestep { get; }
         double WindmapScaleFactor { get; }
         int ParticleCount { get; }
+        double RenewalRate { get; }
 
         String WindMapMaterialName { get; }
     }

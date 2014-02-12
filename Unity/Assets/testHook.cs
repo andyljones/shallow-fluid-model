@@ -44,10 +44,11 @@ namespace Assets
 
                 SurfaceMaterialName = "Materials/Surface",
                 WireframeMaterialName = "Materials/Wireframe",
-
                 WindMapMaterialName = "Materials/WindMap",
-                ParticleCount = 10000,
-                WindmapScaleFactor = 1000
+
+                ParticleCount = 20000,
+                WindmapScaleFactor = 2000,
+                RenewalRate = 0.001
             };
 
 
@@ -66,7 +67,7 @@ namespace Assets
             _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), polyhedronMesh);
 
             _fieldFactory = new PrognosticFieldsFactory(_polyhedron);
-            _fieldFactory.Height = _fieldFactory.RandomScalarField(10, 0.01);
+            _fieldFactory.Height = _fieldFactory.RandomScalarField(10, .01);
             _fields = _fieldFactory.Build();
 
             _updater = new PrognosticFieldsUpdater(_polyhedron, options);
@@ -83,7 +84,7 @@ namespace Assets
         {
             _fields.Height = _fieldManipulator.Update(_fields.Height);
             _polyhedronRenderer.Update(_fields);
-            _vectorFieldRenderer.Update(_fields.Velocity);
+            //_vectorFieldRenderer.Update(_fields.Velocity);
             _windMapper.Update(_fields.Velocity);
 
             if (Input.GetKeyDown(KeyCode.R))

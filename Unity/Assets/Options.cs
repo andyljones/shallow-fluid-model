@@ -19,6 +19,7 @@ namespace Assets
 
         public double WindmapScaleFactor { get; set; }
         public int ParticleCount { get; set; }
+        public double RenewalRate { get; set; }
         public string WindMapMaterialName { get; set; }
     }
 }

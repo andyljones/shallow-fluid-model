@@ -17,6 +17,8 @@ namespace Assets.Rendering.WindMapper
 
         private readonly KDTree _vertexPositions;
 
+        private Queue<int> _renewalQueue;  
+
         public WindMap(IPolyhedron surface, IWindMapOptions options)
         {
             _options = options;
@@ -24,6 +26,7 @@ namespace Assets.Rendering.WindMapper
             _vertexPositions = KDTree.MakeFromPoints(FetchVertexPositions(surface));
 
             _particlePositions = CreateParticles(options.ParticleCount, (float)options.Radius);
+            _renewalQueue = CreateRenewalQueue(_particlePositions);
 
             var gameObject = CreateParticlesGameObject(_particlePositions, options.WindMapMaterialName);
             _particlesMeshFilter = gameObject.GetComponent<MeshFilter>();
@@ -47,6 +50,17 @@ namespace Assets.Rendering.WindMapper
             return gameObject;
         }
 
+        private static Queue<int> CreateRenewalQueue(Vector3[] particlePositions)
+        {
+            var deathQueue = new Queue<int>();
+            for (int i = 0; i< particlePositions.Count(); i++)
+            {
+                deathQueue.Enqueue(i);
+            }
+
+            return deathQueue;
+        }
+
         private static Mesh CreateParticlesMesh(Vector3[] particles)
         {
             var mesh = new Mesh();
@@ -63,10 +77,15 @@ namespace Assets.Rendering.WindMapper
             var particlePositions = new Vector3[particleCount];
             for (int i = 0; i < particleCount; i++)
             {
-                particlePositions[i] = 1.01f*radius*Random.onUnitSphere;
+                particlePositions[i] = CreateParticle(radius);
             }
 
             return particlePositions;
+        }
+
+        private static Vector3 CreateParticle(double radius)
+        {
+            return 1.01f*(float)radius*Random.onUnitSphere;
         }
 
         public void Update(VectorField<Vertex> velocityField)
@@ -76,6 +95,8 @@ namespace Assets.Rendering.WindMapper
             {
                 newParticlePositions[i] = UpdatePosition(velocityField, _particlePositions[i]);
             }
+
+            RenewVertices(ref newParticlePositions);
 
             _particlePositions = newParticlePositions;
             _particlesMeshFilter.mesh.vertices = _particlePositions;
@@ -113,6 +134,18 @@ namespace Assets.Rendering.WindMapper
         private int GetIndexOfNearestVertex(Vector3 particlePosition)
         {
             return _vertexPositions.FindNearest(particlePosition);
+        }
+
+        private void RenewVertices(ref Vector3[] particlePositions)
+        {
+            var numberToRenew = _options.RenewalRate * particlePositions.Count();
+
+            for (int i = 0; i < numberToRenew; i++)
+            {
+                var indexToRenew = _renewalQueue.Dequeue();
+                particlePositions[indexToRenew] = CreateParticle(_options.Radius);
+                _renewalQueue.Enqueue(indexToRenew);
+            }
         }
     }
 }
