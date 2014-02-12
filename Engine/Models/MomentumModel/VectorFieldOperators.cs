@@ -196,6 +196,7 @@ namespace Engine.Models.MomentumModel
         #endregion
         #endregion
 
+
         #region Curl methods.
         /// <summary>
         /// The discrete curl, as described in Randall & Ringler 2001 (p7)

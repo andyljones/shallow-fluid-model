@@ -12,8 +12,8 @@ namespace Assets.Rendering
         private readonly Mesh _mesh;
         private readonly IPolyhedron _polyhedron;
 
-        private List<double> _maxes = new List<double> {double.MinValue};
-        private List<double> _mins = new List<double> {double.MaxValue};
+        private List<double> _maxes = new List<double>();
+        private List<double> _mins = new List<double>();
 
         private readonly int[][] _faces;
 
@@ -27,11 +27,13 @@ namespace Assets.Rendering
 
         public void Update(ScalarField<Face> field)
         {
+            AddMaxAndMin(field.Values);
+
             var averageMax = _maxes.Average();
             var averageMin = _mins.Average();
             var gap = averageMax - averageMin <= 0 ? 1 : averageMax - averageMin; 
 
-            Debug.Log(String.Format("Min: {0,3:N2}, Max: {1,3:N2}", averageMin, averageMax));
+            //Debug.Log(String.Format("Min: {0,3:N2}, Max: {1,3:N2}", averageMin, averageMax));
 
             var colors = new Color[_polyhedron.Vertices.Count + _polyhedron.Faces.Count];
             var vertices = _polyhedron.Vertices;
@@ -40,9 +42,6 @@ namespace Assets.Rendering
                 var value = AverageAt(index, field);
                 var color = ColorFromValue((float) ((value - averageMin)/gap));
                 colors[index] = color;
-
-                averageMax = averageMax < value ? value : averageMax;
-                averageMin = averageMin > value ? value : averageMin;
             }
 
             var faces = _polyhedron.Faces;
@@ -51,23 +50,17 @@ namespace Assets.Rendering
                 var value = field[index];
                 var color = ColorFromValue((float) ((value - averageMin)/gap));
                 colors[vertices.Count + index] = color;
-
-                averageMax = averageMax < value ? value : averageMax;
-                averageMin = averageMin > value ? value : averageMin;
             }
-
-            AddMaxAndMin(averageMax, averageMin);
 
             _mesh.colors = colors;
         }
 
-        private void AddMaxAndMin(double max, double min)
+        private void AddMaxAndMin(double[] values)
         {
-            //TODO: Fix max/min scheme.
-            _maxes.Add(max);
-            _mins.Add(min);
+            _maxes.Add(values.Max());
+            _mins.Add(values.Min());
 
-            if (_maxes.Count == 2 || _maxes.Count > 100)
+            if (_maxes.Count > 1000)
             {
                 _maxes = _maxes.Skip(1).ToList();
                 _mins = _mins.Skip(1).ToList();

@@ -5,8 +5,7 @@ namespace Assets.UserInterface
 {
     public class CameraPositionController
     {
-        public float LongitudinalSpeed = 0.1F;
-        public float LatitudinalSpeed = 0.1F;
+        public float AngularSpeed = 0.05F;
         public float RadialSpeed = 2000.0F;
 
         public KeyCode DragButton = KeyCode.Mouse0;
@@ -30,14 +29,14 @@ namespace Assets.UserInterface
         {
             if (Input.GetKey(DragButton))
             {
-                _azimuth = _azimuth + LongitudinalSpeed*Input.GetAxis("Mouse X");
-                _colatitude = _colatitude + LatitudinalSpeed*Input.GetAxis("Mouse Y");
+                _azimuth = _azimuth - AngularSpeed*Input.GetAxis("Mouse X");
+                _colatitude = _colatitude + AngularSpeed*Input.GetAxis("Mouse Y");
             }
 
             _radius += Input.GetAxis("Mouse ScrollWheel") * RadialSpeed;
 
             var x = _radius*Mathf.Sin(_azimuth)*Mathf.Sin(_colatitude);
-            var y = -_radius*Mathf.Cos(_azimuth)*Mathf.Sin(_colatitude);
+            var y = _radius*Mathf.Cos(_azimuth)*Mathf.Sin(_colatitude);
             var z = _radius*Mathf.Cos(_colatitude);
 
             var position = new Vector3(x, y, z);

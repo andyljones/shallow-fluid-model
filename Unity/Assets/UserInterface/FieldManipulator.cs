@@ -11,8 +11,8 @@ namespace Assets.UserInterface
         public KeyCode SurfaceRaiseButton = KeyCode.UpArrow;
         public KeyCode SurfaceLowerButton = KeyCode.DownArrow;
 
-        public Func<double, double> Raise = x => 1.001*x;
-        public Func<double, double> Lower = x => 0.999*x; 
+        public Func<double, double> Raise = x => x + 0.001;
+        public Func<double, double> Lower = x => x - 0.001; 
 
         private readonly Camera _camera;
         private PolyhedronMeshHandler _meshHandler;

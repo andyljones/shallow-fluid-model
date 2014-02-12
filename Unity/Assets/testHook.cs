@@ -1,5 +1,6 @@
 ﻿using Assets.Collider;
 using Assets.Rendering;
+using Assets.Rendering.WindMapper;
 using Assets.UserInterface;
 using Engine;
 using Engine.Models;
@@ -26,24 +27,32 @@ namespace Assets
         private PrognosticFields _oldFields;
         private PrognosticFields _olderFields;
         private VectorFieldRenderer _vectorFieldRenderer;
+        private WindMap _windMapper;
+
 
         // Use this for initialization
         void Start ()
         {
             var options = new Options
             {
-                MinimumNumberOfFaces = 200,
+                MinimumNumberOfFaces = 400,
                 Radius = 6000,
 
                 Gravity = 10.0 / 1000.0,
                 RotationFrequency = 1.0 / (3600.0*24.0),
-                Timestep = 300,
+                Timestep = 350,
 
                 SurfaceMaterialName = "Materials/Surface",
-                WireframeMaterialName = "Materials/Wireframe"
+                WireframeMaterialName = "Materials/Wireframe",
+
+                WindMapMaterialName = "Materials/WindMap",
+                ParticleCount = 1000,
+                WindmapScaleFactor = 1000
             };
 
+
             _polyhedron = GeodesicSphereFactory.Build(options);
+            Debug.Log(_polyhedron.Faces.Count);
 
             var polyhedronMesh = new PolyhedronMeshHandler(_polyhedron);
 
@@ -57,12 +66,14 @@ namespace Assets
             _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), polyhedronMesh);
 
             _fieldFactory = new PrognosticFieldsFactory(_polyhedron);
-            _fieldFactory.Height = _fieldFactory.RandomScalarField(10, 0);
+            _fieldFactory.Height = _fieldFactory.RandomScalarField(10, 0.01);
             _fields = _fieldFactory.Build();
 
             _updater = new PrognosticFieldsUpdater(_polyhedron, options);
 
             _vectorFieldRenderer = new VectorFieldRenderer(_polyhedron, "VF", "Materials/Vectors");
+
+            _windMapper = new WindMap(_polyhedron, options);
 
         }
 
@@ -73,6 +84,7 @@ namespace Assets
             _fields.Height = _fieldManipulator.Update(_fields.Height);
             _polyhedronRenderer.Update(_fields);
             _vectorFieldRenderer.Update(_fields.Velocity);
+            _windMapper.Update(_fields.Velocity);
 
             if (Input.GetKeyDown(KeyCode.R))
             {
@@ -85,6 +97,7 @@ namespace Assets
                 _olderFields = _oldFields;
                 _oldFields = _fields;
                 _fields = _updater.Update(_oldFields, _olderFields, oldestFields);
+
             }
 
         }
