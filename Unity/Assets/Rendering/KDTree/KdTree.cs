@@ -33,7 +33,6 @@ namespace Assets.Rendering.KDTree
 
         private static INode MakeFork(List<IndexedVector> vectorKeys, int depth)
         {
-            Debug.Log(depth);
             var axis = depth % 3;
             var medianVectorKeyAlongAxis = MedianAlongAxis(vectorKeys, axis);
             var medianVectorAlongAxis = medianVectorKeyAlongAxis.Vector;

@@ -8,6 +8,9 @@ namespace Assets.Rendering.KDTree
     {
         public List<IndexedVector> IndexedVectors { get; private set; }
 
+        public float GreatestDistance { get { return _greatestDistance; }}
+        private float _greatestDistance;
+
         private List<float> _distancesFromTarget;
         private readonly Vector3 _target;
 
@@ -28,6 +31,7 @@ namespace Assets.Rendering.KDTree
                 {
                     IndexedVectors[i] = newIndexedVector;
                     _distancesFromTarget[i] = newVectorsDistanceFromTarget;
+                    _greatestDistance = _distancesFromTarget.Max();
                     return;
                 }
             }
@@ -39,11 +43,6 @@ namespace Assets.Rendering.KDTree
             {
                 TryAdd(newVector);
             }
-        }
-
-        public float GreatestDistance()
-        {
-            return _distancesFromTarget.Max();
         }
     }
 }
