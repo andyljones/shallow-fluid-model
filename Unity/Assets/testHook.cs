@@ -1,4 +1,5 @@
-﻿using Assets.Collider;
+﻿using System.Linq;
+using Assets.Collider;
 using Assets.Rendering;
 using Assets.Rendering.ParticleMap;
 using Assets.UserInterface;
@@ -46,14 +47,13 @@ namespace Assets
                 WireframeMaterialName = "Materials/Wireframe",
                 ParticleMaterialName = "Materials/WindMap",
 
-                ParticleCount = 15000,
+                ParticleCount = 10000,
                 WindmapScaleFactor = 2000,
                 ParticleLifespan = 1000
             };
 
 
             _polyhedron = GeodesicSphereFactory.Build(options);
-            Debug.Log(_polyhedron.Faces.Count);
 
             var polyhedronMesh = new PolyhedronMeshHandler(_polyhedron);
 

@@ -153,7 +153,7 @@ public class KDTree {
 	
 //	Find the nearest point in the set to the supplied point.
 	public int FindNearest(Vector3 pt) {
-		float bestSqDist = 1000000000f;
+		float bestSqDist = float.MaxValue;
 		int bestIndex = -1;
 		
 		Search(pt, ref bestSqDist, ref bestIndex);
