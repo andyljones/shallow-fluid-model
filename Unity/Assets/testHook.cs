@@ -1,6 +1,6 @@
 ﻿using Assets.Collider;
 using Assets.Rendering;
-using Assets.Rendering.WindMapper;
+using Assets.Rendering.ParticleMap;
 using Assets.UserInterface;
 using Engine;
 using Engine.Models;
@@ -27,7 +27,7 @@ namespace Assets
         private PrognosticFields _oldFields;
         private PrognosticFields _olderFields;
         private VectorFieldRenderer _vectorFieldRenderer;
-        private WindMap _windMapper;
+        private ParticleMap _windMapper;
 
 
         // Use this for initialization
@@ -44,11 +44,11 @@ namespace Assets
 
                 SurfaceMaterialName = "Materials/Surface",
                 WireframeMaterialName = "Materials/Wireframe",
-                WindMapMaterialName = "Materials/WindMap",
+                ParticleMaterialName = "Materials/WindMap",
 
-                ParticleCount = 10000,
+                ParticleCount = 15000,
                 WindmapScaleFactor = 2000,
-                RenewalRate = 0.001
+                ParticleLifespan = 1000
             };
 
 
@@ -67,14 +67,14 @@ namespace Assets
             _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), polyhedronMesh);
 
             _fieldFactory = new PrognosticFieldsFactory(_polyhedron);
-            _fieldFactory.Height = _fieldFactory.RandomScalarField(10, .0);
+            _fieldFactory.Height = _fieldFactory.RandomScalarField(10, .01);
             _fields = _fieldFactory.Build();
 
             _updater = new PrognosticFieldsUpdater(_polyhedron, options);
 
             _vectorFieldRenderer = new VectorFieldRenderer(_polyhedron, "VF", "Materials/Vectors");
 
-            _windMapper = new WindMap(_polyhedron, options);
+            _windMapper = new ParticleMap(_polyhedron, options);
 
         }
 

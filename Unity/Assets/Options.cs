@@ -1,11 +1,11 @@
 ﻿using Assets.Rendering;
-using Assets.Rendering.WindMapper;
+using Assets.Rendering.ParticleMap;
 using Engine.Models.MomentumModel;
 using Engine.Polyhedra.IcosahedronBased;
 
 namespace Assets
 {
-    public class Options : IPolyhedronOptions, IPolyhedronRendererOptions, IMomentumModelParameters, IWindMapOptions
+    public class Options : IPolyhedronOptions, IPolyhedronRendererOptions, IMomentumModelParameters, IParticleMapOptions
     {
         public double Radius { get; set; }
         public int MinimumNumberOfFaces { get; set; }
@@ -19,8 +19,8 @@ namespace Assets
 
         public double WindmapScaleFactor { get; set; }
         public int ParticleCount { get; set; }
-        public double RenewalRate { get; set; }
-        public string WindMapMaterialName { get; set; }
+        public int ParticleLifespan { get; set; }
+        public string ParticleMaterialName { get; set; }
         public int TrailLength { get; set; }
     }
 }
