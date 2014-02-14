@@ -15,8 +15,10 @@ namespace Assets.Rendering.ParticleMap
         private readonly Vector3[] _vertices;
         private readonly int[][] _indicesOfNeighbours;
         private readonly Vector3[][] _neighbours;
+        private readonly int[][] _indicesOfVertexNeighbourhoods;
 
         private int[] _indicesOfNearestVertex;
+        private int[][] _indicesOfNeighbourhood;
 
         public ParticleNeighbourhoodTracker(IPolyhedron polyhedron, int particleCount)
         {
@@ -24,9 +26,22 @@ namespace Assets.Rendering.ParticleMap
 
             _vertexTree = KDTree.MakeFromPoints(_vertices);
             _indicesOfNeighbours = VertexIndexedTableFactory.Neighbours(polyhedron);
+            _indicesOfVertexNeighbourhoods = BuildNeighbourhoodsTable(_indicesOfNeighbours);
             _neighbours = BuildVertexNeighbourTable(_indicesOfNeighbours, _vertices);
 
             _indicesOfNearestVertex = new int[particleCount];
+            _indicesOfNeighbourhood = new int[particleCount][];
+        }
+
+        private static int[][] BuildNeighbourhoodsTable(int[][] indicesOfNeighbours)
+        {
+            var neighbourhoods = new int[indicesOfNeighbours.Length][];
+            for (int i = 0; i < indicesOfNeighbours.Length; i++)
+            {
+                neighbourhoods[i] = indicesOfNeighbours[i].Concat(new[] {i}).ToArray();
+            }
+
+            return neighbourhoods;
         }
 
         private static Vector3[][] BuildVertexNeighbourTable(int[][] neighbourIndices, Vector3[] vertices)
@@ -45,14 +60,16 @@ namespace Assets.Rendering.ParticleMap
             return surface.Vertices.Select(vertex => GraphicsUtilities.Vector3(vertex.Position)).ToArray();
         }
 
-        public int[] GetIndicesOfVerticesNearest(Vector3[] particlePositions)
+        public int[][] GetIndicesOfVerticesNearest(Vector3[] particlePositions)
         {
             for (int i = 0; i < particlePositions.Length; i++)
             {
-                _indicesOfNearestVertex[i] = GetIndexOfNearest(i, particlePositions[i]);
+                var indexOfNearestVertex = GetIndexOfNearest(i, particlePositions[i]);
+                _indicesOfNearestVertex[i] = indexOfNearestVertex;
+                _indicesOfNeighbourhood[i] = _indicesOfVertexNeighbourhoods[indexOfNearestVertex];
             }
 
-            return _indicesOfNearestVertex;
+            return _indicesOfNeighbourhood;
         }
 
         private int GetIndexOfNearest(int particleIndex, Vector3 particlePosition)

@@ -84,7 +84,7 @@ namespace Assets
         {
             _fields.Height = _fieldManipulator.Update(_fields.Height);
             _polyhedronRenderer.Update(_fields);
-            //_vectorFieldRenderer.Update(_fields.Velocity);
+            _vectorFieldRenderer.Update(_fields.Velocity);
             _windMapper.Update(_fields.Velocity);
 
             if (Input.GetKeyDown(KeyCode.R))
