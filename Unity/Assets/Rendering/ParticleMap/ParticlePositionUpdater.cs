@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Engine.Models;
 using Engine.Polyhedra;
-using MathNet.Numerics;
-using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
 namespace Assets.Rendering.ParticleMap
@@ -13,18 +9,21 @@ namespace Assets.Rendering.ParticleMap
     {
         private readonly ParticleNeighbourhoodTracker _tracker;
 
-        private readonly IParticleMapOptions _options;
-        private readonly Vector3[] _vertexPositions;
+        private readonly float _scaleFactor;
 
-        private readonly double _scaleFactor;
+        private readonly Vector3[] _vertexPositions;
+        private readonly Vector3[] _vertexVelocities;
+        private readonly Vector3[] _particleVelocities;
 
         public ParticlePositionUpdater(IPolyhedron polyhedron, IParticleMapOptions options)
         {
-            _options = options;
-            _scaleFactor = options.WindmapScaleFactor*options.Timestep;
+            _scaleFactor = (float)(options.WindmapScaleFactor*options.Timestep);
 
             _tracker = new ParticleNeighbourhoodTracker(polyhedron, options.ParticleCount);
             _vertexPositions = GetVertexPositions(polyhedron);
+
+            _vertexVelocities = new Vector3[polyhedron.Vertices.Count];
+            _particleVelocities = new Vector3[options.ParticleCount];
         }
 
         private static Vector3[] GetVertexPositions(IPolyhedron surface)
@@ -34,14 +33,35 @@ namespace Assets.Rendering.ParticleMap
 
         public void Update(ref Vector3[] particlePositions, VectorField<Vertex> velocityField)
         {
-            var indicesOfNearestVertices = _tracker.GetIndicesOfVerticesNearest(particlePositions);
+            UpdateVertexVelocities(velocityField);
+            UpdateParticleVelocities(particlePositions);
 
             for (int i = 0; i < particlePositions.Length; i++)
             {
                 var position = particlePositions[i];
-                var velocity = GetVelocity(position, indicesOfNearestVertices[i], velocityField);
+                var velocity = _particleVelocities[i];
                 var newPosition = CalculateNewPosition(velocity, position);
                 particlePositions[i] = newPosition;
+            }
+        }
+
+        private void UpdateVertexVelocities(VectorField<Vertex> velocityField)
+        {
+            for (int i = 0; i < _vertexVelocities.Length; i++)
+            {
+                _vertexVelocities[i] = GraphicsUtilities.Vector3(velocityField[i]);
+            }
+        }
+
+        private void UpdateParticleVelocities(Vector3[] particlePositions)
+        {
+            var indicesOfNearestVertices = _tracker.GetIndicesOfVerticesNearest(particlePositions);
+
+            for (int i = 0; i < particlePositions.Length; i++)
+            {
+                var particlePosition = particlePositions[i];
+                var indicesOfNeighbourhood = indicesOfNearestVertices[i];
+                _particleVelocities[i] = GetVelocity(particlePosition, indicesOfNeighbourhood);
             }
 
         }
@@ -55,28 +75,22 @@ namespace Assets.Rendering.ParticleMap
             return newPosition;
         }
 
-        private Vector3 GetVelocity(Vector3 position, int[] nearestVertices, VectorField<Vertex> velocityField)
+        private Vector3 GetVelocity(Vector3 position, int[] nearestVertices)
         {
-            var sumOfVelocities = new Vector(3);
-            var sumOfWeights = 0.0;
+            var sumOfVelocities = new Vector3();
+            var sumOfWeights = 0f;
             for (int i = 0; i < nearestVertices.Length; i++)
             {
                 var vertexIndex = nearestVertices[i];
-                var velocity = velocityField[vertexIndex];
-                var distance = (_vertexPositions[vertexIndex] - position).magnitude;
+                var velocity = _vertexVelocities[vertexIndex];
+                
+                var weight = 1.0f/(_vertexPositions[vertexIndex] - position).magnitude;
 
-                if (Number.AlmostEqual(distance, 0.0))
-                {
-                    return GraphicsUtilities.Vector3(_scaleFactor*velocity);
-                }
-
-                var weight = 1.0/distance;
-
-                sumOfVelocities += weight*velocity;
-                sumOfWeights += weight;
+                sumOfVelocities = sumOfVelocities + weight*velocity;
+                sumOfWeights = sumOfWeights + weight;
             }
 
-            return GraphicsUtilities.Vector3(_scaleFactor * sumOfVelocities / sumOfWeights);
+            return _scaleFactor * (sumOfVelocities / sumOfWeights);
         }
     }
 }
