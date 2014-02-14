@@ -80,16 +80,16 @@ namespace Assets.Rendering.ParticleMap
 
             var aNeighbourIsCloser = false;
             indexOfNewClosestVertex = indexOfPreviousClosestVertex;
-            var currentSqrDistance = (particlePosition - nearestVertex).sqrMagnitude;
+            var currentSimilarity = Vector3.Dot(particlePosition, nearestVertex);
             for (int j = 0; j < neighbours.Length; j++)
             {
-                var sqrDistanceToNeighbour = (particlePosition - neighbours[j]).sqrMagnitude;
+                var neighbourSimilarity = Vector3.Dot(particlePosition, neighbours[j]);
 
-                if (sqrDistanceToNeighbour < currentSqrDistance)
+                if (neighbourSimilarity > currentSimilarity)
                 {
                     aNeighbourIsCloser = true;
                     indexOfNewClosestVertex = indicesOfNeighbours[j];                    
-                    currentSqrDistance = sqrDistanceToNeighbour;
+                    currentSimilarity = neighbourSimilarity;
                 }
             }
 
