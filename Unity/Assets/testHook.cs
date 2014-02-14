@@ -47,10 +47,10 @@ namespace Assets
                 WireframeMaterialName = "Materials/Wireframe",
                 ParticleMaterialName = "Materials/ParticleMap",
 
-                ParticleCount = 5000,
+                ParticleCount = 20000,
                 WindmapScaleFactor = 2000,
                 ParticleLifespan = 1000,
-                ParticleTrailLifespan = 5,
+                ParticleTrailLifespan = 20,
             };
 
 

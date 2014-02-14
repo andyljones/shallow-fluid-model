@@ -19,7 +19,7 @@ namespace Assets.Rendering.ParticleMap
         private readonly int _indexOfFirstParticle;
         private readonly int _indexOfOnePastLastParticle;
 
-        public ParticleMapRenderer(int indexOfFirstParticle, int indexOfOnePastLastParticle, IParticleMapOptions options)
+        public ParticleMapRenderer(Transform parentTransform, int indexOfFirstParticle, int indexOfOnePastLastParticle, IParticleMapOptions options)
         {
             _indexOfFirstParticle = indexOfFirstParticle;
             _indexOfOnePastLastParticle = indexOfOnePastLastParticle;
@@ -29,13 +29,14 @@ namespace Assets.Rendering.ParticleMap
             _numberOfVertices = (_indexOfOnePastLastParticle - _indexOfFirstParticle)*_verticesPerParticle;
             _particleLines = new Vector3[_numberOfVertices];
 
-            var particlesGameObject = CreateParticlesGameObject(_numberOfVertices, options.ParticleMaterialName);
-            _particlesMeshFilter = particlesGameObject.GetComponent<MeshFilter>();
+            var particleMapGameObject = CreateParticleMapGameObject(parentTransform, _numberOfVertices, options.ParticleMaterialName);
+            _particlesMeshFilter = particleMapGameObject.GetComponent<MeshFilter>();
         }
 
-        private static GameObject CreateParticlesGameObject(int numberOfVertices, String materialName)
+        private static GameObject CreateParticleMapGameObject(Transform parentTransform, int numberOfVertices, String materialName)
         {
             var gameObject = new GameObject("ParticleMap");
+            gameObject.transform.parent = parentTransform;
 
             var meshFilter = gameObject.AddComponent<MeshFilter>();
             meshFilter.mesh = CreateParticlesMesh(numberOfVertices);
@@ -104,11 +105,10 @@ namespace Assets.Rendering.ParticleMap
 
         public void Reset(int indexToReset, Vector3 newPosition)
         {
-            for (int j = 0; j < _verticesPerParticle; j++)
-            {
-                var index = GetIndexIntoLineArray(indexToReset, 0) + j;
-                _particleLines[index] = newPosition;
-            }
+            var secondPreviousIndex = GetIndexIntoLineArray(indexToReset, _offset - 2);
+            var previousIndex = GetIndexIntoLineArray(indexToReset, _offset-1);
+            _particleLines[secondPreviousIndex] = newPosition;            
+            _particleLines[previousIndex] = newPosition;
         }
 
         private int GetIndexIntoLineArray(int particleIndex, int offset)
