@@ -13,7 +13,7 @@ namespace Assets.Rendering.ParticleMap
     {
         private readonly KDTree _vertexTree;
         private readonly Vector3[] _vertices;
-        private readonly int[][] _neighbourIndices;
+        private readonly int[][] _indicesOfNeighbours;
         private readonly Vector3[][] _neighbours;
 
         private int[] _indicesOfNearestVertex;
@@ -23,8 +23,8 @@ namespace Assets.Rendering.ParticleMap
             _vertices = GetVertexPositions(polyhedron);
 
             _vertexTree = KDTree.MakeFromPoints(_vertices);
-            _neighbourIndices = VertexIndexedTableFactory.Neighbours(polyhedron);
-            _neighbours = BuildVertexNeighbourTable(_neighbourIndices, _vertices);
+            _indicesOfNeighbours = VertexIndexedTableFactory.Neighbours(polyhedron);
+            _neighbours = BuildVertexNeighbourTable(_indicesOfNeighbours, _vertices);
 
             _indicesOfNearestVertex = new int[particleCount];
         }
@@ -57,35 +57,43 @@ namespace Assets.Rendering.ParticleMap
 
         private int GetIndexOfNearest(int particleIndex, Vector3 particlePosition)
         {
-            var indexOfPreviousNearestVertex = _indicesOfNearestVertex[particleIndex];
+            var indexOfPreviousClosestVertex = _indicesOfNearestVertex[particleIndex];
 
-            if (CheckIfAnyNeighbourIsCloser(particlePosition, indexOfPreviousNearestVertex))
+            int indexOfNewClosestVertex;
+            if (CheckIfAnyNeighbourIsCloser(particlePosition, indexOfPreviousClosestVertex, out indexOfNewClosestVertex))
             {
-                return _vertexTree.FindNearest(particlePosition);
-            }
-            else
-            {
-                return indexOfPreviousNearestVertex;
-            }
-        }
-
-        private bool CheckIfAnyNeighbourIsCloser(Vector3 particlePosition, int indexOfPreviousNearestVertex)
-        {
-            var previousNearestVertex = _vertices[indexOfPreviousNearestVertex];
-            var previousNeighbours = _neighbours[indexOfPreviousNearestVertex];
-
-            var sqrDistanceToNearest = (particlePosition - previousNearestVertex).sqrMagnitude;
-            for (int j = 0; j < previousNeighbours.Length; j++)
-            {
-                var sqrDistanceToNeighbour = (particlePosition - previousNeighbours[j]).sqrMagnitude;
-
-                if (sqrDistanceToNeighbour < sqrDistanceToNearest)
+                int dummyOutVariable;
+                if (CheckIfAnyNeighbourIsCloser(particlePosition, indexOfNewClosestVertex, out dummyOutVariable))
                 {
-                    return true;
+                    indexOfNewClosestVertex = _vertexTree.FindNearest(particlePosition);                    
                 }
             }
 
-            return false;
+            return indexOfNewClosestVertex;
+        }
+
+        private bool CheckIfAnyNeighbourIsCloser(Vector3 particlePosition, int indexOfPreviousClosestVertex, out int indexOfNewClosestVertex)
+        {
+            var nearestVertex = _vertices[indexOfPreviousClosestVertex];
+            var neighbours = _neighbours[indexOfPreviousClosestVertex];
+            var indicesOfNeighbours = _indicesOfNeighbours[indexOfPreviousClosestVertex];
+
+            var aNeighbourIsCloser = false;
+            indexOfNewClosestVertex = indexOfPreviousClosestVertex;
+            var currentSqrDistance = (particlePosition - nearestVertex).sqrMagnitude;
+            for (int j = 0; j < neighbours.Length; j++)
+            {
+                var sqrDistanceToNeighbour = (particlePosition - neighbours[j]).sqrMagnitude;
+
+                if (sqrDistanceToNeighbour < currentSqrDistance)
+                {
+                    aNeighbourIsCloser = true;
+                    indexOfNewClosestVertex = indicesOfNeighbours[j];                    
+                    currentSqrDistance = sqrDistanceToNeighbour;
+                }
+            }
+
+            return aNeighbourIsCloser;
         }
 
     }
