@@ -29,8 +29,8 @@ namespace Assets.UserInterface
         {
             if (Input.GetKey(DragButton))
             {
-                _azimuth = _azimuth - AngularSpeed*Input.GetAxis("Mouse X");
-                _colatitude = _colatitude + AngularSpeed*Input.GetAxis("Mouse Y");
+                _azimuth = MathMod(_azimuth - AngularSpeed*Input.GetAxis("Mouse X"), 2*Mathf.PI);
+                _colatitude = Mathf.Clamp(_colatitude + AngularSpeed*Input.GetAxis("Mouse Y"), 0.001f, Mathf.PI-0.01f);
             }
 
             _radius += Input.GetAxis("Mouse ScrollWheel") * RadialSpeed;
@@ -47,7 +47,10 @@ namespace Assets.UserInterface
             _cameraTransform.position = position;
         }
 
-
+        private float MathMod(float x, float m)
+        {
+            return (x%m + m)%m;
+        }
     }
 
 }
