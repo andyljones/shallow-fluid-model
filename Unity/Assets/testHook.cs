@@ -68,7 +68,7 @@ namespace Assets
             _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), polyhedronMesh);
 
             _fieldFactory = new PrognosticFieldsFactory(_polyhedron);
-            _fieldFactory.Height = _fieldFactory.RandomScalarField(10, 0);
+            _fieldFactory.Height = _fieldFactory.RandomScalarField(10, 0.01);
             _fields = _fieldFactory.Build();
 
             _updater = new PrognosticFieldsUpdater(_polyhedron, options);

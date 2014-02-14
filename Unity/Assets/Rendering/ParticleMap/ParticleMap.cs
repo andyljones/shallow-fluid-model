@@ -26,7 +26,7 @@ namespace Assets.Rendering.ParticleMap
 
             _particleRenewalScheduler = new ParticleRenewalScheduler(options);
             _particlePositionUpdater = new ParticlePositionUpdater(polyhedron, options);
-            _particleRenderer = new ParticleMapRenderer(options);
+            _particleRenderer = new ParticleMapRenderer(0, options.ParticleCount, options);
         }
 
         private static Vector3[] CreateParticles(int particleCount, float radius)

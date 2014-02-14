@@ -12,11 +12,21 @@ namespace Assets.Rendering.ParticleMap
         private readonly int _verticesPerParticle;
         private readonly int _numberOfVertices;
 
-        public ParticleMapRenderer(IParticleMapOptions options)
+        private bool isFirstUpdate = true;
+        private int _offset = 0;
+        private Vector3[] _particleLines;
+
+        private readonly int _indexOfFirstParticle;
+        private readonly int _indexOfOnePastLastParticle;
+
+        public ParticleMapRenderer(int indexOfFirstParticle, int indexOfOnePastLastParticle, IParticleMapOptions options)
         {
+            _indexOfFirstParticle = indexOfFirstParticle;
+            _indexOfOnePastLastParticle = indexOfOnePastLastParticle;
+
             _trailLifespan = options.ParticleTrailLifespan;
             _verticesPerParticle = 2*(options.ParticleTrailLifespan - 1);
-            _numberOfVertices = options.ParticleCount*_verticesPerParticle;
+            _numberOfVertices = (_indexOfOnePastLastParticle - _indexOfFirstParticle)*_verticesPerParticle;
             _particleLines = new Vector3[_numberOfVertices];
 
             var particlesGameObject = CreateParticlesGameObject(_numberOfVertices, options.ParticleMaterialName);
@@ -47,10 +57,6 @@ namespace Assets.Rendering.ParticleMap
             return mesh;
         }
 
-        private bool isFirstUpdate = true;
-        private int _offset = 0;
-        private Vector3[] _particleLines;
-
         public void Update(Vector3[] particlePositions)
         {
             if (isFirstUpdate)
@@ -68,7 +74,7 @@ namespace Assets.Rendering.ParticleMap
 
         private void UpdateLineArray(Vector3[] particlePositions)
         {
-            for (int i = 0; i < particlePositions.Length; i++)
+            for (int i = _indexOfFirstParticle; i < _indexOfOnePastLastParticle; i++)
             {
                 var previousIndex = GetIndexIntoLineArray(i, _offset - 1);
                 var thisIndex = GetIndexIntoLineArray(i, _offset);
@@ -85,7 +91,7 @@ namespace Assets.Rendering.ParticleMap
         private void InitializeLineArray(Vector3[] particlePositions)
         {
             _particleLines = new Vector3[_numberOfVertices];
-            for (int i = 0; i < particlePositions.Length; i++)
+            for (int i = _indexOfFirstParticle; i < _indexOfOnePastLastParticle; i++)
             {
                 for (int j = 0; j < _verticesPerParticle; j++)
                 {
@@ -96,16 +102,6 @@ namespace Assets.Rendering.ParticleMap
 
         }
 
-        private int GetIndexIntoLineArray(int particleIndex, int offset)
-        {
-            return _verticesPerParticle*particleIndex + ((offset + _verticesPerParticle)%_verticesPerParticle);
-        }
-
-        private void IncrementOffset()
-        {
-            _offset = (_offset+2)%_verticesPerParticle;
-        }
-
         public void Reset(int indexToReset, Vector3 newPosition)
         {
             for (int j = 0; j < _verticesPerParticle; j++)
@@ -113,6 +109,16 @@ namespace Assets.Rendering.ParticleMap
                 var index = GetIndexIntoLineArray(indexToReset, 0) + j;
                 _particleLines[index] = newPosition;
             }
+        }
+
+        private int GetIndexIntoLineArray(int particleIndex, int offset)
+        {
+            return _verticesPerParticle*(particleIndex - _indexOfFirstParticle) + ((offset + _verticesPerParticle)%_verticesPerParticle);
+        }
+
+        private void IncrementOffset()
+        {
+            _offset = (_offset+2)%_verticesPerParticle;
         }
     }
 }
