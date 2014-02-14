@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Assets.Collider;
 using Assets.Rendering;
+using Assets.Rendering.LatLongGrid;
 using Assets.Rendering.ParticleMap;
 using Assets.UserInterface;
 using Engine;
@@ -50,7 +51,7 @@ namespace Assets
                 ParticleCount = 20000,
                 WindmapScaleFactor = 2000,
                 ParticleLifespan = 1000,
-                ParticleTrailLifespan = 20,
+                ParticleTrailLifespan = 10,
             };
 
 
@@ -77,6 +78,7 @@ namespace Assets
 
             _compositeParticleMap = new ParticleMap(_polyhedron, options);
 
+            LatLongGridDrawer.DrawGrid(1.005f*(float)options.Radius);
         }
 
         private bool _isRunning = false;
