@@ -14,6 +14,7 @@ namespace Assets.UserInterface
 
             camera.nearClipPlane = NearClipPlane;
             camera.farClipPlane = FarClipPane;
+            camera.backgroundColor = Color.black;
 
             return cameraGameObject;
         }
