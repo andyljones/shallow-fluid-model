@@ -28,7 +28,7 @@ namespace Assets
         private PrognosticFields _oldFields;
         private PrognosticFields _olderFields;
         private VectorFieldRenderer _vectorFieldRenderer;
-        private ParticleMap _windMapper;
+        private ParticleMap _compositeParticleMap;
 
 
         // Use this for initialization
@@ -47,9 +47,10 @@ namespace Assets
                 WireframeMaterialName = "Materials/Wireframe",
                 ParticleMaterialName = "Materials/ParticleMap",
 
-                ParticleCount = 50000,
+                ParticleCount = 5000,
                 WindmapScaleFactor = 2000,
-                ParticleLifespan = 1000
+                ParticleLifespan = 1000,
+                ParticleTrailLifespan = 5,
             };
 
 
@@ -74,7 +75,7 @@ namespace Assets
 
             _vectorFieldRenderer = new VectorFieldRenderer(_polyhedron, "VF", "Materials/Vectors");
 
-            _windMapper = new ParticleMap(_polyhedron, options);
+            _compositeParticleMap = new ParticleMap(_polyhedron, options);
 
         }
 
@@ -85,7 +86,7 @@ namespace Assets
             _fields.Height = _fieldManipulator.Update(_fields.Height);
             _polyhedronRenderer.Update(_fields);
             //_vectorFieldRenderer.Update(_fields.Velocity);
-            _windMapper.Update(_fields.Velocity);
+            _compositeParticleMap.Update(_fields.Velocity);
 
             if (Input.GetKeyDown(KeyCode.R))
             {

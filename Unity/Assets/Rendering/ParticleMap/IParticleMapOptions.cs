@@ -9,6 +9,7 @@ namespace Assets.Rendering.ParticleMap
         double WindmapScaleFactor { get; }
         int ParticleCount { get; }
         int ParticleLifespan { get; }
+        int ParticleTrailLifespan { get; }
 
         String ParticleMaterialName { get; }
     }

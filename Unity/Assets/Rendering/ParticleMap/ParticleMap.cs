@@ -13,7 +13,7 @@ namespace Assets.Rendering.ParticleMap
 
         private readonly ParticleRenewalScheduler _particleRenewalScheduler;
         private readonly ParticlePositionUpdater _particlePositionUpdater;
-        private readonly ParticleRenderer _particleRenderer;
+        private readonly ParticleMapRenderer _particleRenderer;
 
         private Vector3[] _particlePositions;
 
@@ -26,7 +26,7 @@ namespace Assets.Rendering.ParticleMap
 
             _particleRenewalScheduler = new ParticleRenewalScheduler(options);
             _particlePositionUpdater = new ParticlePositionUpdater(polyhedron, options);
-            _particleRenderer = new ParticleRenderer(options);
+            _particleRenderer = new ParticleMapRenderer(options);
         }
 
         private static Vector3[] CreateParticles(int particleCount, float radius)
@@ -58,7 +58,9 @@ namespace Assets.Rendering.ParticleMap
         {
             foreach (var i in indicesToRenew )
             {
-                _particlePositions[i] = CreateParticle(_radius);
+                var newPosition = CreateParticle(_radius);
+                _particleRenderer.Reset(i, newPosition);
+                _particlePositions[i] = newPosition;
             }
         }
     }

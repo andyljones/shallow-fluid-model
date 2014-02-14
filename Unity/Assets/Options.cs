@@ -21,6 +21,6 @@ namespace Assets
         public int ParticleCount { get; set; }
         public int ParticleLifespan { get; set; }
         public string ParticleMaterialName { get; set; }
-        public int TrailLength { get; set; }
+        public int ParticleTrailLifespan { get; set; }
     }
 }
