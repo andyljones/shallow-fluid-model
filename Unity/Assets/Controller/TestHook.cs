@@ -1,8 +1,8 @@
-﻿using Assets.Controller.UserInterface;
+﻿using Assets.Controller.GameCamera;
+using Assets.Controller.Manipulator;
 using Assets.Views.ColorMap;
 using Assets.Views.LatLongGrid;
 using Assets.Views.ParticleMap;
-using Assets.Views.VectorMap;
 using Engine.Geometry;
 using Engine.Geometry.GeodesicSphere;
 using Engine.Simulation;

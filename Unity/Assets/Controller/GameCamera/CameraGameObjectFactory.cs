@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Controller.UserInterface
+namespace Assets.Controller.GameCamera
 {
     public static class CameraGameObjectFactory
     {
@@ -10,7 +10,7 @@ namespace Assets.Controller.UserInterface
         public static GameObject Build()
         {
             var cameraGameObject = new GameObject("Camera");
-            var camera = cameraGameObject.AddComponent<Camera>();
+            var camera = cameraGameObject.AddComponent<UnityEngine.Camera>();
 
             camera.nearClipPlane = NearClipPlane;
             camera.farClipPlane = FarClipPane;

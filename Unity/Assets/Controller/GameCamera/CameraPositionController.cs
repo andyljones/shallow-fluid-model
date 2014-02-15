@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Controller.UserInterface
+namespace Assets.Controller.GameCamera
 {
     public class CameraPositionController
     {

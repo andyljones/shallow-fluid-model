@@ -3,7 +3,7 @@ using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
 
-namespace Assets.Controller.UserInterface
+namespace Assets.Controller.Manipulator
 {
     public class FieldManipulator
     {
@@ -13,10 +13,10 @@ namespace Assets.Controller.UserInterface
         public Func<double, double> Raise = x => x + 0.001;
         public Func<double, double> Lower = x => x - 0.001; 
 
-        private readonly Camera _camera;
+        private readonly UnityEngine.Camera _camera;
         private readonly Func<int, Face> _faceAtTriangleIndex; 
 
-        public FieldManipulator(Camera camera, IPolyhedron surface)
+        public FieldManipulator(UnityEngine.Camera camera, IPolyhedron surface)
         {
             _camera = camera;
             _faceAtTriangleIndex = MeshFactory.TriangleIndexToFaceFunction(surface);

@@ -6,7 +6,7 @@ using Engine.Geometry;
 using Engine.Utilities;
 using UnityEngine;
 
-namespace Assets
+namespace Assets.Controller.Manipulator
 {
     public static class MeshFactory
     {
