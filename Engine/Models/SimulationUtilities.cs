@@ -2,7 +2,7 @@
 using System.Linq;
 using Engine.Polyhedra;
 
-namespace Engine.Models.VorticityDivergenceModel
+namespace Engine.Models
 {
     /// <summary>
     /// A set of static utility methods for use by simulation classes.

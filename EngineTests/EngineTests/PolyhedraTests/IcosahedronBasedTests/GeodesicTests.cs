@@ -3,6 +3,7 @@ using System.Linq;
 using Engine;
 using Engine.Polyhedra;
 using Engine.Polyhedra.IcosahedronBased;
+using EngineTests.AutoFixtureCustomizations;
 using MathNet.Numerics;
 using Xunit;
 using Xunit.Extensions;
