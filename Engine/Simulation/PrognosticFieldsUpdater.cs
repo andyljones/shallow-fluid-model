@@ -4,7 +4,7 @@ namespace Engine.Simulation
 {
     public class PrognosticFieldsUpdater
     {
-        private readonly IMomentumModelParameters _parameters;
+        private readonly ISimulationOptions _options;
         private readonly ScalarField<Face> _coriolisField;
         private readonly VectorField<Face> _faceNormalsField;
         private readonly VectorField<Vertex> _vertexNormalsField; 
@@ -14,16 +14,16 @@ namespace Engine.Simulation
         private readonly double _gravity;
 
 
-        public PrognosticFieldsUpdater(IPolyhedron surface, IMomentumModelParameters parameters)
+        public PrognosticFieldsUpdater(IPolyhedron surface, ISimulationOptions options)
         {
-            _parameters = parameters;
-            _coriolisField = SimulationUtilities.CoriolisField(surface, _parameters.RotationFrequency);
+            _options = options;
+            _coriolisField = SimulationUtilities.CoriolisField(surface, _options.RotationFrequency);
             _faceNormalsField = SimulationUtilities.FaceNormalsField(surface);
             _vertexNormalsField = SimulationUtilities.VertexNormalsField(surface);
 
             _operators = new VectorFieldOperators(surface);
 
-            _gravity = parameters.Gravity;
+            _gravity = options.Gravity;
         }
 
         public PrognosticFields Update(PrognosticFields fields, PrognosticFields oldFields = null, PrognosticFields olderFields = null)
@@ -35,13 +35,13 @@ namespace Engine.Simulation
             VectorField<Vertex> velocity;
             if (oldFields != null && olderFields != null)
             {
-                height = NumericalDerivatives.AdamsBashforth(_parameters.Timestep, fields.Height, derivativeOfHeight, oldFields.DerivativeOfHeight, olderFields.DerivativeOfHeight);
-                velocity = NumericalDerivatives.AdamsBashforth(_parameters.Timestep, fields.Velocity, derivativeOfVelocity, oldFields.DerivativeOfVelocity, olderFields.DerivativeOfVelocity);
+                height = NumericalDerivatives.AdamsBashforth(_options.Timestep, fields.Height, derivativeOfHeight, oldFields.DerivativeOfHeight, olderFields.DerivativeOfHeight);
+                velocity = NumericalDerivatives.AdamsBashforth(_options.Timestep, fields.Velocity, derivativeOfVelocity, oldFields.DerivativeOfVelocity, olderFields.DerivativeOfVelocity);
             }
             else
             {
-                height = NumericalDerivatives.Euler(_parameters.Timestep, fields.Height, derivativeOfHeight);
-                velocity = NumericalDerivatives.Euler(_parameters.Timestep, fields.Velocity, derivativeOfVelocity);
+                height = NumericalDerivatives.Euler(_options.Timestep, fields.Height, derivativeOfHeight);
+                velocity = NumericalDerivatives.Euler(_options.Timestep, fields.Velocity, derivativeOfVelocity);
             }
 
             var newFields = new PrognosticFields

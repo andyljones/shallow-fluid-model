@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Engine.Geometry;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace Engine.GeodesicSphere
+namespace Engine.Geometry.GeodesicSphere
 {
     public static class GeodesicSphereFactory
     {
@@ -14,7 +13,7 @@ namespace Engine.GeodesicSphere
         public static IPolyhedron Build(IPolyhedronOptions options)
         {
             var minimumNumberOfVertices = 2*options.MinimumNumberOfFaces - 4;
-            var icosasphereOptions = new Options
+            var icosasphereOptions = new PolyhedronOptions
             {
                 Radius = options.Radius,
                 MinimumNumberOfFaces = minimumNumberOfVertices

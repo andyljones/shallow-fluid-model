@@ -1,8 +1,6 @@
-﻿using Engine.GeodesicSphere;
-
-namespace Engine
+﻿namespace Engine.Geometry
 {
-    public class Options : IPolyhedronOptions
+    public class PolyhedronOptions : IPolyhedronOptions
     {
         public double Radius { get; set; }
         public int MinimumNumberOfFaces { get; set; }

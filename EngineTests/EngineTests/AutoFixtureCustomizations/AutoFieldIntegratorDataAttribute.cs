@@ -1,4 +1,5 @@
 ﻿using Engine.Simulation;
+using EngineTests.SimulationTests;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
 
@@ -11,7 +12,7 @@ namespace EngineTests.AutoFixtureCustomizations
             Fixture.Customize(new CubeCustomization());
             Fixture.Customize(new ScalarFieldCustomization());
 
-            var simulationParameters = new SimulationParameters {NumberOfRelaxationIterations = iterations};
+            var simulationParameters = new TestSimulationOptions {NumberOfRelaxationIterations = iterations};
             Fixture.Inject(simulationParameters);
         }
     }

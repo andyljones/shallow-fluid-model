@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Engine.Geometry;
 
-namespace Engine.GeodesicSphere
+namespace Engine.Geometry.GeodesicSphere
 {
     public static class IcosasphereFactory
     {

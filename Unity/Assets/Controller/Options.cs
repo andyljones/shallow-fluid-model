@@ -1,11 +1,11 @@
 ﻿using Assets.Views.ParticleMap;
 using Assets.Views.Surface;
-using Engine.GeodesicSphere;
+using Engine.Geometry;
 using Engine.Simulation;
 
 namespace Assets.Controller
 {
-    public class Options : IPolyhedronOptions, IPolyhedronRendererOptions, IMomentumModelParameters, IParticleMapOptions
+    public class Options : IPolyhedronOptions, IPolyhedronRendererOptions, ISimulationOptions, IParticleMapOptions
     {
         public double Radius { get; set; }
         public int MinimumNumberOfFaces { get; set; }

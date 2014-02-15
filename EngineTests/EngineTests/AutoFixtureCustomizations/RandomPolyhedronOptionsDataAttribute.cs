@@ -1,6 +1,7 @@
 ﻿using System;
 using Engine;
-using Engine.GeodesicSphere;
+using Engine.Geometry;
+using EngineTests.GeometryTests;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
 
@@ -26,7 +27,7 @@ namespace EngineTests.AutoFixtureCustomizations
             var radius = MinimumRadius + (MaximumRadius - MinimumRadius)*rng.NextDouble();
             var minNumberOfFaces = (int)(MinimumMinNumberOfFaces + (MaximumMinNumberOfFaces - MinimumMinNumberOfFaces)*rng.NextDouble());
 
-            return new Options {MinimumNumberOfFaces = minNumberOfFaces, Radius = radius};
+            return new TestPolyhedronOptions {MinimumNumberOfFaces = minNumberOfFaces, Radius = radius};
         }
     }
 }

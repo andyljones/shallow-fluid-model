@@ -1,4 +1,4 @@
-﻿namespace Engine.GeodesicSphere
+﻿namespace Engine.Geometry
 {
     public interface IPolyhedronOptions
     {

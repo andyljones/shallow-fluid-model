@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
-using Engine.GeodesicSphere;
+using Engine.Geometry.GeodesicSphere;
 using MathNet.Numerics;
 using Xunit;
 

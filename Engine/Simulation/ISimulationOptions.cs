@@ -1,6 +1,6 @@
 ﻿namespace Engine.Simulation
 {
-    public interface IMomentumModelParameters
+    public interface ISimulationOptions
     {
         double RotationFrequency { get; }
         double Gravity { get; }

@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using Engine;
-using Engine.GeodesicSphere;
+using Engine.Geometry;
+using Engine.Geometry.GeodesicSphere;
 using EngineTests.AutoFixtureCustomizations;
+using EngineTests.GeometryTests;
 using MathNet.Numerics;
 using Xunit;
 using Xunit.Extensions;
@@ -139,7 +141,7 @@ namespace EngineTests.GeodesicSphereTests
         public void NumberOfFaces_If42FacesAreRequested_ShouldBe42()
         {
             // Fixture setup
-            var options = new Options {MinimumNumberOfFaces = 42, Radius = 1};
+            var options = new TestPolyhedronOptions {MinimumNumberOfFaces = 42, Radius = 1};
             var polyhedron = GeodesicSphereFactory.Build(options);
 
             // Exercise system
@@ -156,7 +158,7 @@ namespace EngineTests.GeodesicSphereTests
         public void NumberOfFaces_If43FacesAreRequested_ShouldBe162()
         {
             // Fixture setup
-            var options = new Options { MinimumNumberOfFaces = 43, Radius = 1 };
+            var options = new TestPolyhedronOptions { MinimumNumberOfFaces = 43, Radius = 1 };
             var polyhedron = GeodesicSphereFactory.Build(options);
 
             // Exercise system

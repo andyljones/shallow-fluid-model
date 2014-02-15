@@ -1,6 +1,6 @@
-﻿namespace Engine.Simulation
+﻿namespace EngineTests.SimulationTests
 {
-    public class SimulationParameters
+    public class TestSimulationOptions
     {
         public double RotationFrequency { get; set; }
         public double Gravity { get; set; }
