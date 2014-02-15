@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Engine.Models;
 using Engine.Polyhedra;
 using Engine.Utilities;
@@ -38,7 +39,7 @@ namespace Assets.Rendering.ParticleMap
             var neighbourhoods = new int[indicesOfNeighbours.Length][];
             for (int i = 0; i < indicesOfNeighbours.Length; i++)
             {
-                neighbourhoods[i] = indicesOfNeighbours[i].Concat(new[] {i}).ToArray();
+                neighbourhoods[i] = indicesOfNeighbours[i].Concat(new[] { i }).ToArray();
             }
 
             return neighbourhoods;
@@ -62,14 +63,16 @@ namespace Assets.Rendering.ParticleMap
 
         public int[][] GetIndicesOfVerticesNearest(Vector3[] particlePositions)
         {
-            for (int i = 0; i < particlePositions.Length; i++)
-            {
-                var indexOfNearestVertex = GetIndexOfNearest(i, particlePositions[i]);
-                _indicesOfNearestVertex[i] = indexOfNearestVertex;
-                _indicesOfNeighbourhood[i] = _indicesOfVertexNeighbourhoods[indexOfNearestVertex];
-            }
+            Parallel.For(0, particlePositions.Length, i => UpdateNearestVerticesAndNeighbourhoods(particlePositions, i));
 
             return _indicesOfNeighbourhood;
+        }
+
+        private void UpdateNearestVerticesAndNeighbourhoods(Vector3[] particlePositions, int i)
+        {
+            var indexOfNearestVertex = GetIndexOfNearest(i, particlePositions[i]);
+            _indicesOfNearestVertex[i] = indexOfNearestVertex;
+            _indicesOfNeighbourhood[i] = _indicesOfVertexNeighbourhoods[indexOfNearestVertex];
         }
 
         private int GetIndexOfNearest(int particleIndex, Vector3 particlePosition)
@@ -82,7 +85,7 @@ namespace Assets.Rendering.ParticleMap
                 int dummyOutVariable;
                 if (CheckIfAnyNeighbourIsCloser(particlePosition, indexOfNewClosestVertex, out dummyOutVariable))
                 {
-                    indexOfNewClosestVertex = _vertexTree.FindNearest(particlePosition);                    
+                    indexOfNewClosestVertex = _vertexTree.FindNearest(particlePosition);
                 }
             }
 
@@ -105,7 +108,7 @@ namespace Assets.Rendering.ParticleMap
                 if (neighbourSimilarity > currentSimilarity)
                 {
                     aNeighbourIsCloser = true;
-                    indexOfNewClosestVertex = indicesOfNeighbours[j];                    
+                    indexOfNewClosestVertex = indicesOfNeighbours[j];
                     currentSimilarity = neighbourSimilarity;
                 }
             }

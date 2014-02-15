@@ -37,12 +37,12 @@ namespace Assets
         {
             var options = new Options
             {
-                MinimumNumberOfFaces = 1000,
+                MinimumNumberOfFaces = 500,
                 Radius = 6000,
 
                 Gravity = 10.0 / 1000.0,
                 RotationFrequency = 1.0 / (3600.0*24.0),
-                Timestep = 200,
+                Timestep = 400,
 
                 SurfaceMaterialName = "Materials/Surface",
                 WireframeMaterialName = "Materials/Wireframe",

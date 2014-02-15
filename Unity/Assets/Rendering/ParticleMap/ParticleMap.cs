@@ -42,7 +42,7 @@ namespace Assets.Rendering.ParticleMap
 
         private static Vector3 CreateParticle(float radius)
         {
-            return 1.01f*radius*Random.onUnitSphere;
+            return 1.01f * radius * Random.onUnitSphere;
         }
 
         public void Update(VectorField<Vertex> velocity)
@@ -50,13 +50,13 @@ namespace Assets.Rendering.ParticleMap
             var indicesToRenew = _particleRenewalScheduler.IndicesToBeRenewed();
             RenewOldParticles(indicesToRenew);
 
-            _particlePositionUpdater.Update(ref _particlePositions, velocity);
+            _particlePositionUpdater.Update(_particlePositions, velocity);
             _particleRenderer.Update(_particlePositions);
         }
 
         private void RenewOldParticles(IEnumerable<int> indicesToRenew)
         {
-            foreach (var i in indicesToRenew )
+            foreach (var i in indicesToRenew)
             {
                 var newPosition = CreateParticle(_radius);
                 _particleRenderer.Reset(i, newPosition);

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Engine.Models;
 using Engine.Polyhedra;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace Assets.Rendering.ParticleMap
 
         public ParticlePositionUpdater(IPolyhedron polyhedron, IParticleMapOptions options)
         {
-            _scaleFactor = (float)(options.WindmapScaleFactor*options.Timestep);
+            _scaleFactor = (float)(options.WindmapScaleFactor * options.Timestep);
 
             _tracker = new ParticleNeighbourhoodTracker(polyhedron, options.ParticleCount);
             _vertexPositions = GetVertexPositions(polyhedron);
@@ -31,18 +32,12 @@ namespace Assets.Rendering.ParticleMap
             return surface.Vertices.Select(vertex => GraphicsUtilities.Vector3(vertex.Position)).ToArray();
         }
 
-        public void Update(ref Vector3[] particlePositions, VectorField<Vertex> velocityField)
+        public void Update(Vector3[] particlePositions, VectorField<Vertex> velocityField)
         {
             UpdateVertexVelocities(velocityField);
             UpdateParticleVelocities(particlePositions);
 
-            for (int i = 0; i < particlePositions.Length; i++)
-            {
-                var position = particlePositions[i];
-                var velocity = _particleVelocities[i];
-                var newPosition = CalculateNewPosition(velocity, position);
-                particlePositions[i] = newPosition;
-            }
+            Parallel.For(0, particlePositions.Length, i => CalculateNewPosition(particlePositions, i));
         }
 
         private void UpdateVertexVelocities(VectorField<Vertex> velocityField)
@@ -57,22 +52,25 @@ namespace Assets.Rendering.ParticleMap
         {
             var indicesOfNearestVertices = _tracker.GetIndicesOfVerticesNearest(particlePositions);
 
-            for (int i = 0; i < particlePositions.Length; i++)
-            {
-                var particlePosition = particlePositions[i];
-                var indicesOfNeighbourhood = indicesOfNearestVertices[i];
-                _particleVelocities[i] = GetVelocity(particlePosition, indicesOfNeighbourhood);
-            }
-
+            Parallel.For(0, _particleVelocities.Length, i => UpdateParticleVelocity(particlePositions, indicesOfNearestVertices, i));
         }
 
-        private Vector3 CalculateNewPosition(Vector3 velocity, Vector3 particlePosition)
+        private void UpdateParticleVelocity(Vector3[] particlePositions, int[][] indicesOfNearestVertices, int i)
         {
+            var particlePosition = particlePositions[i];
+            var indicesOfNeighbourhood = indicesOfNearestVertices[i];
+            _particleVelocities[i] = GetVelocity(particlePosition, indicesOfNeighbourhood);
+        }
+
+        private void CalculateNewPosition(Vector3[] particlePositions, int i)
+        {
+            var particlePosition = particlePositions[i];
             var radius = particlePosition.magnitude;
 
-            var newPosition = radius*(particlePosition + velocity).normalized;
+            var velocity = _particleVelocities[i];
+            var newPosition = radius * (particlePosition + velocity).normalized;
 
-            return newPosition;
+            particlePositions[i] = newPosition;
         }
 
         private Vector3 GetVelocity(Vector3 position, int[] nearestVertices)
@@ -83,10 +81,10 @@ namespace Assets.Rendering.ParticleMap
             {
                 var vertexIndex = nearestVertices[i];
                 var velocity = _vertexVelocities[vertexIndex];
-                
-                var weight = 1.0f/(_vertexPositions[vertexIndex] - position).magnitude;
 
-                sumOfVelocities = sumOfVelocities + weight*velocity;
+                var weight = 1.0f / (_vertexPositions[vertexIndex] - position).magnitude;
+
+                sumOfVelocities = sumOfVelocities + weight * velocity;
                 sumOfWeights = sumOfWeights + weight;
             }
 
