@@ -1,5 +1,4 @@
 ﻿using System;
-using Assets.Views.Surface;
 using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
@@ -15,12 +14,12 @@ namespace Assets.Controller.UserInterface
         public Func<double, double> Lower = x => x - 0.001; 
 
         private readonly Camera _camera;
-        private PolyhedronMeshHandler _meshHandler;
+        private readonly Func<int, Face> _faceAtTriangleIndex; 
 
-        public FieldManipulator(Camera camera, PolyhedronMeshHandler meshHandler)
+        public FieldManipulator(Camera camera, IPolyhedron surface)
         {
             _camera = camera;
-            _meshHandler = meshHandler;
+            _faceAtTriangleIndex = MeshFactory.TriangleIndexToFaceFunction(surface);
         }
 
         public ScalarField<Face> Update(ScalarField<Face> field)
@@ -63,7 +62,7 @@ namespace Assets.Controller.UserInterface
             if (Physics.Raycast(ray, out hit))
             {
                 var indexOfHitTriangle = hit.triangleIndex;
-                var face = _meshHandler.FaceAtTriangleIndex(indexOfHitTriangle);
+                var face = _faceAtTriangleIndex(indexOfHitTriangle);
                 return face;
             }
 

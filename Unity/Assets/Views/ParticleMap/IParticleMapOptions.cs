@@ -6,7 +6,7 @@ namespace Assets.Views.ParticleMap
     {
         double Radius { get; }
         double Timestep { get; }
-        double WindmapScaleFactor { get; }
+        double ParticleSpeedScaleFactor { get; }
         int ParticleCount { get; }
         int ParticleLifespan { get; }
         int ParticleTrailLifespan { get; }

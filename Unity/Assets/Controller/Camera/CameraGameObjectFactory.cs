@@ -2,7 +2,7 @@
 
 namespace Assets.Controller.UserInterface
 {
-    public static class CameraObjectFactory
+    public static class CameraGameObjectFactory
     {
         public static float NearClipPlane = 1;
         public static float FarClipPane = 100000;

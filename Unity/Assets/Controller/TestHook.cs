@@ -1,11 +1,13 @@
 ﻿using Assets.Controller.UserInterface;
+using Assets.Views.ColorMap;
 using Assets.Views.LatLongGrid;
 using Assets.Views.ParticleMap;
-using Assets.Views.Surface;
 using Assets.Views.VectorMap;
-using Engine.GeodesicSphere;
 using Engine.Geometry;
+using Engine.Geometry.GeodesicSphere;
 using Engine.Simulation;
+using Engine.Simulation.Initialization;
+using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
 namespace Assets.Controller
@@ -14,14 +16,14 @@ namespace Assets.Controller
     {
         private IPolyhedron _polyhedron;
 
-        private PolyhedronRenderer _polyhedronRenderer;
+        private ColorMapGameObjectManager _colorMapGameObjectManager;
 
         private CameraPositionController _cameraPositionController;
-        private PrognosticFieldsFactory _fieldFactory;
         private FieldManipulator _fieldManipulator;
 
         private ParticleMap _compositeParticleMap;
         private SimulationRunner _simulation;
+        private ColorMapView _colorMapView;
 
 
         // Use this for initialization
@@ -31,42 +33,39 @@ namespace Assets.Controller
             {
                 MinimumNumberOfFaces = 400,
                 Radius = 6000,
-
+                
                 Gravity = 10.0 / 1000.0,
                 RotationFrequency = 1.0 / (3600.0*24.0),
                 Timestep = 200,
+
+                InitialHeightFunction = ScalarFieldFactory.RandomScalarField,
+                InitialAverageHeight = 8,
+                InitialMaxDeviationOfHeight = 0.01,
+
+                InitialVelocityFunction = VectorFieldFactory.ConstantVectorField,
+                InitialAverageVelocity = Vector.Zeros(3),
+                InitialMaxDeviationOfVelocity = 0,
 
                 SurfaceMaterialName = "Materials/Surface",
                 WireframeMaterialName = "Materials/Wireframe",
                 ParticleMaterialName = "Materials/ParticleMap",
 
                 ParticleCount = 20000,
-                WindmapScaleFactor = 2000,
+                ParticleSpeedScaleFactor = 2000,
                 ParticleLifespan = 1000,
                 ParticleTrailLifespan = 10,
             };
 
 
             _polyhedron = GeodesicSphereFactory.Build(options);
+            _colorMapView = new ColorMapView(_polyhedron, options);
 
-            var polyhedronMesh = new PolyhedronMeshHandler(_polyhedron);
-
-            var polyhedronGameObject = new GameObject("Polyhedron");
-            _polyhedronRenderer = new PolyhedronRenderer(polyhedronGameObject, _polyhedron, polyhedronMesh.Mesh, options);
-            var polyhedronCollider = new PolyhedronCollider(polyhedronGameObject, polyhedronMesh.Mesh);
-
-            var cameraObject = CameraObjectFactory.Build();
+            var cameraObject = CameraGameObjectFactory.Build();
             _cameraPositionController = new CameraPositionController(9000, cameraObject);
 
-            _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), polyhedronMesh);
+            _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), _polyhedron);
 
-            _fieldFactory = new PrognosticFieldsFactory(_polyhedron);
-            _fieldFactory.Height = _fieldFactory.RandomScalarField(8, 0.01);
-            var initialFields = _fieldFactory.Build();
-
-            _simulation = new SimulationRunner(_polyhedron, initialFields, options);
-
-            var vectorFieldRenderer = new VectorFieldRenderer(_polyhedron, "VF", "Materials/Vectors");
+            _simulation = new SimulationRunner(_polyhedron, options);
 
             _compositeParticleMap = new ParticleMap(_polyhedron, options);
 
@@ -76,8 +75,7 @@ namespace Assets.Controller
         void Update()
         {
             _simulation.CurrentFields.Height = _fieldManipulator.Update(_simulation.CurrentFields.Height);
-            _polyhedronRenderer.Update(_simulation.CurrentFields);
-            //_vectorFieldRenderer.Update(_fields.Velocity);
+            _colorMapView.Update(_simulation.CurrentFields.Height);
             _compositeParticleMap.Update(_simulation.CurrentFields.Velocity);
 
             if (Input.GetKeyDown(KeyCode.R))

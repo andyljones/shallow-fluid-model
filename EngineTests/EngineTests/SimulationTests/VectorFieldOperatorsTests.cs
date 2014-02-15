@@ -19,7 +19,7 @@ namespace EngineTests.SimulationTests
         //    // Fixture setup
         //    var polyhedron = IcosasphereFactory.Build(new Options {MinimumNumberOfFaces = 1, Radius = 10});
         //    var operators = new VectorFieldOperators(polyhedron);
-        //    var factory = new PrognosticFieldsFactory(polyhedron);
+        //    var factory = new InitialFieldsFactory(polyhedron);
         //    // Exercise system
         //    //var gradient = operators.Gradient(factory.RandomScalarField(10, 20));
         //    //Debug.WriteLine(gradient);
@@ -107,7 +107,7 @@ namespace EngineTests.SimulationTests
         //    var polyhedron = GeodesicSphereFactory.Build(options);
 
         //    // Exercise system
-        //    var fieldsFactory = new PrognosticFieldsFactory(polyhedron);
+        //    var fieldsFactory = new InitialFieldsFactory(polyhedron);
 
         //    // Verify outcome
         //    Assert.True(false, "Test not implemented");

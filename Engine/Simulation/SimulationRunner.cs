@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Engine.Geometry;
+using Engine.Simulation.Initialization;
 
 namespace Engine.Simulation
 {
@@ -17,10 +18,10 @@ namespace Engine.Simulation
         private readonly Thread _simulationThread;
         private readonly ManualResetEvent _pauseEvent;
 
-        public SimulationRunner(IPolyhedron surface, PrognosticFields initialFields, ISimulationOptions options)
+        public SimulationRunner(IPolyhedron surface, ISimulationOptions options)
         {
-            _fieldUpdater = new PrognosticFieldsUpdater(surface, options);
-            CurrentFields = initialFields;
+            _fieldUpdater = new PrognosticFieldsUpdater(surface, options as IModelParameters);
+            CurrentFields = InitialFieldsFactory.Build(surface, options as IInitialFieldParameters);
 
             _pauseEvent = new ManualResetEvent(false);
             _simulationThread = new Thread(StepSimulation);

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Assets.Views.Surface;
 using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
@@ -19,7 +18,7 @@ namespace Assets.Views.ParticleMap
 
         public ParticlePositionUpdater(IPolyhedron polyhedron, IParticleMapOptions options)
         {
-            _scaleFactor = (float)(options.WindmapScaleFactor * options.Timestep);
+            _scaleFactor = (float)(options.ParticleSpeedScaleFactor * options.Timestep);
 
             _tracker = new ParticleNeighbourhoodTracker(polyhedron, options.ParticleCount);
             _vertexPositions = GetVertexPositions(polyhedron);

@@ -4,7 +4,7 @@ namespace Engine.Simulation
 {
     public class PrognosticFieldsUpdater
     {
-        private readonly ISimulationOptions _options;
+        private readonly IModelParameters _options;
         private readonly ScalarField<Face> _coriolisField;
         private readonly VectorField<Face> _faceNormalsField;
         private readonly VectorField<Vertex> _vertexNormalsField; 
@@ -14,7 +14,7 @@ namespace Engine.Simulation
         private readonly double _gravity;
 
 
-        public PrognosticFieldsUpdater(IPolyhedron surface, ISimulationOptions options)
+        public PrognosticFieldsUpdater(IPolyhedron surface, IModelParameters options)
         {
             _options = options;
             _coriolisField = SimulationUtilities.CoriolisField(surface, _options.RotationFrequency);

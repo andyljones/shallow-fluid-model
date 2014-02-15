@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Assets.Views.Surface;
 using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;

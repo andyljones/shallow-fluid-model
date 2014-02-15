@@ -1,7 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
-namespace Assets.Views.Surface
+namespace Assets.Views
 {
     public static class GraphicsUtilities
     {

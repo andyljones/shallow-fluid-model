@@ -1,9 +1,8 @@
-﻿namespace Engine.Simulation
+﻿using Engine.Simulation.Initialization;
+
+namespace Engine.Simulation
 {
-    public interface ISimulationOptions
+    public interface ISimulationOptions : IModelParameters, IInitialFieldParameters
     {
-        double RotationFrequency { get; }
-        double Gravity { get; }
-        double Timestep { get; }
     }
 }

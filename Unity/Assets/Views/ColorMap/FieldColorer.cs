@@ -1,45 +1,34 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
 
 namespace Assets.Views.ColorMap
 {
-    public class ColorMap
+    class FieldColorer
     {
-        private readonly Mesh _mesh;
         private readonly IPolyhedron _polyhedron;
-
-        private List<double> _maxes = new List<double>();
-        private List<double> _mins = new List<double>();
-
         private readonly int[][] _faces;
 
-        public ColorMap(Mesh mesh, IPolyhedron polyhedron)
+        public FieldColorer(IPolyhedron polyhedron)
         {
-            _mesh = mesh;
             _polyhedron = polyhedron;
 
             _faces = VertexIndexedTableFactory.Faces(polyhedron);
         }
 
-        public void Update(ScalarField<Face> field)
+        public Color[] Color(ScalarField<Face> field)
         {
-            AddMaxAndMin(field.Values);
-
-            var averageMax = _maxes.Average();
-            var averageMin = _mins.Average();
-            var gap = averageMax - averageMin <= 0 ? 1 : averageMax - averageMin; 
-
-            //Debug.Log(String.Format("Min: {0,3:N2}, Max: {1,3:N2}", averageMin, averageMax));
+            var max = field.Values.Max();
+            var min = field.Values.Min();
+            var gap = max - min <= 0 ? 1 : max - min; 
 
             var colors = new Color[_polyhedron.Vertices.Count + _polyhedron.Faces.Count];
             var vertices = _polyhedron.Vertices;
             for (int index = 0; index < vertices.Count; index++)
             {
                 var value = AverageAt(index, field);
-                var color = ColorFromValue((float) ((value - averageMin)/gap));
+                var color = ColorFromValue((float) ((value - min)/gap));
                 colors[index] = color;
             }
 
@@ -47,23 +36,11 @@ namespace Assets.Views.ColorMap
             for (int index = 0; index < faces.Count; index++)
             {
                 var value = field[index];
-                var color = ColorFromValue((float) ((value - averageMin)/gap));
+                var color = ColorFromValue((float) ((value - min)/gap));
                 colors[vertices.Count + index] = color;
             }
 
-            _mesh.colors = colors;
-        }
-
-        private void AddMaxAndMin(double[] values)
-        {
-            _maxes.Add(values.Max());
-            _mins.Add(values.Min());
-
-            if (_maxes.Count > 1000)
-            {
-                _maxes = _maxes.Skip(1).ToList();
-                _mins = _mins.Skip(1).ToList();
-            }
+            return colors;
         }
 
         private double AverageAt(int vertex, ScalarField<Face> field)
