@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Assets.Views.Surface;
-using Engine.Models;
-using Engine.Polyhedra;
+using Engine.Geometry;
+using Engine.Simulation;
 using UnityEngine;
 
 namespace Assets.Views.ParticleMap

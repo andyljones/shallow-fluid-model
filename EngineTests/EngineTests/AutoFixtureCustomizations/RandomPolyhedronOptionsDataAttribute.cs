@@ -1,6 +1,6 @@
 ﻿using System;
 using Engine;
-using Engine.Polyhedra.IcosahedronBased;
+using Engine.GeodesicSphere;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
 

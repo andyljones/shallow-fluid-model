@@ -1,5 +1,4 @@
-﻿using Engine.Polyhedra;
-using Engine.Polyhedra.IcosahedronBased;
+﻿using Engine.GeodesicSphere;
 
 namespace Engine
 {

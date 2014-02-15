@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Engine.Models;
-using Engine.Polyhedra;
+using Engine.Geometry;
+using Engine.Simulation;
 using UnityEngine;
 
 namespace Assets.Views.ParticleMap

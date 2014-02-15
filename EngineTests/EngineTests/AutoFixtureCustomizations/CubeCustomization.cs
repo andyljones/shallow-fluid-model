@@ -1,4 +1,4 @@
-﻿using EngineTests.PolyhedraTests;
+﻿using EngineTests.GeometryTests;
 using Ploeh.AutoFixture;
 
 namespace EngineTests.AutoFixtureCustomizations

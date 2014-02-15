@@ -3,9 +3,9 @@ using Assets.Views.LatLongGrid;
 using Assets.Views.ParticleMap;
 using Assets.Views.Surface;
 using Assets.Views.VectorMap;
-using Engine.Models.MomentumModel;
-using Engine.Polyhedra;
-using Engine.Polyhedra.IcosahedronBased;
+using Engine.GeodesicSphere;
+using Engine.Geometry;
+using Engine.Simulation;
 using UnityEngine;
 
 namespace Assets.Controller

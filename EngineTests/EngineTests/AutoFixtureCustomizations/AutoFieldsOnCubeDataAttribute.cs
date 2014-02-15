@@ -1,5 +1,4 @@
-﻿using EngineTests.PolyhedraTests;
-using Ploeh.AutoFixture.Xunit;
+﻿using Ploeh.AutoFixture.Xunit;
 
 namespace EngineTests.AutoFixtureCustomizations
 {

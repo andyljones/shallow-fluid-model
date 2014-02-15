@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Engine.Models;
-using Engine.Polyhedra;
+using Engine.Geometry;
+using Engine.Simulation;
 using UnityEngine;
 
 namespace Assets.Views.ColorMap

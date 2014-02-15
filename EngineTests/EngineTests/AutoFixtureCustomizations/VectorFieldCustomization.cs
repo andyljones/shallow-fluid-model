@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Engine.Models;
-using Engine.Polyhedra;
+using Engine.Geometry;
+using Engine.Simulation;
 using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 using Ploeh.AutoFixture;

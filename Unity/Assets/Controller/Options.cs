@@ -1,7 +1,7 @@
 ﻿using Assets.Views.ParticleMap;
 using Assets.Views.Surface;
-using Engine.Models.MomentumModel;
-using Engine.Polyhedra.IcosahedronBased;
+using Engine.GeodesicSphere;
+using Engine.Simulation;
 
 namespace Assets.Controller
 {

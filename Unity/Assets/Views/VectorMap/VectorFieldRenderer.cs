@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Assets.Views.Surface;
-using Engine.Models;
-using Engine.Polyhedra;
+using Engine.Geometry;
+using Engine.Simulation;
 using UnityEngine;
 
 namespace Assets.Views.VectorMap
