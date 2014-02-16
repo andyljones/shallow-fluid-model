@@ -1,19 +1,19 @@
-﻿using Assets.Controller.GameCamera;
-using Assets.Controller.Manipulator;
+﻿using Assets.Controllers;
+using Assets.Controllers.GameCamera;
+using Assets.Controllers.Manipulator;
 using Assets.Views.ColorMap;
 using Assets.Views.LatLongGrid;
 using Assets.Views.ParticleMap;
 using Engine.Geometry;
 using Engine.Geometry.GeodesicSphere;
-using Engine.Simulation;
 using UnityEngine;
 
-namespace Assets.Controller
+namespace Assets.Controllers
 {
     public class MainController
     {
         private IPolyhedron _polyhedron;
-        private SimulationController _simulationController;
+        private SimulationController _simulation;
 
         private ColorMapView _colorMapView;
         private ParticleMapView _particleMapView;
@@ -23,18 +23,18 @@ namespace Assets.Controller
 
         public MainController(Options options)
         {
-            StartModel(options);
-            StartViews(options);
-            StartControllers(options);
+            InitializeModel(options);
+            InitializeViews(options);
+            InitializeControllers(options);
         }
 
-        private void StartModel(Options options)
+        private void InitializeModel(Options options)
         {
             _polyhedron = GeodesicSphereFactory.Build(options);
-            _simulationController = new SimulationController(_polyhedron, options);
+            _simulation = new SimulationController(_polyhedron, options);
         }
 
-        private void StartViews(Options options)
+        private void InitializeViews(Options options)
         {
             LatLongGridFactory.Build(options.Radius);
 
@@ -42,7 +42,7 @@ namespace Assets.Controller
             _particleMapView = new ParticleMapView(_polyhedron, options);
         }
 
-        private void StartControllers(Options options)
+        private void InitializeControllers(Options options)
         {
             _cameraController = new CameraController(options.Radius);
             _fieldManipulator = new FieldManipulator(_cameraController.Camera, _colorMapView.MeshManager);            
@@ -52,19 +52,19 @@ namespace Assets.Controller
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                _simulationController.TogglePause();
+                _simulation.TogglePause();
             }
 
-            _colorMapView.Update(_simulationController.CurrentFields.Height);
-            _particleMapView.Update(_simulationController.CurrentFields.Velocity); 
+            _colorMapView.Update(_simulation.CurrentFields.Height);
+            _particleMapView.Update(_simulation.CurrentFields.Velocity); 
 
             _cameraController.Update();
-            _simulationController.CurrentFields.Height = _fieldManipulator.Update(_simulationController.CurrentFields.Height);
+            _simulation.CurrentFields.Height = _fieldManipulator.Update(_simulation.CurrentFields.Height);
         }
 
         public void Terminate()
         {
-            _simulationController.Terminate();
+            _simulation.Terminate();
         }
     }
 }

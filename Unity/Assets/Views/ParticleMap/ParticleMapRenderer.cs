@@ -8,11 +8,10 @@ namespace Assets.Views.ParticleMap
     {
         private readonly MeshFilter _particlesMeshFilter;
         
-        private readonly int _trailLifespan;
         private readonly int _verticesPerParticle;
         private readonly int _numberOfVertices;
 
-        private bool isFirstUpdate = true;
+        private bool _isFirstUpdate = true;
         private int _offset = 0;
         private Vector3[] _particleLines;
 
@@ -24,7 +23,6 @@ namespace Assets.Views.ParticleMap
             _indexOfFirstParticle = indexOfFirstParticle;
             _indexOfOnePastLastParticle = indexOfOnePastLastParticle;
 
-            _trailLifespan = options.ParticleTrailLifespan;
             _verticesPerParticle = 2*(options.ParticleTrailLifespan - 1);
             _numberOfVertices = (_indexOfOnePastLastParticle - _indexOfFirstParticle)*_verticesPerParticle;
             _particleLines = new Vector3[_numberOfVertices];
@@ -60,10 +58,10 @@ namespace Assets.Views.ParticleMap
 
         public void Update(Vector3[] particlePositions)
         {
-            if (isFirstUpdate)
+            if (_isFirstUpdate)
             {
                 InitializeLineArray(particlePositions);
-                isFirstUpdate = false;
+                _isFirstUpdate = false;
             }
             else
             {

@@ -5,7 +5,7 @@ using Engine.Geometry;
 using Engine.Simulation;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace Assets.Controller
+namespace Assets.Controllers
 {
     public class Options : IPolyhedronOptions, IColorMapOptions, ISimulationOptions, IParticleMapOptions
     {

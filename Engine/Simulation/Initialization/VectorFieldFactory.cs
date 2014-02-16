@@ -18,18 +18,18 @@ namespace Engine.Simulation.Initialization
         public static VectorField<Vertex> RandomVectorField(IPolyhedron polyhedron, Vector average, double maxDeviation)
         {
             var prng = new Random();
-            var values = polyhedron.Vertices.Select(vertex => average + RandomLocalVector(prng, vertex.Position, maxDeviation)).ToArray();
+            var values = polyhedron.Vertices.Select(vertex => RandomLocalVector(prng, vertex.Position, average, maxDeviation)).ToArray();
 
             return new VectorField<Vertex>(polyhedron.IndexOf, values);
         }
 
-        private static Vector RandomLocalVector(Random prng, Vector origin, double maxMagnitude)
+        private static Vector RandomLocalVector(Random prng, Vector origin, Vector average, double maxDeviation)
         {
-            var x = maxMagnitude*(prng.NextDouble() - 0.5);
-            var y = maxMagnitude*(prng.NextDouble() - 0.5);
-            var v = new Vector(new[] {x, y});
+            var x = maxDeviation*(prng.NextDouble() - 0.5);
+            var y = maxDeviation*(prng.NextDouble() - 0.5);
+            var vector = new Vector(new[] {x, y, 0});
             
-            return LocalVector(origin, v);
+            return LocalVector(origin, average + vector);
         }
 
         private static Vector LocalVector(Vector origin, Vector v)

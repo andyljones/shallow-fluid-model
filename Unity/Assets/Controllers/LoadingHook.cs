@@ -2,7 +2,7 @@
 using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
-namespace Assets.Controller
+namespace Assets.Controllers
 {
     public class LoadingHook : MonoBehaviour
     {
@@ -17,10 +17,10 @@ namespace Assets.Controller
 
             InitialHeightFunction = ScalarFieldFactory.RandomScalarField,
             InitialAverageHeight = 8,
-            InitialMaxDeviationOfHeight = 0,
+            InitialMaxDeviationOfHeight = 0.01,
 
             InitialVelocityFunction = VectorFieldFactory.ConstantVectorField,
-            InitialAverageVelocity = new Vector(new[] { 0, .0001, 0 }),
+            InitialAverageVelocity = new Vector(new[] { 0, .0001, 0}),
             InitialMaxDeviationOfVelocity = 0,
 
             ColorMapHistoryLength = 1000,

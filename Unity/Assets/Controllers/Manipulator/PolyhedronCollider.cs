@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Controller.Manipulator
+namespace Assets.Controllers.Manipulator
 {
     public class PolyhedronCollider
     {

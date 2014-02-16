@@ -4,7 +4,7 @@ using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
 
-namespace Assets.Controller.Manipulator
+namespace Assets.Controllers.Manipulator
 {
     public class FieldManipulator
     {
@@ -22,7 +22,7 @@ namespace Assets.Controller.Manipulator
             _camera = camera;
             _faceAtTriangleIndex = meshManager.FaceAtTriangleIndex;
 
-            var collider = new PolyhedronCollider(meshManager.Mesh);
+            new PolyhedronCollider(meshManager.Mesh);
         }
 
         public ScalarField<Face> Update(ScalarField<Face> field)
