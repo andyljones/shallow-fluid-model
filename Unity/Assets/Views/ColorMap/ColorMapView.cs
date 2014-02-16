@@ -8,13 +8,17 @@ namespace Assets.Views.ColorMap
 {
     public class ColorMapView
     {
+        public readonly MeshManager MeshManager;
+
         private readonly FieldColorer _fieldColorer;
         private readonly ColorMapGameObjectManager _gameObjectManager;
 
-        public ColorMapView(IPolyhedron polyhedron, IColorMapOptions options)
+        public ColorMapView(IPolyhedron surface, IColorMapOptions options)
         {
-            _fieldColorer = new FieldColorer(polyhedron);
-            _gameObjectManager = new ColorMapGameObjectManager(polyhedron, options);
+            _fieldColorer = new FieldColorer(surface);
+         
+            MeshManager = new MeshManager(surface);
+            _gameObjectManager = new ColorMapGameObjectManager(MeshManager.Mesh, options);
         }
 
         public void Update(ScalarField<Face> field)

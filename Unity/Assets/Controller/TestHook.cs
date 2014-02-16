@@ -63,7 +63,7 @@ namespace Assets.Controller
             var cameraObject = CameraGameObjectFactory.Build();
             _cameraPositionController = new CameraPositionController(9000, cameraObject);
 
-            _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), _polyhedron);
+            _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), _colorMapView);
 
             _simulation = new SimulationRunner(_polyhedron, options);
 

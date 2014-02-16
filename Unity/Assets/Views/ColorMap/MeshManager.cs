@@ -1,17 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Assets.Views;
 using Engine.Geometry;
 using Engine.Utilities;
 using UnityEngine;
 
-namespace Assets.Controller.Manipulator
+namespace Assets.Views.ColorMap
 {
-    public static class MeshFactory
+    public class MeshManager
     {
-        #region Build methods
-        public static Mesh Build(IPolyhedron surface)
+        public readonly Mesh Mesh;
+
+        private readonly Face[] _faceAtTriangleIndex;
+
+        public MeshManager(IPolyhedron surface)
+        {
+            Mesh = BuildMesh(surface);
+            _faceAtTriangleIndex = GetFacesOfTriangleIndices(surface);
+        }
+
+        #region BuildMesh methods
+        public static Mesh BuildMesh(IPolyhedron surface)
         {
             var vertices = CreateVertexArray(surface);
             var triangles = CreateTriangleArray(surface);
@@ -69,26 +77,17 @@ namespace Assets.Controller.Manipulator
         }
         #endregion
 
-        #region TriangleIndexToFaceFunction methods
-        public static Func<int, Face> TriangleIndexToFaceFunction(IPolyhedron surface)
+        private static Face[] GetFacesOfTriangleIndices(IPolyhedron surface)
         {
             var triangleIndexLookup = surface.Faces.SelectMany(face => Enumerable.Repeat(face, face.Vertices.Count)).ToArray();
 
-            var closure = new TriangleIndexLookupClosure {FacesAtEachIndex = triangleIndexLookup};
-
-            return closure.FaceAtTriangleIndex;
+            return triangleIndexLookup;
         }
 
-        private class TriangleIndexLookupClosure
+        public Face FaceAtTriangleIndex(int i)
         {
-            public Face[] FacesAtEachIndex;
-
-            public Face FaceAtTriangleIndex(int i)
-            {
-                return FacesAtEachIndex[i];
-            }
+            return _faceAtTriangleIndex[i];
         }
-        #endregion
 
 
         //private int[] CreateLineArray()

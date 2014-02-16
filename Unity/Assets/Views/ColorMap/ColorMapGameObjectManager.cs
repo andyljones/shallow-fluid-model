@@ -7,20 +7,22 @@ namespace Assets.Views.ColorMap
 {
     public class ColorMapGameObjectManager
     {
+        public Mesh Mesh { get { return _meshFilter.mesh; } }
+
         private readonly MeshFilter _meshFilter;
 
-        public ColorMapGameObjectManager(IPolyhedron polyhedron, IColorMapOptions options)
+        public ColorMapGameObjectManager(Mesh mesh, IColorMapOptions options)
         {
-            var gameObject = BuildGameObject(polyhedron, options.SurfaceMaterialName);
+            var gameObject = BuildGameObject(mesh, options.SurfaceMaterialName);
             _meshFilter = gameObject.GetComponent<MeshFilter>();
         }
 
-        private static GameObject BuildGameObject(IPolyhedron polyhedron, string surfaceMaterialName)
+        private static GameObject BuildGameObject(Mesh mesh, string surfaceMaterialName)
         {
             var gameObject = new GameObject("Polyhedron");
 
             var meshFilter = gameObject.AddComponent<MeshFilter>();
-            meshFilter.mesh = MeshFactory.Build(polyhedron);
+            meshFilter.mesh = mesh;
 
             var meshRenderer = gameObject.AddComponent<MeshRenderer>();
             meshRenderer.materials = new[]

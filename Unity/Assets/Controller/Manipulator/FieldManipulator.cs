@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.Views.ColorMap;
 using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
@@ -13,13 +14,13 @@ namespace Assets.Controller.Manipulator
         public Func<double, double> Raise = x => x + 0.001;
         public Func<double, double> Lower = x => x - 0.001; 
 
-        private readonly UnityEngine.Camera _camera;
+        private readonly Camera _camera;
         private readonly Func<int, Face> _faceAtTriangleIndex; 
 
-        public FieldManipulator(UnityEngine.Camera camera, IPolyhedron surface)
+        public FieldManipulator(Camera camera, ColorMapView colorMap)
         {
             _camera = camera;
-            _faceAtTriangleIndex = MeshFactory.TriangleIndexToFaceFunction(surface);
+            _faceAtTriangleIndex = colorMap.MeshManager.FaceAtTriangleIndex;
         }
 
         public ScalarField<Face> Update(ScalarField<Face> field)
