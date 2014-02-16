@@ -10,27 +10,29 @@ namespace Assets.Views.LatLongGrid
         public static int NumberOfPointsPerLatitude = 100;
         public static int NumberOfPointsPerLongitude = 50;
 
-        public static float ScaleFactor = 0.99f;
+        public static double ScaleFactor = 1.005f;
 
-        public static void DrawGrid(float radius)
+        public static void DrawGrid(double radius)
         {
-            var gridObject = new GameObject("LatLong Grid");
+            var gridObject = new GameObject("Cartesian Grid");
+
+            var effectiveRadius = (float) (ScaleFactor*radius);
 
             foreach (var colatitude in Enumerable.Range(1, 17).Select(i => i*Mathf.PI/18))
             {
-                var latitudeObject = DrawLatitude(radius, colatitude);
+                var latitudeObject = DrawLatitude(effectiveRadius, colatitude);
                 latitudeObject.transform.parent = gridObject.transform;
             }
 
             foreach (var azimuth in Enumerable.Range(0, 36).Select(i => i * 2*Mathf.PI / 36))
             {
-                var longitudeObject = DrawLongitude(radius, azimuth);
+                var longitudeObject = DrawLongitude(effectiveRadius, azimuth);
                 longitudeObject.transform.parent = gridObject.transform;
             }
 
             foreach (var colatitude in Enumerable.Range(1, 17).Select(i => i*Mathf.PI/18))
             {
-                var labelObject = DrawLabelsAtColatitude(radius, colatitude);
+                var labelObject = DrawLabelsAtColatitude(effectiveRadius, colatitude);
                 labelObject.transform.parent = gridObject.transform;
             }
         }

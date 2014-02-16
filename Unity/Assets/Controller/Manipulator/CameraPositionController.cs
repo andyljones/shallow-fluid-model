@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using Assets.Views;
+using UnityEngine;
 
 namespace Assets.Controller.GameCamera
 {
@@ -13,7 +15,9 @@ namespace Assets.Controller.GameCamera
         private float _colatitude;
         private float _radius;
 
-        private Transform _cameraTransform;
+        private readonly Transform _cameraTransform;
+
+        private const float MinColatitude = 0.001f;
 
         public CameraPositionController(float initialRadius, GameObject camera)
         {
@@ -22,23 +26,29 @@ namespace Assets.Controller.GameCamera
             _colatitude = Mathf.PI/2;
 
             _cameraTransform = camera.transform;
+
         }
 
-        public void LateUpdate()
+        public IEnumerator Coroutine()
+        {
+            while (true)
+            {
+                UpdateCameraPosition();
+
+                yield return new WaitForEndOfFrame();
+            }
+        }
+
+        private void UpdateCameraPosition()
         {
             if (Input.GetKey(DragButton))
             {
-                _azimuth = MathMod(_azimuth - AngularSpeed*Input.GetAxis("Mouse X"), 2*Mathf.PI);
-                _colatitude = Mathf.Clamp(_colatitude + AngularSpeed*Input.GetAxis("Mouse Y"), 0.001f, Mathf.PI-0.01f);
+                UpdateAzimuthAndColatitude();
             }
 
-            _radius += Input.GetAxis("Mouse ScrollWheel") * RadialSpeed;
+            _radius = _radius + RadialSpeed*Input.GetAxis("Mouse ScrollWheel");
 
-            var x = _radius*Mathf.Sin(_azimuth)*Mathf.Sin(_colatitude);
-            var y = _radius*Mathf.Cos(_azimuth)*Mathf.Sin(_colatitude);
-            var z = _radius*Mathf.Cos(_colatitude);
-
-            var position = new Vector3(x, y, z);
+            var position = GraphicsUtilities.Vector3(_colatitude, _azimuth, _radius);
             var localEast = Vector3.Cross(position, new Vector3(0, 0, 1));
             var localNorth = Vector3.Cross(localEast, position);
 
@@ -46,7 +56,16 @@ namespace Assets.Controller.GameCamera
             _cameraTransform.position = position;
         }
 
-        private float MathMod(float x, float m)
+        private void UpdateAzimuthAndColatitude()
+        {
+            var changeInColatitude = AngularSpeed*Input.GetAxis("Mouse Y");
+            var changeInAzimuth = -AngularSpeed*Input.GetAxis("Mouse X");
+
+            _colatitude = Mathf.Clamp(_colatitude + changeInColatitude, MinColatitude, Mathf.PI - MinColatitude);
+            _azimuth = Mod(_azimuth + changeInAzimuth, 2*Mathf.PI);
+        }
+
+        private static float Mod(float x, float m)
         {
             return (x%m + m)%m;
         }

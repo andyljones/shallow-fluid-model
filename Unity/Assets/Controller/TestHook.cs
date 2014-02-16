@@ -14,14 +14,12 @@ namespace Assets.Controller
 {
     public class TestHook : MonoBehaviour
     {
-        private IPolyhedron _polyhedron;
-
         private ColorMapGameObjectManager _colorMapGameObjectManager;
 
         private CameraPositionController _cameraPositionController;
         private FieldManipulator _fieldManipulator;
 
-        private ParticleMap _compositeParticleMap;
+        private ParticleMapView _particleMapView;
         private SimulationRunner _simulation;
         private ColorMapView _colorMapView;
 
@@ -57,36 +55,32 @@ namespace Assets.Controller
             };
 
 
-            _polyhedron = GeodesicSphereFactory.Build(options);
-            _colorMapView = new ColorMapView(_polyhedron, options);
+            var polyhedron = GeodesicSphereFactory.Build(options);
+            _simulation = new SimulationRunner(polyhedron, options);
 
             var cameraObject = CameraGameObjectFactory.Build();
+            _colorMapView = new ColorMapView(polyhedron, options);
+            _particleMapView = new ParticleMapView(polyhedron, options);
+            LatLongGridDrawer.DrawGrid(options.Radius);
+
             _cameraPositionController = new CameraPositionController(9000, cameraObject);
+            StartCoroutine(_cameraPositionController.Coroutine());
 
             _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), _colorMapView.FaceAtTriangleIndex);
 
-            _simulation = new SimulationRunner(_polyhedron, options);
-
-            _compositeParticleMap = new ParticleMap(_polyhedron, options);
-
-            LatLongGridDrawer.DrawGrid(1.005f*(float)options.Radius);
         }
 
         void Update()
         {
-            _simulation.CurrentFields.Height = _fieldManipulator.Update(_simulation.CurrentFields.Height);
-            _colorMapView.Update(_simulation.CurrentFields.Height);
-            _compositeParticleMap.Update(_simulation.CurrentFields.Velocity);
 
             if (Input.GetKeyDown(KeyCode.R))
             {
                 _simulation.TogglePause();
             }
-        }
 
-        void LateUpdate()
-        {
-            _cameraPositionController.LateUpdate();   
+            _simulation.CurrentFields.Height = _fieldManipulator.Update(_simulation.CurrentFields.Height);
+            _colorMapView.Update(_simulation.CurrentFields.Height);
+            _particleMapView.Update(_simulation.CurrentFields.Velocity); 
         }
 
         void OnApplicationQuit()

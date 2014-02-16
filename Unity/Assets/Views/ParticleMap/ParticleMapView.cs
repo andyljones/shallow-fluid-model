@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.Views.ParticleMap
 {
-    public class ParticleMap
+    public class ParticleMapView
     {
         private readonly IParticleMapOptions _options;
         private readonly float _radius;
@@ -16,7 +16,7 @@ namespace Assets.Views.ParticleMap
 
         private Vector3[] _particlePositions;
 
-        public ParticleMap(IPolyhedron polyhedron, IParticleMapOptions options)
+        public ParticleMapView(IPolyhedron polyhedron, IParticleMapOptions options)
         {
             _options = options;
             _radius = (float)_options.Radius;
