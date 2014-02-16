@@ -17,10 +17,12 @@ namespace Assets.Controller.Manipulator
         private readonly Camera _camera;
         private readonly Func<int, Face> _faceAtTriangleIndex; 
 
-        public FieldManipulator(Camera camera, Func<int, Face> faceAtTriangleIndex)
+        public FieldManipulator(Camera camera, MeshManager meshManager)
         {
             _camera = camera;
-            _faceAtTriangleIndex = faceAtTriangleIndex;
+            _faceAtTriangleIndex = meshManager.FaceAtTriangleIndex;
+
+            var collider = new PolyhedronCollider(meshManager.Mesh);
         }
 
         public ScalarField<Face> Update(ScalarField<Face> field)

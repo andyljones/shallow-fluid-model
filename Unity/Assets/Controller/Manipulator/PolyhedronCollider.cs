@@ -4,18 +4,15 @@ namespace Assets.Controller.Manipulator
 {
     public class PolyhedronCollider
     {
-        private readonly GameObject _gameObject;
-
-        public PolyhedronCollider(GameObject polyhedronGameObject, Mesh mesh)
+        public PolyhedronCollider(Mesh mesh)
         {
-            _gameObject = polyhedronGameObject;
-            InitializePolyhedronCollider(polyhedronGameObject, mesh);
-
+            InitializePolyhedronCollider(mesh);
         }
 
-        private static void InitializePolyhedronCollider(GameObject polyhedronGameObject, Mesh mesh)
+        private static void InitializePolyhedronCollider(Mesh mesh)
         {
-            var collider = polyhedronGameObject.AddComponent<MeshCollider>();
+            var gameObject = new GameObject("Collider");
+            var collider = gameObject.AddComponent<MeshCollider>();
             collider.sharedMesh = mesh;
             collider.isTrigger = true;
         }

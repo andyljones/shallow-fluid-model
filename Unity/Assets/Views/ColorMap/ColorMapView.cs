@@ -6,7 +6,7 @@ namespace Assets.Views.ColorMap
 {
     public class ColorMapView
     {
-        public readonly Func<int, Face> FaceAtTriangleIndex;
+        public readonly MeshManager MeshManager;
 
         private readonly FieldColorer _fieldColorer;
         private readonly ColorMapGameObjectManager _gameObjectManager;
@@ -15,9 +15,8 @@ namespace Assets.Views.ColorMap
         {
             _fieldColorer = new FieldColorer(surface, options.ColorMapHistoryLength);
          
-            var meshManager = new MeshManager(surface);
-            FaceAtTriangleIndex = meshManager.FaceAtTriangleIndex;
-            _gameObjectManager = new ColorMapGameObjectManager(meshManager.Mesh, options.ColorMapMaterialName);
+            MeshManager = new MeshManager(surface);
+            _gameObjectManager = new ColorMapGameObjectManager(MeshManager.Mesh, options.ColorMapMaterialName);
         }
 
         public void Update(ScalarField<Face> field)

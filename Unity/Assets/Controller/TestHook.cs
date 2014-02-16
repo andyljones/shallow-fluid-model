@@ -29,7 +29,7 @@ namespace Assets.Controller
         {
             var options = new Options
             {
-                MinimumNumberOfFaces = 400,
+                MinimumNumberOfFaces = 500,
                 Radius = 6000,
                 
                 Gravity = 10.0 / 1000.0,
@@ -38,10 +38,10 @@ namespace Assets.Controller
 
                 InitialHeightFunction = ScalarFieldFactory.RandomScalarField,
                 InitialAverageHeight = 8,
-                InitialMaxDeviationOfHeight = 0.01,
+                InitialMaxDeviationOfHeight = 0,
 
                 InitialVelocityFunction = VectorFieldFactory.ConstantVectorField,
-                InitialAverageVelocity = Vector.Zeros(3),
+                InitialAverageVelocity = new Vector(new []{0, .0001, 0}),
                 InitialMaxDeviationOfVelocity = 0,
 
                 ColorMapHistoryLength = 1000,
@@ -63,16 +63,14 @@ namespace Assets.Controller
             _particleMapView = new ParticleMapView(polyhedron, options);
             LatLongGridDrawer.DrawGrid(options.Radius);
 
+            _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), _colorMapView.MeshManager);
+
             _cameraPositionController = new CameraPositionController(9000, cameraObject);
             StartCoroutine(_cameraPositionController.Coroutine());
-
-            _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), _colorMapView.FaceAtTriangleIndex);
-
         }
 
         void Update()
         {
-
             if (Input.GetKeyDown(KeyCode.R))
             {
                 _simulation.TogglePause();
