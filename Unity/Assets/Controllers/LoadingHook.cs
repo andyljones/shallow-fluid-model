@@ -17,17 +17,17 @@ namespace Assets.Controllers
 
             InitialHeightFunction = ScalarFieldFactory.RandomScalarField,
             InitialAverageHeight = 8,
-            InitialMaxDeviationOfHeight = 0.01,
+            InitialMaxDeviationOfHeight = 0.1,
 
             InitialVelocityFunction = VectorFieldFactory.ConstantVectorField,
-            InitialAverageVelocity = new Vector(new[] { 0, .0001, 0}),
+            InitialAverageVelocity = new Vector(new[] { 0.0, 0.0, 0.0}),
             InitialMaxDeviationOfVelocity = 0,
 
             ColorMapHistoryLength = 1000,
             ColorMapMaterialName = "Materials/Surface",
 
             ParticleCount = 20000,
-            ParticleSpeedScaleFactor = 1000,
+            ParticleSpeedScaleFactor = 10,
             ParticleLifespan = 1000,
             ParticleTrailLifespan = 10,
             ParticleMaterialName = "Materials/ParticleMap",
@@ -43,6 +43,11 @@ namespace Assets.Controllers
         void Update()
         {
             _main.Update();
+        }
+
+        void OnGUI()
+        {
+            _main.UpdateGUI();
         }
 
         void OnApplicationQuit()

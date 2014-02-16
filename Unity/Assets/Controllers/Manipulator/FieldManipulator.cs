@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.Controllers.Cursor;
 using Assets.Views.ColorMap;
 using Engine.Geometry;
 using Engine.Simulation;
@@ -11,12 +12,12 @@ namespace Assets.Controllers.Manipulator
         public KeyCode SurfaceRaiseButton = KeyCode.UpArrow;
         public KeyCode SurfaceLowerButton = KeyCode.DownArrow;
 
-        public Func<double, double> Raise = x => x + 0.001;
-        public Func<double, double> Lower = x => x - 0.001;
+        public Func<double, double> Raise = x => x + 0.01;
+        public Func<double, double> Lower = x => x - 0.01;
         
-        private readonly CursorTracker.CursorTracker _cursorTracker;
+        private readonly CursorTracker _cursorTracker;
 
-        public FieldManipulator(CursorTracker.CursorTracker cursorTracker)
+        public FieldManipulator(CursorTracker cursorTracker)
         {
             _cursorTracker = cursorTracker;
         }

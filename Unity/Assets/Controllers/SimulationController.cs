@@ -9,9 +9,10 @@ namespace Assets.Controllers
     {
         public PrognosticFields CurrentFields 
         { 
-            get { return _stepper.CurrentFields; } 
+            get { return _currentFieldsCache; } 
             set { _stepper.CurrentFields = value; }
         }
+        private PrognosticFields _currentFieldsCache;
 
         public int NumberOfSteps { get; private set; }
 
@@ -22,6 +23,7 @@ namespace Assets.Controllers
         public SimulationController(IPolyhedron surface, ISimulationOptions options)
         {
             _stepper = new SimulationStepper(surface, options);
+            _currentFieldsCache = _stepper.CurrentFields;
 
             _pauseEvent = new ManualResetEvent(false);
             _simulationThread = new Thread(SimulationLoop);
@@ -34,6 +36,7 @@ namespace Assets.Controllers
             {
                 _pauseEvent.WaitOne();
                 _stepper.StepSimulation();
+                _currentFieldsCache = _stepper.CurrentFields;
             }
         }
 

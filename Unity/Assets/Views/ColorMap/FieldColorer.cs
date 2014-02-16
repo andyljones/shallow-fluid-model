@@ -53,8 +53,9 @@ namespace Assets.Views.ColorMap
             return faces.Average(i => field[i]);
         }
 
-        private Color ColorFromValue(float x)
+        private Color ColorFromValue(float y)
         {
+            var x = y/2 + 0.25f;
             x = x >= 1 ? 1 : x <= 0 ? 0 : x;
 
             var r = -Mathf.Cos(1.5f * Mathf.PI * x) / 2 + 0.5f;

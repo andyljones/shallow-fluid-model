@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
+using Assets.Views;
 using Engine.Geometry;
 using UnityEngine;
 
-namespace Assets.Controllers.CursorTracker
+namespace Assets.Controllers.Cursor
 {
     public class CursorTracker
     {
@@ -38,6 +40,29 @@ namespace Assets.Controllers.CursorTracker
             }
 
             return null;
+        }
+
+        public Vertex TryGetVertexUnderCursor()
+        {
+            var ray = _camera.ScreenPointToRay(Input.mousePosition);
+
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                var indexOfHitTriangle = hit.triangleIndex;
+                var face = _faceAtTriangleIndex(indexOfHitTriangle);
+                
+                return FindClosestVertex(face, hit.point);
+            }
+
+            return null;
+        }
+
+        private Vertex FindClosestVertex(Face face, Vector3 target)
+        {
+            var sortedVertices = face.Vertices.OrderBy(vertex => (GraphicsUtilities.Vector3(vertex.Position) - target).magnitude);
+
+            return sortedVertices.First();
         }
     }
 }

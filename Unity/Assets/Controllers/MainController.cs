@@ -1,9 +1,10 @@
-﻿using Assets.Controllers.CursorTracker;
+﻿using Assets.Controllers.Cursor;
 using Assets.Controllers.GameCamera;
 using Assets.Controllers.Manipulator;
 using Assets.Views.ColorMap;
 using Assets.Views.LatLongGrid;
 using Assets.Views.ParticleMap;
+using Assets.Views.RawValues;
 using Engine.Geometry.GeodesicSphere;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ namespace Assets.Controllers
 
         private readonly ColorMapView _colorMapView;
         private readonly ParticleMapView _particleMapView;
+        private RawValuesView _rawValuesView;
 
         private readonly CameraController _cameraController;
         private readonly FieldManipulator _fieldManipulator;
@@ -27,17 +29,19 @@ namespace Assets.Controllers
             var cameraController = new CameraController(options.Radius);
 
             var meshManager = new MeshManager(surface);
-            var cursorTracker = new CursorTracker.CursorTracker(cameraController.Camera, meshManager);
+            var cursorTracker = new CursorTracker(cameraController.Camera, meshManager);
             var fieldManipulator = new FieldManipulator(cursorTracker);  
 
             var colorMapView = new ColorMapView(surface, meshManager.Mesh, options);
             var particleMapView = new ParticleMapView(surface, options);
+            var rawValuesView = new RawValuesView(cursorTracker);
 
             LatLongGridFactory.Build(options.Radius);
 
             _simulation = simulation;
             _colorMapView = colorMapView;
             _particleMapView = particleMapView;
+            _rawValuesView = rawValuesView;
             _cameraController = cameraController;
             _fieldManipulator = fieldManipulator;
         }
@@ -54,6 +58,11 @@ namespace Assets.Controllers
 
             _cameraController.Update();
             _simulation.CurrentFields.Height = _fieldManipulator.Update(_simulation.CurrentFields.Height);
+        }
+
+        public void UpdateGUI()
+        {
+            _rawValuesView.UpdateGUI(_simulation.CurrentFields);
         }
 
         public void Terminate()

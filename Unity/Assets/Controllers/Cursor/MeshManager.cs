@@ -5,7 +5,7 @@ using Engine.Geometry;
 using Engine.Utilities;
 using UnityEngine;
 
-namespace Assets.Controllers.CursorTracker
+namespace Assets.Controllers.Cursor
 {
     public class MeshManager
     {
