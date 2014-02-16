@@ -5,7 +5,7 @@ using Engine.Simulation.Initialization;
 
 namespace Engine.Simulation
 {
-    public class SimulationRunner
+    public class SimulationController
     {
         public PrognosticFields CurrentFields;
         public int NumberOfSteps { get; private set; }
@@ -18,7 +18,7 @@ namespace Engine.Simulation
         private readonly Thread _simulationThread;
         private readonly ManualResetEvent _pauseEvent;
 
-        public SimulationRunner(IPolyhedron surface, ISimulationOptions options)
+        public SimulationController(IPolyhedron surface, ISimulationOptions options)
         {
             _fieldUpdater = new PrognosticFieldsUpdater(surface, options as IModelParameters);
             CurrentFields = InitialFieldsFactory.Build(surface, options as IInitialFieldParameters);

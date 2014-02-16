@@ -1,15 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Linq;
-using Engine;
 using Engine.Geometry;
 using Engine.Geometry.GeodesicSphere;
 using EngineTests.AutoFixtureCustomizations;
-using EngineTests.GeometryTests;
 using MathNet.Numerics;
 using Xunit;
 using Xunit.Extensions;
 
-namespace EngineTests.GeodesicSphereTests
+namespace EngineTests.GeometryTests.GeodesicSphereTests
 {
     public class GeodesicTests
     {

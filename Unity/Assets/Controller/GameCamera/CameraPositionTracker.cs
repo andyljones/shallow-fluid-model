@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using Assets.Views;
+﻿using Assets.Views;
 using UnityEngine;
 
 namespace Assets.Controller.GameCamera
 {
-    public class CameraPositionController
+    public class CameraPositionTracker
     {
         public float AngularSpeed = 0.05F;
         public float RadialSpeed = 2000.0F;
@@ -19,27 +18,17 @@ namespace Assets.Controller.GameCamera
 
         private const float MinColatitude = 0.001f;
 
-        public CameraPositionController(float initialRadius, GameObject camera)
+        public CameraPositionTracker(float initialRadius, Transform cameraTransform)
         {
             _radius = initialRadius;
             _azimuth = 0;
             _colatitude = Mathf.PI/2;
 
-            _cameraTransform = camera.transform;
+            _cameraTransform = cameraTransform;
 
         }
 
-        public IEnumerator Coroutine()
-        {
-            while (true)
-            {
-                UpdateCameraPosition();
-
-                yield return new WaitForEndOfFrame();
-            }
-        }
-
-        private void UpdateCameraPosition()
+        public void Update()
         {
             if (Input.GetKey(DragButton))
             {

@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace Assets.Views.LatLongGrid
 {
-    public static class LatLongGridDrawer
+    public static class LatLongGridFactory
     {
         public static int NumberOfPointsPerLatitude = 100;
         public static int NumberOfPointsPerLongitude = 50;
 
         public static double ScaleFactor = 1.005f;
 
-        public static void DrawGrid(double radius)
+        public static void Build(double radius)
         {
             var gridObject = new GameObject("Cartesian Grid");
 
@@ -43,7 +43,7 @@ namespace Assets.Views.LatLongGrid
 
             var vertices = 
                 azimuths.Select(
-                azimuth => radius*CreateVectorAt(colatitude, azimuth))
+                azimuth => radius*GraphicsUtilities.Vector3(colatitude, azimuth, 1))
                 .ToArray();
 
             var latitudeObject = 
@@ -62,7 +62,7 @@ namespace Assets.Views.LatLongGrid
 
             var vertices = 
                 azimuths.Select(
-                colatitude => radius*CreateVectorAt(colatitude, azimuth))
+                colatitude => radius*GraphicsUtilities.Vector3(colatitude, azimuth, 1))
                 .ToArray();
 
             var longitudeObject = 
@@ -95,7 +95,7 @@ namespace Assets.Views.LatLongGrid
 
             var labelObject = new GameObject("Label " + text);
 
-            var normal = CreateVectorAt(colatitude, azimuth);
+            var normal = GraphicsUtilities.Vector3(colatitude, azimuth, 1);
             var localEast = Vector3.Cross(normal, new Vector3(0, 0, 1));
             var localNorth = Vector3.Cross(localEast, normal);
             labelObject.transform.position = scaleFactor*normal;
@@ -141,15 +141,6 @@ namespace Assets.Views.LatLongGrid
             mesh.uv = Enumerable.Repeat(new Vector2(0, 0), points.Count()).ToArray();
 
             return gameObject;
-        }
-
-        private static Vector3 CreateVectorAt(float colatitude, float azimuth)
-        {
-            var x = Mathf.Sin(colatitude) * Mathf.Cos(azimuth);
-            var y = -Mathf.Sin(colatitude) * Mathf.Sin(azimuth);
-            var z = Mathf.Cos(colatitude);
-
-            return new Vector3(x, y, z);
         }
     }
 }

@@ -4,7 +4,7 @@ using Engine.Geometry.GeodesicSphere;
 using MathNet.Numerics;
 using Xunit;
 
-namespace EngineTests.GeodesicSphereTests
+namespace EngineTests.GeometryTests.GeodesicSphereTests
 {
     public class IcosahedronTests
     {
