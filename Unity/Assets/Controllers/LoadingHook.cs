@@ -13,11 +13,11 @@ namespace Assets.Controllers
 
             Gravity = 10.0 / 1000.0,
             RotationFrequency = 1.0 / (3600.0 * 24.0),
-            Timestep = 200,
+            Timestep = 400,
 
             InitialHeightFunction = ScalarFieldFactory.RandomScalarField,
             InitialAverageHeight = 8,
-            InitialMaxDeviationOfHeight = 0.1,
+            InitialMaxDeviationOfHeight = 1,
 
             InitialVelocityFunction = VectorFieldFactory.ConstantVectorField,
             InitialAverageVelocity = new Vector(new[] { 0.0, 0.0, 0.0}),

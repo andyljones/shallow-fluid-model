@@ -62,14 +62,15 @@ namespace Assets.Controllers
             _timeDilationView.Update(_simulation.NumberOfSteps);
 
             _cameraController.Update();
+            _simulation.CurrentFields.Height = _fieldManipulator.Update(_simulation.CurrentFields.Height);
         }
 
         public void UpdateGUI()
         {
-            _simulation.CurrentFields.Height = _fieldManipulator.Update(_simulation.CurrentFields.Height);
             
             _rawValuesView.UpdateGUI(_simulation.CurrentFields);
             _timeDilationView.UpdateGUI();
+            _fieldManipulator.UpdateGUI();
         }
 
         public void Terminate()
