@@ -22,8 +22,8 @@ namespace Assets.Controller
         public Vector InitialAverageVelocity { get;  set; }
         public double InitialMaxDeviationOfVelocity { get;  set; }
 
-        public string SurfaceMaterialName { get; set; }
-        public string WireframeMaterialName { get; set; }
+        public string ColorMapMaterialName { get; set; }
+        public int ColorMapHistoryLength { get; set; }
 
         public double ParticleSpeedScaleFactor { get; set; }
         public int ParticleCount { get; set; }

@@ -17,10 +17,10 @@ namespace Assets.Controller.Manipulator
         private readonly Camera _camera;
         private readonly Func<int, Face> _faceAtTriangleIndex; 
 
-        public FieldManipulator(Camera camera, ColorMapView colorMap)
+        public FieldManipulator(Camera camera, Func<int, Face> faceAtTriangleIndex)
         {
             _camera = camera;
-            _faceAtTriangleIndex = colorMap.MeshManager.FaceAtTriangleIndex;
+            _faceAtTriangleIndex = faceAtTriangleIndex;
         }
 
         public ScalarField<Face> Update(ScalarField<Face> field)

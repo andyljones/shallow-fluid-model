@@ -4,6 +4,7 @@ namespace Assets.Views.ColorMap
 {
     public interface IColorMapOptions
     {
-        String SurfaceMaterialName { get; }
+        String ColorMapMaterialName { get; }
+        int ColorMapHistoryLength { get; }
     }
 }

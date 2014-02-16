@@ -46,14 +46,14 @@ namespace Assets.Controller
                 InitialAverageVelocity = Vector.Zeros(3),
                 InitialMaxDeviationOfVelocity = 0,
 
-                SurfaceMaterialName = "Materials/Surface",
-                WireframeMaterialName = "Materials/Wireframe",
-                ParticleMaterialName = "Materials/ParticleMap",
+                ColorMapHistoryLength = 1000,
+                ColorMapMaterialName = "Materials/Surface",
 
                 ParticleCount = 20000,
                 ParticleSpeedScaleFactor = 2000,
                 ParticleLifespan = 1000,
                 ParticleTrailLifespan = 10,
+                ParticleMaterialName = "Materials/ParticleMap",
             };
 
 
@@ -63,7 +63,7 @@ namespace Assets.Controller
             var cameraObject = CameraGameObjectFactory.Build();
             _cameraPositionController = new CameraPositionController(9000, cameraObject);
 
-            _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), _colorMapView);
+            _fieldManipulator = new FieldManipulator(cameraObject.GetComponent<Camera>(), _colorMapView.FaceAtTriangleIndex);
 
             _simulation = new SimulationRunner(_polyhedron, options);
 

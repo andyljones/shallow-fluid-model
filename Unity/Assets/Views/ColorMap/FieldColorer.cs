@@ -9,18 +9,22 @@ namespace Assets.Views.ColorMap
     {
         private readonly IPolyhedron _polyhedron;
         private readonly int[][] _faces;
+        private readonly MaxAndMinTracker _maxAndMinTracker;
 
-        public FieldColorer(IPolyhedron polyhedron)
+        public FieldColorer(IPolyhedron polyhedron, int lengthOfHistory)
         {
             _polyhedron = polyhedron;
 
             _faces = VertexIndexedTableFactory.Faces(polyhedron);
+            _maxAndMinTracker = new MaxAndMinTracker(lengthOfHistory);
         }
 
         public Color[] Color(ScalarField<Face> field)
         {
-            var max = field.Values.Max();
-            var min = field.Values.Min();
+            _maxAndMinTracker.Update(field.Values);
+
+            var max = _maxAndMinTracker.AverageMax;
+            var min = _maxAndMinTracker.AverageMin;
             var gap = max - min <= 0 ? 1 : max - min; 
 
             var colors = new Color[_polyhedron.Vertices.Count + _polyhedron.Faces.Count];

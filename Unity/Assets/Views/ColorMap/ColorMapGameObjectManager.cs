@@ -1,7 +1,4 @@
-﻿using Assets.Controller.Manipulator;
-using Engine.Geometry;
-using Engine.Simulation;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Views.ColorMap
 {
@@ -11,9 +8,9 @@ namespace Assets.Views.ColorMap
 
         private readonly MeshFilter _meshFilter;
 
-        public ColorMapGameObjectManager(Mesh mesh, IColorMapOptions options)
+        public ColorMapGameObjectManager(Mesh mesh, string materialName)
         {
-            var gameObject = BuildGameObject(mesh, options.SurfaceMaterialName);
+            var gameObject = BuildGameObject(mesh, materialName);
             _meshFilter = gameObject.GetComponent<MeshFilter>();
         }
 
