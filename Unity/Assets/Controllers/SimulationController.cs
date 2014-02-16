@@ -37,6 +37,8 @@ namespace Assets.Controllers
                 _pauseEvent.WaitOne();
                 _stepper.StepSimulation();
                 _currentFieldsCache = _stepper.CurrentFields;
+
+                NumberOfSteps = NumberOfSteps + 1;
             }
         }
 

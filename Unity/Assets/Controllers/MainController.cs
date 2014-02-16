@@ -5,6 +5,7 @@ using Assets.Views.ColorMap;
 using Assets.Views.LatLongGrid;
 using Assets.Views.ParticleMap;
 using Assets.Views.RawValues;
+using Assets.Views.SimulationSpeed;
 using Engine.Geometry.GeodesicSphere;
 using UnityEngine;
 
@@ -16,7 +17,8 @@ namespace Assets.Controllers
 
         private readonly ColorMapView _colorMapView;
         private readonly ParticleMapView _particleMapView;
-        private RawValuesView _rawValuesView;
+        private readonly RawValuesView _rawValuesView;
+        private readonly TimeDilationView _timeDilationView;
 
         private readonly CameraController _cameraController;
         private readonly FieldManipulator _fieldManipulator;
@@ -35,6 +37,7 @@ namespace Assets.Controllers
             var colorMapView = new ColorMapView(surface, meshManager.Mesh, options);
             var particleMapView = new ParticleMapView(surface, options);
             var rawValuesView = new RawValuesView(cursorTracker);
+            var timeDilationView = new TimeDilationView(50, options.Timestep);
 
             LatLongGridFactory.Build(options.Radius);
 
@@ -42,6 +45,7 @@ namespace Assets.Controllers
             _colorMapView = colorMapView;
             _particleMapView = particleMapView;
             _rawValuesView = rawValuesView;
+            _timeDilationView = timeDilationView;
             _cameraController = cameraController;
             _fieldManipulator = fieldManipulator;
         }
@@ -55,14 +59,17 @@ namespace Assets.Controllers
 
             _colorMapView.Update(_simulation.CurrentFields.Height);
             _particleMapView.Update(_simulation.CurrentFields.Velocity); 
+            _timeDilationView.Update(_simulation.NumberOfSteps);
 
             _cameraController.Update();
-            _simulation.CurrentFields.Height = _fieldManipulator.Update(_simulation.CurrentFields.Height);
         }
 
         public void UpdateGUI()
         {
+            _simulation.CurrentFields.Height = _fieldManipulator.Update(_simulation.CurrentFields.Height);
+            
             _rawValuesView.UpdateGUI(_simulation.CurrentFields);
+            _timeDilationView.UpdateGUI();
         }
 
         public void Terminate()
