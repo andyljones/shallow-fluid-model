@@ -1,22 +1,20 @@
 ﻿using System;
 using Engine.Geometry;
 using Engine.Simulation;
+using UnityEngine;
 
 namespace Assets.Views.ColorMap
 {
     public class ColorMapView
     {
-        public readonly MeshManager MeshManager;
-
         private readonly FieldColorer _fieldColorer;
         private readonly ColorMapGameObjectManager _gameObjectManager;
 
-        public ColorMapView(IPolyhedron surface, IColorMapOptions options)
+        public ColorMapView(IPolyhedron surface, Mesh mesh, IColorMapOptions options)
         {
             _fieldColorer = new FieldColorer(surface, options.ColorMapHistoryLength);
          
-            MeshManager = new MeshManager(surface);
-            _gameObjectManager = new ColorMapGameObjectManager(MeshManager.Mesh, options.ColorMapMaterialName);
+            _gameObjectManager = new ColorMapGameObjectManager(mesh, options.ColorMapMaterialName);
         }
 
         public void Update(ScalarField<Face> field)

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Assets.Views;
 using Engine.Geometry;
 using Engine.Utilities;
 using UnityEngine;
 
-namespace Assets.Views.ColorMap
+namespace Assets.Controllers.CursorTracker
 {
     public class MeshManager
     {

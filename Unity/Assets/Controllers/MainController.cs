@@ -1,10 +1,9 @@
-﻿using Assets.Controllers;
+﻿using Assets.Controllers.CursorTracker;
 using Assets.Controllers.GameCamera;
 using Assets.Controllers.Manipulator;
 using Assets.Views.ColorMap;
 using Assets.Views.LatLongGrid;
 using Assets.Views.ParticleMap;
-using Engine.Geometry;
 using Engine.Geometry.GeodesicSphere;
 using UnityEngine;
 
@@ -12,40 +11,35 @@ namespace Assets.Controllers
 {
     public class MainController
     {
-        private IPolyhedron _polyhedron;
-        private SimulationController _simulation;
+        private readonly SimulationController _simulation;
 
-        private ColorMapView _colorMapView;
-        private ParticleMapView _particleMapView;
+        private readonly ColorMapView _colorMapView;
+        private readonly ParticleMapView _particleMapView;
 
-        private CameraController _cameraController;
-        private FieldManipulator _fieldManipulator;
+        private readonly CameraController _cameraController;
+        private readonly FieldManipulator _fieldManipulator;
 
         public MainController(Options options)
         {
-            InitializeModel(options);
-            InitializeViews(options);
-            InitializeControllers(options);
-        }
+            var surface = GeodesicSphereFactory.Build(options);
+            var simulation = new SimulationController(surface, options);
 
-        private void InitializeModel(Options options)
-        {
-            _polyhedron = GeodesicSphereFactory.Build(options);
-            _simulation = new SimulationController(_polyhedron, options);
-        }
+            var cameraController = new CameraController(options.Radius);
 
-        private void InitializeViews(Options options)
-        {
+            var meshManager = new MeshManager(surface);
+            var cursorTracker = new CursorTracker.CursorTracker(cameraController.Camera, meshManager);
+            var fieldManipulator = new FieldManipulator(cursorTracker);  
+
+            var colorMapView = new ColorMapView(surface, meshManager.Mesh, options);
+            var particleMapView = new ParticleMapView(surface, options);
+
             LatLongGridFactory.Build(options.Radius);
 
-            _colorMapView = new ColorMapView(_polyhedron, options);
-            _particleMapView = new ParticleMapView(_polyhedron, options);
-        }
-
-        private void InitializeControllers(Options options)
-        {
-            _cameraController = new CameraController(options.Radius);
-            _fieldManipulator = new FieldManipulator(_cameraController.Camera, _colorMapView.MeshManager);            
+            _simulation = simulation;
+            _colorMapView = colorMapView;
+            _particleMapView = particleMapView;
+            _cameraController = cameraController;
+            _fieldManipulator = fieldManipulator;
         }
 
         public void Update()

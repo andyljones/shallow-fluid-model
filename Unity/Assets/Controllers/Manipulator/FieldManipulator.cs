@@ -12,17 +12,13 @@ namespace Assets.Controllers.Manipulator
         public KeyCode SurfaceLowerButton = KeyCode.DownArrow;
 
         public Func<double, double> Raise = x => x + 0.001;
-        public Func<double, double> Lower = x => x - 0.001; 
+        public Func<double, double> Lower = x => x - 0.001;
+        
+        private readonly CursorTracker.CursorTracker _cursorTracker;
 
-        private readonly Camera _camera;
-        private readonly Func<int, Face> _faceAtTriangleIndex; 
-
-        public FieldManipulator(Camera camera, MeshManager meshManager)
+        public FieldManipulator(CursorTracker.CursorTracker cursorTracker)
         {
-            _camera = camera;
-            _faceAtTriangleIndex = meshManager.FaceAtTriangleIndex;
-
-            new PolyhedronCollider(meshManager.Mesh);
+            _cursorTracker = cursorTracker;
         }
 
         public ScalarField<Face> Update(ScalarField<Face> field)
@@ -43,7 +39,7 @@ namespace Assets.Controllers.Manipulator
 
         private ScalarField<Face> TryUpdateFieldUnderCursor(ScalarField<Face> field, Func<double, double> update)
         {
-            var face = GetFaceUnderCursor();
+            var face = _cursorTracker.TryGetFaceUnderCursor();
             if (face != null)
             {
                 var values = field.Values;
@@ -55,21 +51,6 @@ namespace Assets.Controllers.Manipulator
             {
                 return field;
             }
-        }
-
-        private Face GetFaceUnderCursor()
-        {
-            var ray = _camera.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                var indexOfHitTriangle = hit.triangleIndex;
-                var face = _faceAtTriangleIndex(indexOfHitTriangle);
-                return face;
-            }
-
-            return null;
         }
     }
 }
