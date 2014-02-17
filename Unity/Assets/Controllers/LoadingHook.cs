@@ -17,7 +17,7 @@ namespace Assets.Controllers
 
             InitialHeightFunction = ScalarFieldFactory.RandomScalarField,
             InitialAverageHeight = 8,
-            InitialMaxDeviationOfHeight = 1,
+            InitialMaxDeviationOfHeight = 2,
 
             InitialVelocityFunction = VectorFieldFactory.ConstantVectorField,
             InitialAverageVelocity = new Vector(new[] { 0.0, 0.0, 0.0}),

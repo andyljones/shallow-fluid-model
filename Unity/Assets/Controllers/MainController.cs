@@ -32,7 +32,7 @@ namespace Assets.Controllers
 
             var meshManager = new MeshManager(surface);
             var cursorTracker = new CursorTracker(cameraController.Camera, meshManager);
-            var fieldManipulator = new FieldManipulator(cursorTracker);  
+            var fieldManipulator = new FieldManipulator(surface, cursorTracker);  
 
             var colorMapView = new ColorMapView(surface, meshManager.Mesh, options);
             var particleMapView = new ParticleMapView(surface, options);

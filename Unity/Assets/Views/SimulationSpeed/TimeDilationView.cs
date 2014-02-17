@@ -11,7 +11,7 @@ namespace Assets.Views.SimulationSpeed
         private List<float> _updateTimeHistory;
 
         private readonly int _sizeOfAveragingWindow;
-        private float _timestep;
+        private readonly float _timestep;
 
         public TimeDilationView(int sizeOfAveragingWindow, double timestep)
         {
@@ -47,7 +47,7 @@ namespace Assets.Views.SimulationSpeed
 
                 var labelText = String.Format("Time Dilation: {0:G5}", timeDilation);
 
-                GUI.Label(new Rect(10, Screen.height-30, 200, 20), labelText);
+                GUI.Label(new Rect(Screen.width - 210, 10, 200, 20), labelText);
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Assets.Controllers.Cursor;
-using Assets.Views.ColorMap;
 using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
@@ -12,46 +13,33 @@ namespace Assets.Controllers.Manipulator
         public KeyCode SurfaceRaiseButton = KeyCode.UpArrow;
         public KeyCode SurfaceLowerButton = KeyCode.DownArrow;
 
-        public KeyCode IntensityIncreaseButton = KeyCode.RightArrow;
-        public KeyCode IntensityDecreaseButton = KeyCode.LeftArrow;
-
-        private double _adjustmentSize = .1;
-
         private readonly CursorTracker _cursorTracker;
+        private readonly FieldManipulatorProperties _properties;
+        private readonly IPolyhedron _polyhedron;
 
-        public FieldManipulator(CursorTracker cursorTracker)
+        public FieldManipulator(IPolyhedron polyhedron, CursorTracker cursorTracker)
         {
+            _polyhedron = polyhedron; 
             _cursorTracker = cursorTracker;
+            _properties = new FieldManipulatorProperties();
         }
 
         public ScalarField<Face> Update(ScalarField<Face> field)
         {
-            CheckForIntensityAdjustment();
+            _properties.Update();
             
             return AdjustedField(field);
-        }
-
-        private void CheckForIntensityAdjustment()
-        {
-            if (Input.GetKeyDown(IntensityIncreaseButton))
-            {
-                _adjustmentSize = 10 * _adjustmentSize;
-            }
-            else if (Input.GetKeyDown(IntensityDecreaseButton))
-            {
-                _adjustmentSize = 0.1 * _adjustmentSize;
-            }
         }
 
         private ScalarField<Face> AdjustedField(ScalarField<Face> field)
         {
             if (Input.GetKey(SurfaceRaiseButton))
             {
-                return TryUpdateFieldUnderCursor(field, Raise);
+                return TryAdjustFieldUnderCursor(field, Raise);
             }
             else if (Input.GetKey(SurfaceLowerButton))
             {
-                return TryUpdateFieldUnderCursor(field, Lower);
+                return TryAdjustFieldUnderCursor(field, Lower);
             }
             else
             {
@@ -59,20 +47,18 @@ namespace Assets.Controllers.Manipulator
             }
         }
 
-        public void UpdateGUI()
-        {
-            var labelText = String.Format("Adjustment Size: {0:F0}m", 1000*_adjustmentSize);
-            GUI.Label(new Rect(10, Screen.height - 50, 200, 20), labelText);
-        }
-
-        private ScalarField<Face> TryUpdateFieldUnderCursor(ScalarField<Face> field, Func<double, double> update)
+        private ScalarField<Face> TryAdjustFieldUnderCursor(ScalarField<Face> field, Func<double, double> adjustmentFunction)
         {
             var face = _cursorTracker.TryGetFaceUnderCursor();
             if (face != null)
             {
-                //TODO: This modifies the old values!
                 var values = field.Values;
-                values[field.IndexOf(face)] = update(field[face]);
+                var neighbours = GetNearbyFaces(face, _properties.Radius);
+                foreach (var neighbour in neighbours)
+                {
+                    //TODO: This modifies the old values!
+                    values[field.IndexOf(neighbour)] = adjustmentFunction(field[neighbour]);
+                }
 
                 return new ScalarField<Face>(field.IndexOf, values);
             }
@@ -82,14 +68,32 @@ namespace Assets.Controllers.Manipulator
             }
         }
 
+        private IEnumerable<Face> GetNearbyFaces(Face center, int radius)
+        {
+            var faces = new HashSet<Face> {center};
+            for (int i = 1; i < radius; i++)
+            {
+                var neighbours = faces.SelectMany(face => _polyhedron.NeighboursOf(face)).ToList();
+                faces.UnionWith(neighbours);
+            }
+
+            return faces;
+        }
+
         private double Raise(double x)
         {
-            return x + _adjustmentSize;
+            return x + _properties.AdjustmentSize;
         }
 
         private double Lower(double x)
         {
-            return x - _adjustmentSize;
+            return x - _properties.AdjustmentSize;
+        }
+
+
+        public void UpdateGUI()
+        {
+            _properties.UpdateGUI();
         }
     }
 }
