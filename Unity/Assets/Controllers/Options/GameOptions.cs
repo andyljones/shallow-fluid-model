@@ -1,13 +1,12 @@
 ﻿using System;
-using Assets.Controllers;
 using Engine.Geometry;
 using Engine.Simulation;
 using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
-namespace Assets.Options
+namespace Assets.Controllers.Options
 {
-    public class GameOptions : IMainControllerOptions
+    public class GameOptions : IMainControllerOptions, IOptionsControllerOptions
     {
         public double Radius { get; set; }
         public int MinimumNumberOfFaces { get; set; }
@@ -41,5 +40,7 @@ namespace Assets.Options
         public KeyCode PauseSimulationKey { get; set; }
 
         public KeyCode ResetKey { get; set; }
+
+        public KeyCode OptionsMenuKey { get; set; }
     }
 }

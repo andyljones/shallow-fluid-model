@@ -2,6 +2,7 @@
 using Assets.Controllers.Cursor;
 using Assets.Controllers.GameCamera;
 using Assets.Controllers.Manipulator;
+using Assets.Controllers.Options;
 using Assets.Controllers.Simulation;
 using Assets.Views.ColorMap;
 using Assets.Views.LatLongGrid;
@@ -29,9 +30,10 @@ namespace Assets.Controllers
 
         private IMainControllerOptions _options;
 
-        public MainController(IMainControllerOptions options)
+        public MainController()
         {
-            Initialize(options);
+            var initialOptions = InitialOptionsFactory.Build();
+            Initialize(initialOptions);
         }
 
         private void Initialize(IMainControllerOptions options)
@@ -64,13 +66,8 @@ namespace Assets.Controllers
             _fieldManipulator = fieldManipulator;
         }
 
-        public void Reset(IMainControllerOptions options = null)
+        public void Reset(IMainControllerOptions options)
         {
-            if (options == null)
-            {
-                options = _options;
-            }
-
             Dispose();
             Initialize(options);
         }
@@ -79,7 +76,7 @@ namespace Assets.Controllers
         {
             if (Input.GetKeyDown(_options.ResetKey))
             {
-                Reset();
+                Reset(_options);
             }
 
             _simulation.Update();
