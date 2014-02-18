@@ -4,7 +4,7 @@ using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
 
-namespace Assets.Controllers
+namespace Assets.Controllers.Simulation
 {
     public class SimulationController : IDisposable
     {
@@ -21,7 +21,7 @@ namespace Assets.Controllers
         private readonly ManualResetEvent _pauseEvent;
         private readonly SimulationStepper _stepper;
 
-        private readonly ISimulationOptions _options;
+        private readonly ISimulationControllerOptions _options;
 
         public SimulationController(IPolyhedron surface, ISimulationControllerOptions options)
         {
@@ -47,16 +47,15 @@ namespace Assets.Controllers
             }
         }
 
-
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.R))
+            if (Input.GetKeyDown(_options.PauseSimulationKey))
             {
                 TogglePause();
             }
         }
 
-        public void TogglePause()
+        private void TogglePause()
         {
             if (_pauseEvent.WaitOne(0))
             {
@@ -68,7 +67,7 @@ namespace Assets.Controllers
             }
         }
 
-        #region Destructor & IDisposable methods
+        #region IDisposable methods
         public void Dispose()
         {
             _pauseEvent.Reset();

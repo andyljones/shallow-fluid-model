@@ -2,6 +2,7 @@
 using Assets.Controllers.Cursor;
 using Assets.Controllers.GameCamera;
 using Assets.Controllers.Manipulator;
+using Assets.Controllers.Simulation;
 using Assets.Views.ColorMap;
 using Assets.Views.LatLongGrid;
 using Assets.Views.ParticleMap;
@@ -14,21 +15,26 @@ namespace Assets.Controllers
 {
     public class MainController : IDisposable
     {
-        private readonly SimulationController _simulation;
+        private SimulationController _simulation;
 
-        private readonly ColorMapView _colorMapView;
-        private readonly ParticleMapView _particleMapView;
-        private readonly RawValuesView _rawValuesView;
-        private readonly TimeDilationView _timeDilationView;
-        private readonly LatLongGridView _latLongGridView;
+        private ColorMapView _colorMapView;
+        private ParticleMapView _particleMapView;
+        private RawValuesView _rawValuesView;
+        private TimeDilationView _timeDilationView;
+        private LatLongGridView _latLongGridView;
+                
+        private CameraController _cameraController;
+        private FieldManipulator _fieldManipulator;
+        private CursorTracker _cursorTracker;
 
-        private readonly CameraController _cameraController;
-        private readonly FieldManipulator _fieldManipulator;
-        private readonly CursorTracker _cursorTracker;
-
-        private readonly IMainControllerOptions _options;
+        private IMainControllerOptions _options;
 
         public MainController(IMainControllerOptions options)
+        {
+            Initialize(options);
+        }
+
+        private void Initialize(IMainControllerOptions options)
         {
             _options = options;
 
@@ -39,7 +45,7 @@ namespace Assets.Controllers
 
             var meshManager = new MeshManager(surface);
             var cursorTracker = new CursorTracker(cameraController.Camera, meshManager);
-            var fieldManipulator = new FieldManipulator(surface, cursorTracker, options);  
+            var fieldManipulator = new FieldManipulator(surface, cursorTracker, options);
 
             var colorMapView = new ColorMapView(surface, meshManager.Mesh, options);
             var particleMapView = new ParticleMapView(surface, options);
@@ -58,13 +64,25 @@ namespace Assets.Controllers
             _fieldManipulator = fieldManipulator;
         }
 
-        public void Update()
+        public void Reset(IMainControllerOptions options = null)
         {
-            if (Input.GetKeyDown(_options.PauseSimulationKey))
+            if (options == null)
             {
-                _simulation.TogglePause();
+                options = _options;
             }
 
+            Dispose();
+            Initialize(options);
+        }
+
+        public void Update()
+        {
+            if (Input.GetKeyDown(_options.ResetKey))
+            {
+                Reset();
+            }
+
+            _simulation.Update();
             _colorMapView.Update(_simulation.CurrentFields.Height);
             _particleMapView.Update(_simulation.CurrentFields.Velocity); 
             _timeDilationView.Update(_simulation.NumberOfSteps);

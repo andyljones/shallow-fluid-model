@@ -1,12 +1,14 @@
-﻿using Engine.Simulation.Initialization;
+﻿using Assets.Controllers;
+using Assets.Options;
+using Engine.Simulation.Initialization;
 using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
-namespace Assets.Controllers
+namespace Assets
 {
     public class LoadingHook : MonoBehaviour
     {
-        private readonly Options _options = new Options
+        private readonly GameOptions _options = new GameOptions
         {
             MinimumNumberOfFaces = 500,
             Radius = 6000,
@@ -34,53 +36,35 @@ namespace Assets.Controllers
 
             SurfaceRaiseKey = KeyCode.UpArrow,
             SurfaceLowerKey = KeyCode.DownArrow,
-            IntensityIncreaseKey = KeyCode.KeypadPlus,
-            IntensityDecreaseKey = KeyCode.KeypadMinus,
+            IntensityIncreaseKey = KeyCode.RightBracket,
+            IntensityDecreaseKey = KeyCode.LeftBracket,
             RadiusDecreaseKey = KeyCode.LeftArrow,
             RadiusIncreaseKey = KeyCode.RightArrow,
 
-            PauseSimulationKey = KeyCode.P
+            PauseSimulationKey = KeyCode.P,
+            ResetKey = KeyCode.R
         };
 
         private MainController _main;
 
-        void Start ()
+        public void Start()
         {
             _main = new MainController(_options);
         }
 
         void Update()
         {
-            if (_main != null)
-            {
-                _main.Update();
-            }
-           
-            if (_main != null && Input.GetKeyDown(KeyCode.R))
-            {
-                _main.Dispose();
-                _main = null;
-            }
-            else if (_main == null && Input.GetKeyDown(KeyCode.R))
-            {
-                _main = new MainController(_options);
-            }
+            _main.Update();
         }
 
         void OnGUI()
         {
-            if (_main != null)
-            {
-                _main.UpdateGUI();
-            }
+            _main.UpdateGUI();
         }
 
         void OnApplicationQuit()
         {
-            if (_main != null)
-            {
-                _main.Dispose();
-            }
+            _main.Dispose();
         }
     }
 }

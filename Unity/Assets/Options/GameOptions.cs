@@ -5,9 +5,9 @@ using Engine.Simulation;
 using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
-namespace Assets
+namespace Assets.Options
 {
-    public class Options : IMainControllerOptions
+    public class GameOptions : IMainControllerOptions
     {
         public double Radius { get; set; }
         public int MinimumNumberOfFaces { get; set; }
@@ -39,5 +39,7 @@ namespace Assets
         public KeyCode IntensityDecreaseKey { get; set; }
 
         public KeyCode PauseSimulationKey { get; set; }
+
+        public KeyCode ResetKey { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Engine.Simulation;
 using UnityEngine;
 
-namespace Assets.Controllers
+namespace Assets.Controllers.Simulation
 {
     public interface ISimulationControllerOptions : ISimulationOptions
     {
