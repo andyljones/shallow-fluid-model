@@ -30,8 +30,8 @@ namespace Assets.Views.Level.ParticleMap
             _numberOfLines = _numberOfParticles * _numberOfLinesPerParticle;
             var numberOfVertices = 2*_numberOfLines;
             
-            _numberOfRenderers = Mathf.CeilToInt((float)numberOfVertices / (float)MaxNumberOfVerticesPerRenderer);
-            _particlesPerRenderer = options.ParticleCount / _numberOfRenderers;
+            _numberOfRenderers = Mathf.FloorToInt((float)numberOfVertices / MaxNumberOfVerticesPerRenderer) + 1;
+            _particlesPerRenderer = _numberOfParticles / _numberOfRenderers;
 
             _indicesOfFirstParticles = Enumerable.Range(0, _numberOfRenderers).Select(i => _particlesPerRenderer * i).ToList();
             _indicesOfOnePastLastParticles = Enumerable.Range(0, _numberOfRenderers).Select(i => Mathf.Min(_particlesPerRenderer * (i + 1), _numberOfParticles)).ToList();

@@ -14,7 +14,7 @@ namespace Assets.Controllers.Level
 {
     public class LevelController : IDisposable
     {
-        private SimulationController _simulation;
+        private SimulationController _simulationController;
         private CameraController _cameraController;
         private FieldManipulator _fieldManipulator;
         private CursorTracker _cursorTracker;
@@ -46,7 +46,7 @@ namespace Assets.Controllers.Level
             var timeDilationView = new TimeView(50, options.Timestep);
             var latLongGridView = new LatLongGridView(options.Radius);
 
-            _simulation = simulation;
+            _simulationController = simulation;
             _colorMapView = colorMapView;
             _particleMapView = particleMapView;
             _rawValuesView = rawValuesView;
@@ -59,18 +59,18 @@ namespace Assets.Controllers.Level
 
         public void Update()
         {
-            _simulation.Update();
-            _colorMapView.Update(_simulation.CurrentFields.Height);
-            _particleMapView.Update(_simulation.CurrentFields.Velocity); 
-            _timeView.Update(_simulation.NumberOfSteps);
+            _simulationController.Update();
+            _colorMapView.Update(_simulationController.CurrentFields.Height);
+            _particleMapView.Update(_simulationController.CurrentFields.Velocity); 
+            _timeView.Update(_simulationController.NumberOfSteps);
 
             _cameraController.Update();
-            _simulation.CurrentFields.Height = _fieldManipulator.Update(_simulation.CurrentFields.Height);
+            _simulationController.CurrentFields.Height = _fieldManipulator.Update(_simulationController.CurrentFields.Height);
         }
 
         public void OnGUI()
         {
-            _rawValuesView.OnGUI(_simulation.CurrentFields);
+            _rawValuesView.OnGUI(_simulationController.CurrentFields);
             _timeView.OnGUI();
             _fieldManipulator.OnGUI();
         }
@@ -78,7 +78,7 @@ namespace Assets.Controllers.Level
         #region IDisposable methods
         public void Dispose()
         {
-            _simulation.Dispose();
+            _simulationController.Dispose();
             _cursorTracker.Dispose();
             _cameraController.Dispose();
             _colorMapView.Dispose();
