@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Controllers.Manipulator
+namespace Assets.Controllers.Level.Manipulator
 {
     public interface IFieldManipulatorOptions
     {

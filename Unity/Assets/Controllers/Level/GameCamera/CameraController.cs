@@ -2,7 +2,7 @@
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Assets.Controllers.GameCamera
+namespace Assets.Controllers.Level.GameCamera
 {
     public class CameraController : IDisposable
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.Controllers.Level;
 using Engine.Geometry;
 using Engine.Simulation;
 using MathNet.Numerics.LinearAlgebra;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Controllers.Options
 {
-    public class GameOptions : IMainControllerOptions, IOptionsControllerOptions
+    public class GameOptions : ILevelControllerOptions, IOptionsControllerOptions
     {
         public double Radius { get; set; }
         public int MinimumNumberOfFaces { get; set; }

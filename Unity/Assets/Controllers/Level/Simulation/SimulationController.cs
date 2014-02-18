@@ -4,7 +4,7 @@ using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
 
-namespace Assets.Controllers.Simulation
+namespace Assets.Controllers.Level.Simulation
 {
     public class SimulationController : IDisposable
     {

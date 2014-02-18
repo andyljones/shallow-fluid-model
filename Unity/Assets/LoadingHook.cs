@@ -1,30 +1,32 @@
-﻿using Assets.Controllers;
+﻿using Assets.Controllers.Level;
+using Assets.Controllers.Options;
 using UnityEngine;
 
 namespace Assets
 {
     public class LoadingHook : MonoBehaviour
     {
-        private MainController _main;
+        private LevelController _level;
 
         public void Start()
         {
-            _main = new MainController();
+            var initialOptions = InitialOptionsFactory.Build();
+            _level = new LevelController(initialOptions);
         }
 
         void Update()
         {
-            _main.Update();
+            _level.Update();
         }
 
         void OnGUI()
         {
-            _main.UpdateGUI();
+            _level.UpdateGUI();
         }
 
         void OnApplicationQuit()
         {
-            _main.Dispose();
+            _level.Dispose();
         }
     }
 }

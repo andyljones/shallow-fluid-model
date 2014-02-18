@@ -5,7 +5,7 @@ using Engine.Geometry;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Assets.Controllers.Cursor
+namespace Assets.Controllers.Level.Cursor
 {
     public class CursorTracker : IDisposable
     {

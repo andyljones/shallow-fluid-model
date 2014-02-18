@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Assets.Views;
 using Engine.Geometry;
 using Engine.Utilities;
 using UnityEngine;
 
-namespace Assets.Controllers.Cursor
+namespace Assets.Controllers.Level.Cursor
 {
     public class MeshManager
     {

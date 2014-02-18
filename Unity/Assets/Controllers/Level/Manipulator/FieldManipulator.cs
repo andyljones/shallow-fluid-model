@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Controllers.Cursor;
+using Assets.Controllers.Level.Cursor;
 using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
 
-namespace Assets.Controllers.Manipulator
+namespace Assets.Controllers.Level.Manipulator
 {
     public class FieldManipulator
     {
         private readonly IPolyhedron _polyhedron;
         private readonly CursorTracker _cursorTracker;
-        private readonly FieldManipulatorProperties _properties;
+        private readonly FieldManipulatorSettings _settings;
 
         private readonly IFieldManipulatorOptions _options;
 
@@ -20,14 +20,14 @@ namespace Assets.Controllers.Manipulator
         {
             _polyhedron = polyhedron; 
             _cursorTracker = cursorTracker;
-            _properties = new FieldManipulatorProperties(options);
+            _settings = new FieldManipulatorSettings(options);
             _options = options;
 
         }
 
         public ScalarField<Face> Update(ScalarField<Face> field)
         {
-            _properties.Update();
+            _settings.Update();
             
             return AdjustedField(field);
         }
@@ -54,7 +54,7 @@ namespace Assets.Controllers.Manipulator
             if (face != null)
             {
                 var values = field.Values;
-                var neighbours = GetNearbyFaces(face, _properties.AdjustmentRadius);
+                var neighbours = GetNearbyFaces(face, _settings.AdjustmentRadius);
                 foreach (var neighbour in neighbours)
                 {
                     //TODO: This modifies the old values!
@@ -83,18 +83,18 @@ namespace Assets.Controllers.Manipulator
 
         private double Raise(double x)
         {
-            return x + _properties.AdjustmentSize;
+            return x + _settings.AdjustmentSize;
         }
 
         private double Lower(double x)
         {
-            return x - _properties.AdjustmentSize;
+            return x - _settings.AdjustmentSize;
         }
 
 
         public void UpdateGUI()
         {
-            _properties.UpdateGUI();
+            _settings.UpdateGUI();
         }
     }
 }

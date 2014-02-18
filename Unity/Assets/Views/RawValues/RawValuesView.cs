@@ -1,5 +1,5 @@
 ﻿using System;
-using Assets.Controllers.Cursor;
+using Assets.Controllers.Level.Cursor;
 using Engine.Simulation;
 using UnityEngine;
 

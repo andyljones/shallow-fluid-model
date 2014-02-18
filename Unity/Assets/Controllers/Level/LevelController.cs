@@ -1,45 +1,36 @@
 ﻿using System;
-using Assets.Controllers.Cursor;
-using Assets.Controllers.GameCamera;
-using Assets.Controllers.Manipulator;
-using Assets.Controllers.Options;
-using Assets.Controllers.Simulation;
+using Assets.Controllers.Level.Cursor;
+using Assets.Controllers.Level.GameCamera;
+using Assets.Controllers.Level.Manipulator;
+using Assets.Controllers.Level.Simulation;
 using Assets.Views.ColorMap;
 using Assets.Views.LatLongGrid;
 using Assets.Views.ParticleMap;
 using Assets.Views.RawValues;
 using Assets.Views.SimulationSpeed;
 using Engine.Geometry.GeodesicSphere;
-using UnityEngine;
 
-namespace Assets.Controllers
+namespace Assets.Controllers.Level
 {
-    public class MainController : IDisposable
+    public class LevelController : IDisposable
     {
         private SimulationController _simulation;
+        private CameraController _cameraController;
+        private FieldManipulator _fieldManipulator;
+        private CursorTracker _cursorTracker;
 
         private ColorMapView _colorMapView;
         private ParticleMapView _particleMapView;
         private RawValuesView _rawValuesView;
         private TimeDilationView _timeDilationView;
         private LatLongGridView _latLongGridView;
-                
-        private CameraController _cameraController;
-        private FieldManipulator _fieldManipulator;
-        private CursorTracker _cursorTracker;
 
-        private IMainControllerOptions _options;
-
-        public MainController()
+        public LevelController(ILevelControllerOptions options)
         {
-            var initialOptions = InitialOptionsFactory.Build();
-            Initialize(initialOptions);
+            Initialize(options);
         }
-
-        private void Initialize(IMainControllerOptions options)
+        private void Initialize(ILevelControllerOptions options)
         {
-            _options = options;
-
             var surface = GeodesicSphereFactory.Build(options);
             var simulation = new SimulationController(surface, options);
 
@@ -66,19 +57,8 @@ namespace Assets.Controllers
             _fieldManipulator = fieldManipulator;
         }
 
-        public void Reset(IMainControllerOptions options)
-        {
-            Dispose();
-            Initialize(options);
-        }
-
         public void Update()
         {
-            if (Input.GetKeyDown(_options.ResetKey))
-            {
-                Reset(_options);
-            }
-
             _simulation.Update();
             _colorMapView.Update(_simulation.CurrentFields.Height);
             _particleMapView.Update(_simulation.CurrentFields.Velocity); 

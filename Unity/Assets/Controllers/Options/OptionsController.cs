@@ -1,17 +1,19 @@
 ﻿using System;
+using Assets.Controllers.Level;
 
 namespace Assets.Controllers.Options
 {
     public class OptionsController
     {
-        private readonly Action<IMainControllerOptions> _resetMain;
+        private readonly Action<ILevelControllerOptions> _resetMain;
         
-        private IMainControllerOptions _options;
+        public ILevelControllerOptions Options;
 
-        public OptionsController(Action<IMainControllerOptions> resetMain, IMainControllerOptions initialOptions)
+        public OptionsController(Action<ILevelControllerOptions> resetMain)
         {
             _resetMain = resetMain;
-            _options = initialOptions;
+            Options = InitialOptionsFactory.Build();
+
         }
     }
 }

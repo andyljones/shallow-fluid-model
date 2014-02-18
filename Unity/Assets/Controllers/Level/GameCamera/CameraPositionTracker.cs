@@ -1,7 +1,7 @@
 ﻿using Assets.Views;
 using UnityEngine;
 
-namespace Assets.Controllers.GameCamera
+namespace Assets.Controllers.Level.GameCamera
 {
     public class CameraPositionTracker
     {

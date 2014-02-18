@@ -1,16 +1,16 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.Controllers.Manipulator
+namespace Assets.Controllers.Level.Manipulator
 {
-    public class FieldManipulatorProperties
+    public class FieldManipulatorSettings
     {
         public double AdjustmentSize { get; private set; }
         public int AdjustmentRadius { get; private set; }
 
         private readonly IFieldManipulatorOptions _options;
 
-        public FieldManipulatorProperties(IFieldManipulatorOptions options)
+        public FieldManipulatorSettings(IFieldManipulatorOptions options)
         {
             _options = options;
 
