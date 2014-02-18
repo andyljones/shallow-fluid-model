@@ -1,13 +1,15 @@
 ﻿using System;
+using Assets.Controllers.Manipulator;
 using Assets.Views.ColorMap;
 using Assets.Views.ParticleMap;
 using Engine.Geometry;
 using Engine.Simulation;
 using MathNet.Numerics.LinearAlgebra;
+using UnityEngine;
 
 namespace Assets.Controllers
 {
-    public class Options : IPolyhedronOptions, IColorMapOptions, ISimulationOptions, IParticleMapOptions
+    public class Options : IPolyhedronOptions, IColorMapOptions, ISimulationOptions, IParticleMapOptions, IFieldManipulatorOptions
     {
         public double Radius { get; set; }
         public int MinimumNumberOfFaces { get; set; }
@@ -30,5 +32,12 @@ namespace Assets.Controllers
         public int ParticleLifespan { get; set; }
         public string ParticleMaterialName { get; set; }
         public int ParticleTrailLifespan { get; set; }
+
+        public KeyCode SurfaceRaiseKey { get; set; }
+        public KeyCode SurfaceLowerKey { get; set; }
+        public KeyCode RadiusIncreaseKey { get; set; }
+        public KeyCode RadiusDecreaseKey { get; set; }
+        public KeyCode IntensityIncreaseKey { get; set; }
+        public KeyCode IntensityDecreaseKey { get; set; }
     }
 }

@@ -31,6 +31,13 @@ namespace Assets.Controllers
             ParticleLifespan = 1000,
             ParticleTrailLifespan = 10,
             ParticleMaterialName = "Materials/ParticleMap",
+
+            SurfaceRaiseKey = KeyCode.UpArrow,
+            SurfaceLowerKey = KeyCode.DownArrow,
+            IntensityIncreaseKey = KeyCode.KeypadPlus,
+            IntensityDecreaseKey = KeyCode.KeypadMinus,
+            RadiusDecreaseKey = KeyCode.LeftArrow,
+            RadiusIncreaseKey = KeyCode.RightArrow
         };
 
         private MainController _main;

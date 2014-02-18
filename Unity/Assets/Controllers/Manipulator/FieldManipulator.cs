@@ -10,18 +10,19 @@ namespace Assets.Controllers.Manipulator
 {
     public class FieldManipulator
     {
-        public KeyCode SurfaceRaiseButton = KeyCode.UpArrow;
-        public KeyCode SurfaceLowerButton = KeyCode.DownArrow;
-
+        private readonly IPolyhedron _polyhedron;
         private readonly CursorTracker _cursorTracker;
         private readonly FieldManipulatorProperties _properties;
-        private readonly IPolyhedron _polyhedron;
 
-        public FieldManipulator(IPolyhedron polyhedron, CursorTracker cursorTracker)
+        private readonly IFieldManipulatorOptions _options;
+
+        public FieldManipulator(IPolyhedron polyhedron, CursorTracker cursorTracker, IFieldManipulatorOptions options)
         {
             _polyhedron = polyhedron; 
             _cursorTracker = cursorTracker;
-            _properties = new FieldManipulatorProperties();
+            _properties = new FieldManipulatorProperties(options);
+            _options = options;
+
         }
 
         public ScalarField<Face> Update(ScalarField<Face> field)
@@ -33,11 +34,11 @@ namespace Assets.Controllers.Manipulator
 
         private ScalarField<Face> AdjustedField(ScalarField<Face> field)
         {
-            if (Input.GetKey(SurfaceRaiseButton))
+            if (Input.GetKey(_options.SurfaceRaiseKey))
             {
                 return TryAdjustFieldUnderCursor(field, Raise);
             }
-            else if (Input.GetKey(SurfaceLowerButton))
+            else if (Input.GetKey(_options.SurfaceLowerKey))
             {
                 return TryAdjustFieldUnderCursor(field, Lower);
             }
@@ -53,7 +54,7 @@ namespace Assets.Controllers.Manipulator
             if (face != null)
             {
                 var values = field.Values;
-                var neighbours = GetNearbyFaces(face, _properties.Radius);
+                var neighbours = GetNearbyFaces(face, _properties.AdjustmentRadius);
                 foreach (var neighbour in neighbours)
                 {
                     //TODO: This modifies the old values!
