@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Assets.Views;
 using Engine.Geometry;
@@ -89,16 +90,5 @@ namespace Assets.Controllers.Cursor
         {
             return _faceAtTriangleIndex[i];
         }
-
-
-        //private int[] CreateLineArray()
-        //{
-        //    return _polyhedron.Edges.SelectMany(edge => Line(edge)).ToArray();
-        //}
-
-        //private IEnumerable<int> Line(Edge edge)
-        //{
-        //    return new List<int> { _polyhedron.IndexOf(edge.B), _polyhedron.IndexOf(edge.A) };
-        //}
     }
 }

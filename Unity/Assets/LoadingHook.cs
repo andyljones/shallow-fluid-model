@@ -37,7 +37,9 @@ namespace Assets.Controllers
             IntensityIncreaseKey = KeyCode.KeypadPlus,
             IntensityDecreaseKey = KeyCode.KeypadMinus,
             RadiusDecreaseKey = KeyCode.LeftArrow,
-            RadiusIncreaseKey = KeyCode.RightArrow
+            RadiusIncreaseKey = KeyCode.RightArrow,
+
+            PauseSimulationKey = KeyCode.P
         };
 
         private MainController _main;
@@ -49,17 +51,36 @@ namespace Assets.Controllers
 
         void Update()
         {
-            _main.Update();
+            if (_main != null)
+            {
+                _main.Update();
+            }
+           
+            if (_main != null && Input.GetKeyDown(KeyCode.R))
+            {
+                _main.Dispose();
+                _main = null;
+            }
+            else if (_main == null && Input.GetKeyDown(KeyCode.R))
+            {
+                _main = new MainController(_options);
+            }
         }
 
         void OnGUI()
         {
-            _main.UpdateGUI();
+            if (_main != null)
+            {
+                _main.UpdateGUI();
+            }
         }
 
         void OnApplicationQuit()
         {
-            _main.Terminate();
+            if (_main != null)
+            {
+                _main.Dispose();
+            }
         }
     }
 }

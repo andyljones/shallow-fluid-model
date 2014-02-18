@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Assets.Controllers.GameCamera
 {
-    public class CameraController
+    public class CameraController : IDisposable
     {
         public Camera Camera { get; private set; }
 
         private readonly CameraPositionTracker _positionTracker;
+        private readonly GameObject _cameraGameObject;
 
         private const float NearClipPlane = 1;
         private const float FarClipPane = 100000;
@@ -14,11 +17,11 @@ namespace Assets.Controllers.GameCamera
 
         public CameraController(double radius)
         {
-            var cameraGameObject = CreateCamera();
-            Camera = cameraGameObject.GetComponent<Camera>();
+            _cameraGameObject = CreateCamera();
+            Camera = _cameraGameObject.GetComponent<Camera>();
 
             var intitialDistance = (float)(InitialDistanceScaleFactor*radius);
-            _positionTracker = new CameraPositionTracker(intitialDistance, cameraGameObject.transform);
+            _positionTracker = new CameraPositionTracker(intitialDistance, _cameraGameObject.transform);
         }
 
         public static GameObject CreateCamera()
@@ -37,5 +40,12 @@ namespace Assets.Controllers.GameCamera
         {
             _positionTracker.Update();
         }
+
+        #region Destructor & IDisposable methods
+        public void Dispose()
+        {
+            Object.Destroy(_cameraGameObject);
+        }
+        #endregion
     }
 }

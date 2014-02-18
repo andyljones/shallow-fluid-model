@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Assets.Views.ParticleMap
 {
-    public class ParticleRenderingManager
+    public class ParticleRenderingManager : IDisposable
     {
         private readonly int _numberOfLinesPerParticle;
         private readonly int _numberOfLines;
@@ -17,6 +19,8 @@ namespace Assets.Views.ParticleMap
         private readonly int _numberOfParticles;
 
         private const int MaxNumberOfVerticesPerRenderer = 50000;
+
+        private readonly GameObject _gameObject;
 
         public ParticleRenderingManager(IParticleMapOptions options)
         {
@@ -31,12 +35,13 @@ namespace Assets.Views.ParticleMap
 
             _indicesOfFirstParticles = Enumerable.Range(0, _numberOfRenderers).Select(i => _particlesPerRenderer * i).ToList();
             _indicesOfOnePastLastParticles = Enumerable.Range(0, _numberOfRenderers).Select(i => Mathf.Min(_particlesPerRenderer * (i + 1), _numberOfParticles)).ToList();
-            _renderers = InitializeParticleRenderers(options);
+
+            _renderers = InitializeParticleRenderers(options, out _gameObject);
         }
 
-        private List<ParticleMapRenderer> InitializeParticleRenderers(IParticleMapOptions options)
+        private List<ParticleMapRenderer> InitializeParticleRenderers(IParticleMapOptions options, out GameObject parentObject)
         {
-            var parentObject = new GameObject("Particle Maps");
+            parentObject = new GameObject("Particle Maps");
 
             var renderers = new List<ParticleMapRenderer>(_numberOfRenderers);
             for (int i = 0; i < _numberOfRenderers; i++)
@@ -64,5 +69,11 @@ namespace Assets.Views.ParticleMap
             _renderers[indexOfRendererResponsible].Reset(particleIndex, newPosition);
         }
 
+        #region Destructor & IDisposable methods
+        public void Dispose()
+        {
+            Object.Destroy(_gameObject);
+        }
+        #endregion
     }
 }

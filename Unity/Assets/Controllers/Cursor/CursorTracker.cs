@@ -3,28 +3,33 @@ using System.Linq;
 using Assets.Views;
 using Engine.Geometry;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Assets.Controllers.Cursor
 {
-    public class CursorTracker
+    public class CursorTracker : IDisposable
     {
         private readonly Camera _camera;
-        private readonly Func<int, Face> _faceAtTriangleIndex; 
+        private readonly Func<int, Face> _faceAtTriangleIndex;
+
+        private readonly GameObject _gameObject;
 
         public CursorTracker(Camera camera, MeshManager meshManager)
         {
             _camera = camera;
             _faceAtTriangleIndex = meshManager.FaceAtTriangleIndex;
             
-            InitializePolyhedronCollider(meshManager.Mesh);
+            _gameObject = InitializePolyhedronCollider(meshManager.Mesh);
         }
 
-        private static void InitializePolyhedronCollider(Mesh mesh)
+        private static GameObject InitializePolyhedronCollider(Mesh mesh)
         {
             var gameObject = new GameObject("Collider");
             var collider = gameObject.AddComponent<MeshCollider>();
             collider.sharedMesh = mesh;
             collider.isTrigger = true;
+
+            return gameObject;
         }
 
         public Face TryGetFaceUnderCursor()
@@ -63,6 +68,11 @@ namespace Assets.Controllers.Cursor
             var sortedVertices = face.Vertices.OrderBy(vertex => (GraphicsUtilities.Vector3(vertex.Position) - target).magnitude);
 
             return sortedVertices.First();
+        }
+
+        public void Dispose()
+        {
+            Object.Destroy(_gameObject);
         }
     }
 }

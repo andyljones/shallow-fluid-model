@@ -1,4 +1,5 @@
-﻿using Assets.Controllers.Cursor;
+﻿using System;
+using Assets.Controllers.Cursor;
 using Assets.Controllers.GameCamera;
 using Assets.Controllers.Manipulator;
 using Assets.Views.ColorMap;
@@ -11,7 +12,7 @@ using UnityEngine;
 
 namespace Assets.Controllers
 {
-    public class MainController
+    public class MainController : IDisposable
     {
         private readonly SimulationController _simulation;
 
@@ -19,12 +20,18 @@ namespace Assets.Controllers
         private readonly ParticleMapView _particleMapView;
         private readonly RawValuesView _rawValuesView;
         private readonly TimeDilationView _timeDilationView;
+        private readonly LatLongGridView _latLongGridView;
 
         private readonly CameraController _cameraController;
         private readonly FieldManipulator _fieldManipulator;
+        private readonly CursorTracker _cursorTracker;
 
-        public MainController(Options options)
+        private readonly IMainControllerOptions _options;
+
+        public MainController(IMainControllerOptions options)
         {
+            _options = options;
+
             var surface = GeodesicSphereFactory.Build(options);
             var simulation = new SimulationController(surface, options);
 
@@ -38,21 +45,22 @@ namespace Assets.Controllers
             var particleMapView = new ParticleMapView(surface, options);
             var rawValuesView = new RawValuesView(cursorTracker);
             var timeDilationView = new TimeDilationView(50, options.Timestep);
-
-            LatLongGridFactory.Build(options.Radius);
+            var latLongGridView = new LatLongGridView(options.Radius);
 
             _simulation = simulation;
             _colorMapView = colorMapView;
             _particleMapView = particleMapView;
             _rawValuesView = rawValuesView;
             _timeDilationView = timeDilationView;
+            _latLongGridView = latLongGridView;
             _cameraController = cameraController;
+            _cursorTracker = cursorTracker;
             _fieldManipulator = fieldManipulator;
         }
 
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.R))
+            if (Input.GetKeyDown(_options.PauseSimulationKey))
             {
                 _simulation.TogglePause();
             }
@@ -67,15 +75,21 @@ namespace Assets.Controllers
 
         public void UpdateGUI()
         {
-            
             _rawValuesView.UpdateGUI(_simulation.CurrentFields);
             _timeDilationView.UpdateGUI();
             _fieldManipulator.UpdateGUI();
         }
 
-        public void Terminate()
+        #region Destructor & IDisposable methods
+        public void Dispose()
         {
-            _simulation.Terminate();
+            _simulation.Dispose();
+            _cursorTracker.Dispose();
+            _cameraController.Dispose();
+            _colorMapView.Dispose();
+            _particleMapView.Dispose();
+            _latLongGridView.Dispose();
         }
+        #endregion
     }
 }

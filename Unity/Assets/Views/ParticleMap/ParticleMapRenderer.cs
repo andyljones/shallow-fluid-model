@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Assets.Views.ParticleMap
 {
-    public class ParticleMapRenderer
+    public class ParticleMapRenderer : IDisposable
     {
         private readonly MeshFilter _particlesMeshFilter;
         
@@ -17,6 +18,7 @@ namespace Assets.Views.ParticleMap
 
         private readonly int _indexOfFirstParticle;
         private readonly int _indexOfOnePastLastParticle;
+        private readonly GameObject _particleMapGameObject;
 
         public ParticleMapRenderer(Transform parentTransform, int indexOfFirstParticle, int indexOfOnePastLastParticle, IParticleMapOptions options)
         {
@@ -27,8 +29,8 @@ namespace Assets.Views.ParticleMap
             _numberOfVertices = (_indexOfOnePastLastParticle - _indexOfFirstParticle)*_verticesPerParticle;
             _particleLines = new Vector3[_numberOfVertices];
 
-            var particleMapGameObject = CreateParticleMapGameObject(parentTransform, _numberOfVertices, options.ParticleMaterialName);
-            _particlesMeshFilter = particleMapGameObject.GetComponent<MeshFilter>();
+            _particleMapGameObject = CreateParticleMapGameObject(parentTransform, _numberOfVertices, options.ParticleMaterialName);
+            _particlesMeshFilter = _particleMapGameObject.GetComponent<MeshFilter>();
         }
 
         private static GameObject CreateParticleMapGameObject(Transform parentTransform, int numberOfVertices, String materialName)
@@ -118,5 +120,12 @@ namespace Assets.Views.ParticleMap
         {
             _offset = (_offset+2)%_verticesPerParticle;
         }
+
+        #region Destructor & IDisposable methods
+        public void Dispose()
+        {
+            Object.Destroy(_particleMapGameObject);
+        }
+        #endregion
     }
 }

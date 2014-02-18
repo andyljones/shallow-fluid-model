@@ -2,17 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Assets.Views.LatLongGrid
 {
-    public static class LatLongGridFactory
+    public class LatLongGridView : IDisposable
     {
-        public static int NumberOfPointsPerLatitude = 100;
-        public static int NumberOfPointsPerLongitude = 50;
+        private const int NumberOfPointsPerLatitude = 100;
+        private const int NumberOfPointsPerLongitude = 50;
 
-        public static double ScaleFactor = 1.005f;
+        private const double ScaleFactor = 1.005f;
 
-        public static void Build(double radius)
+        private readonly GameObject _gameObject;
+
+        public LatLongGridView(double radius)
+        {
+            _gameObject = Build(radius);
+        }
+
+        public static GameObject Build(double radius)
         {
             var gridObject = new GameObject("Cartesian Grid");
 
@@ -35,6 +43,8 @@ namespace Assets.Views.LatLongGrid
                 var labelObject = DrawLabelsAtColatitude(effectiveRadius, colatitude);
                 labelObject.transform.parent = gridObject.transform;
             }
+
+            return gridObject;
         }
 
         private static GameObject DrawLatitude(float radius, float colatitude)
@@ -142,5 +152,14 @@ namespace Assets.Views.LatLongGrid
 
             return gameObject;
         }
+
+
+        #region Destructor & IDisposable methods
+        public void Dispose()
+        {
+            Object.Destroy(_gameObject);
+        }
+
+        #endregion
     }
 }

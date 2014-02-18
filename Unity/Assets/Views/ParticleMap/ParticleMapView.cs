@@ -1,31 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Assets.Views.ParticleMap
 {
-    public class ParticleMapView
+    public class ParticleMapView : IDisposable
     {
         private readonly IParticleMapOptions _options;
         private readonly float _radius;
 
-        private readonly ParticleRenewalScheduler _particleRenewalScheduler;
-        private readonly ParticlePositionUpdater _particlePositionUpdater;
-        private readonly ParticleRenderingManager _particleRenderer;
+        private readonly ParticleRenewalScheduler _renewalScheduler;
+        private readonly ParticlePositionUpdater _positionUpdater;
+        private readonly ParticleRenderingManager _renderingManager;
 
-        private Vector3[] _particlePositions;
+        private readonly Vector3[] _positions;
 
         public ParticleMapView(IPolyhedron polyhedron, IParticleMapOptions options)
         {
             _options = options;
             _radius = (float)_options.Radius;
 
-            _particlePositions = CreateParticles(options.ParticleCount, _radius);
+            _positions = CreateParticles(options.ParticleCount, _radius);
 
-            _particleRenewalScheduler = new ParticleRenewalScheduler(options);
-            _particlePositionUpdater = new ParticlePositionUpdater(polyhedron, options);
-            _particleRenderer = new ParticleRenderingManager(options);
+            _renewalScheduler = new ParticleRenewalScheduler(options);
+            _positionUpdater = new ParticlePositionUpdater(polyhedron, options);
+            _renderingManager = new ParticleRenderingManager(options);
         }
 
         private static Vector3[] CreateParticles(int particleCount, float radius)
@@ -46,11 +48,11 @@ namespace Assets.Views.ParticleMap
 
         public void Update(VectorField<Vertex> velocity)
         {
-            var indicesToRenew = _particleRenewalScheduler.IndicesToBeRenewed();
+            var indicesToRenew = _renewalScheduler.IndicesToBeRenewed();
             RenewOldParticles(indicesToRenew);
 
-            _particlePositionUpdater.Update(_particlePositions, velocity);
-            _particleRenderer.Update(_particlePositions);
+            _positionUpdater.Update(_positions, velocity);
+            _renderingManager.Update(_positions);
         }
 
         private void RenewOldParticles(IEnumerable<int> indicesToRenew)
@@ -58,9 +60,17 @@ namespace Assets.Views.ParticleMap
             foreach (var i in indicesToRenew)
             {
                 var newPosition = CreateParticle(_radius);
-                _particleRenderer.Reset(i, newPosition);
-                _particlePositions[i] = newPosition;
+                _renderingManager.Reset(i, newPosition);
+                _positions[i] = newPosition;
             }
         }
+
+        #region Destruction methods
+        public void Dispose()
+        {
+            _renderingManager.Dispose();
+        }
+
+        #endregion
     }
 }

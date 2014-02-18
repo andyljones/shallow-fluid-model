@@ -1,15 +1,18 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Assets.Views.ColorMap
 {
-    public class GameObjectManager
+    public class GameObjectManager : IDisposable
     {
         private readonly MeshFilter _meshFilter;
+        private readonly GameObject _gameObject;
 
         public GameObjectManager(Mesh mesh, string materialName)
         {
-            var gameObject = BuildGameObject(mesh, materialName);
-            _meshFilter = gameObject.GetComponent<MeshFilter>();
+            _gameObject = BuildGameObject(mesh, materialName);
+            _meshFilter = _gameObject.GetComponent<MeshFilter>();
         }
 
         private static GameObject BuildGameObject(Mesh mesh, string surfaceMaterialName)
@@ -31,6 +34,11 @@ namespace Assets.Views.ColorMap
         public void Set(Color[] colors)
         {
             _meshFilter.mesh.colors = colors;
+        }
+
+        public void Dispose()
+        {
+            Object.Destroy(_gameObject);
         }
     }
 }

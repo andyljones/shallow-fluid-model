@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.Views.ColorMap
 {
-    public class ColorMapView
+    public class ColorMapView : IDisposable
     {
         private readonly FieldColorer _fieldColorer;
         private readonly GameObjectManager _gameObjectManager;
@@ -22,5 +22,12 @@ namespace Assets.Views.ColorMap
             var colors = _fieldColorer.Color(field);
             _gameObjectManager.Set(colors);
         }
+
+        #region Destruction methods
+        public void Dispose()
+        {
+            _gameObjectManager.Dispose();
+        }
+        #endregion
     }
 }

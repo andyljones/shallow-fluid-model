@@ -1,11 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Engine.Geometry;
 using Engine.Simulation;
 using UnityEngine;
 
 namespace Assets.Controllers
 {
-    public class SimulationController
+    public class SimulationController : IDisposable
     {
         public PrognosticFields CurrentFields 
         { 
@@ -20,8 +21,12 @@ namespace Assets.Controllers
         private readonly ManualResetEvent _pauseEvent;
         private readonly SimulationStepper _stepper;
 
-        public SimulationController(IPolyhedron surface, ISimulationOptions options)
+        private readonly ISimulationOptions _options;
+
+        public SimulationController(IPolyhedron surface, ISimulationControllerOptions options)
         {
+            _options = options;
+
             _stepper = new SimulationStepper(surface, options);
             _currentFieldsCache = _stepper.CurrentFields;
 
@@ -63,11 +68,12 @@ namespace Assets.Controllers
             }
         }
 
-
-        public void Terminate()
+        #region Destructor & IDisposable methods
+        public void Dispose()
         {
             _pauseEvent.Reset();
             _simulationThread.Abort();
         }
+        #endregion
     }
 }
