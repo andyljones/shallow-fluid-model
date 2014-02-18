@@ -45,10 +45,28 @@ namespace Assets.Views.SimulationSpeed
 
                 var timeDilation = _timestep*changeInNumberOfSteps/changeInTime;
 
-                var labelText = String.Format("Time Dilation: {0:G5}", timeDilation);
+                var labelText = FormatTimeDilation(timeDilation) + "\n" + FormatCurrentTime(_timestep*_stepCountHistory.Last());
 
-                GUI.Label(new Rect(Screen.width - 210, 10, 200, 20), labelText);
+                GUI.Label(new Rect(Screen.width - 280, 10, 270, 50), labelText);
             }
+        }
+
+        private static string FormatTimeDilation(double timeDilation)
+        {
+            var timespan = new TimeSpan(0, 0, (int) timeDilation);
+
+            var output = String.Format("Time Dilation: {0} per real-time second", timespan);
+
+            return output;
+        }
+
+        private static string FormatCurrentTime(double updateTime)
+        {
+            var timespan = new TimeSpan(0, 0, (int)updateTime);
+
+            var output = String.Format("Total time: {0} since start", timespan);
+
+            return output;
         }
     }
 }
