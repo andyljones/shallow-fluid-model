@@ -32,7 +32,7 @@ namespace Assets.Controllers.Level.Manipulator
             }
             else if (Input.GetKeyDown(_options.IntensityDecreaseKey))
             {
-                AdjustmentSize = 0.1 * AdjustmentSize;
+                AdjustmentSize = Math.Max(0.1 * AdjustmentSize, 0.001);
             }
         }
 
@@ -44,13 +44,13 @@ namespace Assets.Controllers.Level.Manipulator
             }
             else if (Input.GetKeyDown(_options.RadiusDecreaseKey))
             {
-                AdjustmentRadius = AdjustmentRadius - 1;
+                AdjustmentRadius = Math.Max(AdjustmentRadius - 1, 1);
             }
         }
 
-        public void UpdateGUI()
+        public void OnGUI()
         {
-            var labelText = String.Format("Adjustment Size: {0:F0}m\nRadius: {1:N} cells", 1000*AdjustmentSize, AdjustmentRadius);
+            var labelText = String.Format("Adjustment Size: {0:F0}m\nAdjustment Radius: {1:N0} cells", 1000*AdjustmentSize, AdjustmentRadius);
             GUI.Label(new Rect(10, Screen.height - 50, 200, 40), labelText);
         }
     }

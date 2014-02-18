@@ -1,4 +1,5 @@
 ﻿using Assets.Views;
+using Assets.Views.Level;
 using UnityEngine;
 
 namespace Assets.Controllers.Level.GameCamera

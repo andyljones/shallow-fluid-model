@@ -1,19 +1,39 @@
 ﻿using System;
 using Assets.Controllers.Level;
+using UnityEngine;
 
 namespace Assets.Controllers.Options
 {
     public class OptionsController
     {
-        private readonly Action<ILevelControllerOptions> _resetMain;
-        
-        public ILevelControllerOptions Options;
+        public GameOptions Options;
 
-        public OptionsController(Action<ILevelControllerOptions> resetMain)
+        private bool _optionsMenuIsOpen = false;
+
+        public OptionsController()
         {
-            _resetMain = resetMain;
             Options = InitialOptionsFactory.Build();
+        }
 
+        public void Update()
+        {
+            if (Input.GetKeyDown(Options.OptionsMenuKey))
+            {
+                _optionsMenuIsOpen = !_optionsMenuIsOpen;
+            }
+        }
+
+        public void OnGUI()
+        {
+            if (_optionsMenuIsOpen)
+            {
+                DrawOptionsMenu();
+            }
+        }
+
+        private void DrawOptionsMenu()
+        {
+            GUI.Box(new Rect(100, 100, Screen.width - 200, Screen.width - 200), "Options");
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Assets.Controllers.Level.Manipulator;
 using Assets.Controllers.Level.Simulation;
-using Assets.Views.ColorMap;
-using Assets.Views.ParticleMap;
+using Assets.Views.Level.ColorMap;
+using Assets.Views.Level.ParticleMap;
 using Engine.Geometry;
 using UnityEngine;
 

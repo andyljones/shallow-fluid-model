@@ -88,13 +88,12 @@ namespace Assets.Controllers.Level.Manipulator
 
         private double Lower(double x)
         {
-            return x - _settings.AdjustmentSize;
+            return Math.Max(x - _settings.AdjustmentSize, 0.0);
         }
 
-
-        public void UpdateGUI()
+        public void OnGUI()
         {
-            _settings.UpdateGUI();
+            _settings.OnGUI();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Assets.Controllers.Options
 
             ResetKey = KeyCode.R,
             
-            OptionsMenuKey = KeyCode.Escape
+            OptionsMenuKey = KeyCode.O
         };
 
         public static GameOptions Build()

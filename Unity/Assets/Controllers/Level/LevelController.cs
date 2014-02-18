@@ -3,11 +3,11 @@ using Assets.Controllers.Level.Cursor;
 using Assets.Controllers.Level.GameCamera;
 using Assets.Controllers.Level.Manipulator;
 using Assets.Controllers.Level.Simulation;
-using Assets.Views.ColorMap;
-using Assets.Views.LatLongGrid;
-using Assets.Views.ParticleMap;
-using Assets.Views.RawValues;
-using Assets.Views.SimulationSpeed;
+using Assets.Views.Level.ColorMap;
+using Assets.Views.Level.LatLongGrid;
+using Assets.Views.Level.ParticleMap;
+using Assets.Views.Level.RawValues;
+using Assets.Views.Level.SimulationStats;
 using Engine.Geometry.GeodesicSphere;
 
 namespace Assets.Controllers.Level
@@ -22,7 +22,7 @@ namespace Assets.Controllers.Level
         private ColorMapView _colorMapView;
         private ParticleMapView _particleMapView;
         private RawValuesView _rawValuesView;
-        private TimeDilationView _timeDilationView;
+        private TimeView _timeView;
         private LatLongGridView _latLongGridView;
 
         public LevelController(ILevelControllerOptions options)
@@ -43,14 +43,14 @@ namespace Assets.Controllers.Level
             var colorMapView = new ColorMapView(surface, meshManager.Mesh, options);
             var particleMapView = new ParticleMapView(surface, options);
             var rawValuesView = new RawValuesView(cursorTracker);
-            var timeDilationView = new TimeDilationView(50, options.Timestep);
+            var timeDilationView = new TimeView(50, options.Timestep);
             var latLongGridView = new LatLongGridView(options.Radius);
 
             _simulation = simulation;
             _colorMapView = colorMapView;
             _particleMapView = particleMapView;
             _rawValuesView = rawValuesView;
-            _timeDilationView = timeDilationView;
+            _timeView = timeDilationView;
             _latLongGridView = latLongGridView;
             _cameraController = cameraController;
             _cursorTracker = cursorTracker;
@@ -62,20 +62,20 @@ namespace Assets.Controllers.Level
             _simulation.Update();
             _colorMapView.Update(_simulation.CurrentFields.Height);
             _particleMapView.Update(_simulation.CurrentFields.Velocity); 
-            _timeDilationView.Update(_simulation.NumberOfSteps);
+            _timeView.Update(_simulation.NumberOfSteps);
 
             _cameraController.Update();
             _simulation.CurrentFields.Height = _fieldManipulator.Update(_simulation.CurrentFields.Height);
         }
 
-        public void UpdateGUI()
+        public void OnGUI()
         {
-            _rawValuesView.UpdateGUI(_simulation.CurrentFields);
-            _timeDilationView.UpdateGUI();
-            _fieldManipulator.UpdateGUI();
+            _rawValuesView.OnGUI(_simulation.CurrentFields);
+            _timeView.OnGUI();
+            _fieldManipulator.OnGUI();
         }
 
-        #region Destructor & IDisposable methods
+        #region IDisposable methods
         public void Dispose()
         {
             _simulation.Dispose();

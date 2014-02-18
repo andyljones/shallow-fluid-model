@@ -6,27 +6,38 @@ namespace Assets
 {
     public class LoadingHook : MonoBehaviour
     {
-        private LevelController _level;
+        private LevelController _levelController;
+        private OptionsController _optionsController;
 
         public void Start()
         {
-            var initialOptions = InitialOptionsFactory.Build();
-            _level = new LevelController(initialOptions);
+            _optionsController = new OptionsController();
+            _levelController = new LevelController(_optionsController.Options);
         }
 
         void Update()
         {
-            _level.Update();
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                _levelController.Dispose();
+                _levelController = new LevelController(_optionsController.Options);
+            }
+            else
+            {
+                _levelController.Update();
+                _optionsController.Update();
+            }
         }
 
         void OnGUI()
         {
-            _level.UpdateGUI();
+            _levelController.OnGUI();
+            _optionsController.OnGUI();
         }
 
         void OnApplicationQuit()
         {
-            _level.Dispose();
+            _levelController.Dispose();
         }
     }
 }
