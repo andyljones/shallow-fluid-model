@@ -42,30 +42,28 @@ namespace Assets.Controllers.Options
 
         private void DrawOptionsMenu()
         {
-            GUI.Box(new Rect(Screen.width / 2 - 210, 100, 420, 600), "");
-            GUILayout.BeginArea(new Rect(Screen.width/2 - 200, 107, 400, 600));
+            GUI.Box(new Rect(Screen.width / 2 - 210, 100, 420, 370), "");
+            GUILayout.BeginArea(new Rect(Screen.width/2 - 200, 107, 400, 355));
+
                 GUILayout.BeginVertical();
+
                     DrawSimulationParameters();
                     DrawInitialHeightfieldParameters();
                     DrawParticleParameters();
-                    
-                    GUILayout.Label("");
-                    GUILayout.Label("");
-                    GUILayout.Label("");
+                    DrawButtons();
 
-                    if (GUILayout.Button("Rebuild Simulation"))
-                    {
-                        Options = _currentOptions.Copy();
-                        _optionsMenuIsOpen = false;
-                        _resetLevel();
-                    }
                 GUILayout.EndVertical();
+
             GUILayout.EndArea();
         }
 
         private void DrawSimulationParameters()
         {
             GUILayout.Box("Simulation Parameters");
+
+            var cellCount = _currentOptions.MinimumNumberOfFaces;
+            LabelAndNumericField("Minimum Number of Cells", ref cellCount);
+            _currentOptions.MinimumNumberOfFaces = cellCount;
 
             var radius = _currentOptions.Radius;
             LabelAndNumericField("Radius (km)", ref radius);
@@ -89,11 +87,11 @@ namespace Assets.Controllers.Options
             GUILayout.Box("Initial Heightfield Parameters");
 
             var averageHeight = _currentOptions.InitialAverageHeight;
-            LabelAndNumericField("Average (km)", ref averageHeight);
+            LabelAndNumericField("Average Height (km)", ref averageHeight);
             _currentOptions.InitialAverageHeight = averageHeight;
 
             var deviationHeight = _currentOptions.InitialMaxDeviationOfHeight;
-            LabelAndNumericField("Maximum Deviation (km)", ref deviationHeight);
+            LabelAndNumericField("Maximum Deviation in Height (km)", ref deviationHeight);
             _currentOptions.InitialMaxDeviationOfHeight = deviationHeight;
         }
 
@@ -117,16 +115,39 @@ namespace Assets.Controllers.Options
         private static void LabelAndNumericField(string label, ref double value)
         {
             GUILayout.BeginHorizontal();
+
                 GUILayout.Label(label, GUILayout.Width(295));
                 double.TryParse(GUILayout.TextField(value.ToString(), GUILayout.Width(100)), out value);
+
             GUILayout.EndHorizontal();
         }
 
         private static void LabelAndNumericField(string label, ref int value)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(label, GUILayout.Width(295));
-            int.TryParse(GUILayout.TextField(value.ToString(), GUILayout.Width(100)), out value);
+
+                GUILayout.Label(label, GUILayout.Width(295));
+                int.TryParse(GUILayout.TextField(value.ToString(), GUILayout.Width(100)), out value);
+
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawButtons()
+        {
+            GUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("Rebuild Simulation"))
+            {
+                Options = _currentOptions.Copy();
+                _optionsMenuIsOpen = false;
+                _resetLevel();
+            }
+
+            if (GUILayout.Button("Cancel"))
+            {
+                _optionsMenuIsOpen = false;
+            }
+
             GUILayout.EndHorizontal();
         }
     }

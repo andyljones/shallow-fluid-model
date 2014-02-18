@@ -21,7 +21,7 @@ namespace Assets.Controllers.Level.Simulation
         private readonly Thread _simulationThread;
         private readonly ManualResetEvent _pauseSimulation;
         private readonly ManualResetEvent _simulationIsPaused;
-        private readonly SimulationStepper _stepper;
+        private readonly SimulationRunner _stepper;
 
         private readonly ISimulationControllerOptions _options;
 
@@ -30,7 +30,7 @@ namespace Assets.Controllers.Level.Simulation
             _options = options;
 
             var initialFields = InitialFieldsFactory.Build(surface, options);
-            _stepper = new SimulationStepper(surface, initialFields, options);
+            _stepper = new SimulationRunner(surface, initialFields, options);
             _currentFieldsCache = _stepper.CurrentFields;
 
             _pauseSimulation = new ManualResetEvent(false);
