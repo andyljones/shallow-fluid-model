@@ -42,8 +42,8 @@ namespace Assets.Controllers.Options
 
         private void DrawOptionsMenu()
         {
-            GUI.Box(new Rect(Screen.width / 2 - 210, 100, 420, Screen.height - 200), "");
-            GUILayout.BeginArea(new Rect(Screen.width/2 - 200, 107, 400, Screen.height - 200));
+            GUI.Box(new Rect(Screen.width / 2 - 210, 100, 420, 600), "");
+            GUILayout.BeginArea(new Rect(Screen.width/2 - 200, 107, 400, 600));
                 GUILayout.BeginVertical();
                     DrawSimulationParameters();
                     DrawInitialHeightfieldParameters();
@@ -53,7 +53,7 @@ namespace Assets.Controllers.Options
                     GUILayout.Label("");
                     GUILayout.Label("");
 
-                    if (GUILayout.Button("Apply"))
+                    if (GUILayout.Button("Rebuild Simulation"))
                     {
                         Options = _currentOptions.Copy();
                         _optionsMenuIsOpen = false;

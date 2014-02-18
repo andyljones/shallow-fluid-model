@@ -85,6 +85,17 @@ namespace Assets.Controllers.Level.Simulation
             }
         }
 
+        public void OnGUI()
+        {
+            if (!_pauseSimulation.WaitOne(0))
+            {
+                var pauseMessage = String.Format("SIMULATION PAUSED ({0} TO RESUME)", _options.PauseSimulationKey);
+
+                GUI.Label(new Rect(Screen.width/2 - 130, 10, 260, 20), pauseMessage);
+            }
+        }
+
+
         #region IDisposable methods
         public void Dispose()
         {

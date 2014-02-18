@@ -12,16 +12,14 @@ namespace Assets.Controllers.Level.GameCamera
         private readonly GameObject _cameraGameObject;
 
         private const float NearClipPlane = 1;
-        private const float FarClipPane = 100000;
-        private const float InitialDistanceScaleFactor = 1.5f;
+        private const float FarClipPane = 1000000;
 
-        public CameraController(double radius)
+        public CameraController(double surfaceRadius)
         {
             _cameraGameObject = CreateCamera();
             Camera = _cameraGameObject.GetComponent<Camera>();
 
-            var intitialDistance = (float)(InitialDistanceScaleFactor*radius);
-            _positionTracker = new CameraPositionTracker(intitialDistance, _cameraGameObject.transform);
+            _positionTracker = new CameraPositionTracker((float)surfaceRadius, _cameraGameObject.transform);
         }
 
         public static GameObject CreateCamera()

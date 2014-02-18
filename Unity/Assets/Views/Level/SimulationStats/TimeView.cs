@@ -55,7 +55,7 @@ namespace Assets.Views.Level.SimulationStats
         {
             var timespan = new TimeSpan(0, 0, (int) timeDilation);
 
-            var output = String.Format("Time Dilation: {0} per real-time second", timespan);
+            var output = String.Format("Timescale: {0} per real-time second", timespan);
 
             return output;
         }

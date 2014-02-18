@@ -15,7 +15,7 @@ namespace Assets.Controllers.Level.Manipulator
             _options = options;
 
             AdjustmentSize = 0.1;
-            AdjustmentRadius = 1;
+            AdjustmentRadius = 3;
         }
 
         public void Update()

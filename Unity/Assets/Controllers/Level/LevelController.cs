@@ -70,6 +70,7 @@ namespace Assets.Controllers.Level
 
         public void OnGUI()
         {
+            _simulationController.OnGUI();            
             _rawValuesView.OnGUI(_simulationController.CurrentFields);
             _timeView.OnGUI();
             _fieldManipulator.OnGUI();
