@@ -39,8 +39,7 @@ namespace Assets.Controllers.Options
         public KeyCode IntensityDecreaseKey { get; set; }
 
         public KeyCode PauseSimulationKey { get; set; }
-
-        public KeyCode ResetKey { get; set; }
+        public KeyCode ResetSimulationKey { get; set; }
 
         public KeyCode OptionsMenuKey { get; set; }
     }

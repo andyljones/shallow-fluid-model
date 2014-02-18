@@ -11,25 +11,23 @@ namespace Assets
 
         public void Start()
         {
-            _optionsController = new OptionsController();
+            _optionsController = new OptionsController(ResetLevel);
             _levelController = new LevelController(_optionsController.Options);
         }
 
-        void Update()
+        private void ResetLevel()
         {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                _levelController.Dispose();
-                _levelController = new LevelController(_optionsController.Options);
-            }
-            else
-            {
-                _levelController.Update();
-                _optionsController.Update();
-            }
+            _levelController.Dispose();
+            _levelController = new LevelController(_optionsController.Options);
         }
 
-        void OnGUI()
+        public void Update()
+        {
+            _levelController.Update();
+            _optionsController.Update();
+        }
+
+        public void OnGUI()
         {
             _levelController.OnGUI();
             _optionsController.OnGUI();

@@ -1,17 +1,20 @@
 ﻿using System;
-using Assets.Controllers.Level;
 using UnityEngine;
 
 namespace Assets.Controllers.Options
 {
     public class OptionsController
     {
-        public GameOptions Options;
+        public GameOptions Options { get; private set; }
+        private GameObject _currentOptions;
+
+        private readonly Action _resetLevel;
 
         private bool _optionsMenuIsOpen = false;
 
-        public OptionsController()
+        public OptionsController(Action resetLevel)
         {
+            _resetLevel = resetLevel;
             Options = InitialOptionsFactory.Build();
         }
 
@@ -33,7 +36,17 @@ namespace Assets.Controllers.Options
 
         private void DrawOptionsMenu()
         {
-            GUI.Box(new Rect(100, 100, Screen.width - 200, Screen.width - 200), "Options");
+            var groupRect = new Rect(100, 100, Screen.width - 200, Screen.height - 200);
+            GUI.BeginGroup(groupRect);
+            GUI.Box(new Rect(0, 0, Screen.width - 200, Screen.height - 200), "Options");
+
+            if (GUI.Button(new Rect(Screen.width/2 - 150, 30, 100, 20), "Reset"))
+            {
+                _resetLevel();
+                _optionsMenuIsOpen = false;
+            }
+            
+            GUI.EndGroup();
         }
     }
 }

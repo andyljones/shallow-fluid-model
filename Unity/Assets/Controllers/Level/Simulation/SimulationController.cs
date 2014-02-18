@@ -2,6 +2,7 @@
 using System.Threading;
 using Engine.Geometry;
 using Engine.Simulation;
+using Engine.Simulation.Initialization;
 using UnityEngine;
 
 namespace Assets.Controllers.Level.Simulation
@@ -18,7 +19,8 @@ namespace Assets.Controllers.Level.Simulation
         public int NumberOfSteps { get; private set; }
 
         private readonly Thread _simulationThread;
-        private readonly ManualResetEvent _pauseEvent;
+        private readonly ManualResetEvent _pauseSimulation;
+        private readonly ManualResetEvent _simulationIsPaused;
         private readonly SimulationStepper _stepper;
 
         private readonly ISimulationControllerOptions _options;
@@ -27,10 +29,12 @@ namespace Assets.Controllers.Level.Simulation
         {
             _options = options;
 
-            _stepper = new SimulationStepper(surface, options);
+            var initialFields = InitialFieldsFactory.Build(surface, options);
+            _stepper = new SimulationStepper(surface, initialFields, options);
             _currentFieldsCache = _stepper.CurrentFields;
 
-            _pauseEvent = new ManualResetEvent(false);
+            _pauseSimulation = new ManualResetEvent(false);
+            _simulationIsPaused = new ManualResetEvent(false);
             _simulationThread = new Thread(SimulationLoop);
             _simulationThread.Start();
         }
@@ -39,11 +43,17 @@ namespace Assets.Controllers.Level.Simulation
         {
             while (true)
             {
-                _pauseEvent.WaitOne();
+                if (!_pauseSimulation.WaitOne(0))
+                {
+                    _simulationIsPaused.Set();
+                    _pauseSimulation.WaitOne();
+                    _simulationIsPaused.Reset();
+                }
                 _stepper.StepSimulation();
+                NumberOfSteps = NumberOfSteps + 1;
+                
                 _currentFieldsCache = _stepper.CurrentFields;
 
-                NumberOfSteps = NumberOfSteps + 1;
             }
         }
 
@@ -53,24 +63,32 @@ namespace Assets.Controllers.Level.Simulation
             {
                 TogglePause();
             }
+            else if (Input.GetKeyDown(_options.ResetSimulationKey))
+            {
+                _pauseSimulation.Reset();
+                _simulationIsPaused.WaitOne();
+                NumberOfSteps = 0;             
+                _stepper.Reset();
+                _currentFieldsCache = _stepper.CurrentFields;
+            }
         }
 
         private void TogglePause()
         {
-            if (_pauseEvent.WaitOne(0))
+            if (_pauseSimulation.WaitOne(0))
             {
-                _pauseEvent.Reset();
+                _pauseSimulation.Reset();
             }
             else
             {
-                _pauseEvent.Set();
+                _pauseSimulation.Set();
             }
         }
 
         #region IDisposable methods
         public void Dispose()
         {
-            _pauseEvent.Reset();
+            _pauseSimulation.Reset();
             _simulationThread.Abort();
         }
         #endregion

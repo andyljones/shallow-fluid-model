@@ -5,6 +5,7 @@ namespace Assets.Controllers.Level.Simulation
 {
     public interface ISimulationControllerOptions : ISimulationOptions
     {
-        KeyCode PauseSimulationKey { get; } 
+        KeyCode PauseSimulationKey { get; }
+        KeyCode ResetSimulationKey { get; }
     }
 }

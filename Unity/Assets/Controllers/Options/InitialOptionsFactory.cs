@@ -40,8 +40,7 @@ namespace Assets.Controllers.Options
             RadiusIncreaseKey = KeyCode.RightArrow,
 
             PauseSimulationKey = KeyCode.P,
-
-            ResetKey = KeyCode.R,
+            ResetSimulationKey = KeyCode.R,
             
             OptionsMenuKey = KeyCode.O
         };

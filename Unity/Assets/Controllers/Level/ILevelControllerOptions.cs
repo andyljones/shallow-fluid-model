@@ -3,7 +3,6 @@ using Assets.Controllers.Level.Simulation;
 using Assets.Views.Level.ColorMap;
 using Assets.Views.Level.ParticleMap;
 using Engine.Geometry;
-using UnityEngine;
 
 namespace Assets.Controllers.Level
 {
@@ -12,7 +11,5 @@ namespace Assets.Controllers.Level
         // Redeclarations necessary to suppress ambiguous reference error.
         new double Radius { get; }
         new double Timestep { get; }
-
-        KeyCode ResetKey { get; }
     }
 }

@@ -1,23 +1,29 @@
-﻿using System;
-using System.Threading;
-using Engine.Geometry;
-using Engine.Simulation.Initialization;
+﻿using Engine.Geometry;
 
 namespace Engine.Simulation
 {
     public class SimulationStepper
     {
         public PrognosticFields CurrentFields;
+        private readonly PrognosticFields _initialFields;
 
         private PrognosticFields _oldFields;
         private PrognosticFields _olderFields;
 
         private readonly PrognosticFieldsUpdater _fieldUpdater;
 
-        public SimulationStepper(IPolyhedron surface, ISimulationOptions options)
+        public SimulationStepper(IPolyhedron surface, PrognosticFields initialFields, IModelParameters options)
         {
-            _fieldUpdater = new PrognosticFieldsUpdater(surface, options as IModelParameters);
-            CurrentFields = InitialFieldsFactory.Build(surface, options as IInitialFieldParameters);
+            _fieldUpdater = new PrognosticFieldsUpdater(surface, options);
+            _initialFields = initialFields;
+            CurrentFields = initialFields;
+        }
+
+        public void Reset()
+        {
+            _olderFields = null;
+            _oldFields = null;
+            CurrentFields = _initialFields;
         }
 
         public void StepSimulation()
