@@ -47,7 +47,8 @@ namespace Assets.Views.Level.SimulationStats
 
                 var labelText = FormatTimeDilation(timeDilation) + "\n" + FormatCurrentTime(_timestep*_stepCountHistory.Last());
 
-                GUI.Label(new Rect(Screen.width - 280, 10, 270, 50), labelText);
+                var rightAlign = new GUIStyle { alignment = TextAnchor.UpperRight, normal = new GUIStyleState { textColor = Color.white }};
+                GUI.Label(new Rect(Screen.width - 280, 10, 270, 50), labelText, rightAlign);
             }
         }
 
@@ -55,7 +56,7 @@ namespace Assets.Views.Level.SimulationStats
         {
             var timespan = new TimeSpan(0, 0, (int) timeDilation);
 
-            var output = String.Format("Timescale: {0} per real-time second", timespan);
+            var output = String.Format("{0} hours per real-time second", timespan);
 
             return output;
         }
@@ -64,7 +65,7 @@ namespace Assets.Views.Level.SimulationStats
         {
             var timespan = new TimeSpan(0, 0, (int)updateTime);
 
-            var output = String.Format("Total time: {0} since start", timespan);
+            var output = String.Format("{0} days since start", timespan);
 
             return output;
         }
