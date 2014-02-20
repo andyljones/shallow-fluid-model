@@ -22,6 +22,7 @@ namespace Assets.Controllers.Level.Simulation
         private readonly ManualResetEvent _pauseSimulation;
         private readonly ManualResetEvent _simulationIsPaused;
         private readonly SimulationRunner _stepper;
+        private bool _terminationRequested = false;
 
         private readonly ISimulationControllerOptions _options;
 
@@ -54,6 +55,10 @@ namespace Assets.Controllers.Level.Simulation
                 
                 _currentFieldsCache = _stepper.CurrentFields;
 
+                if (_terminationRequested)
+                {
+                    return;
+                }
             }
         }
 
@@ -91,7 +96,7 @@ namespace Assets.Controllers.Level.Simulation
             {
                 var pauseMessage = String.Format("SIMULATION PAUSED ({0} TO RESUME)", _options.PauseSimulationKey);
 
-                GUI.Label(new Rect(Screen.width/2 - 130, 10, 260, 20), pauseMessage);
+                GUI.Label(new Rect(Screen.width/2 - 130, 100, 260, 20), pauseMessage);
             }
         }
 
@@ -99,8 +104,7 @@ namespace Assets.Controllers.Level.Simulation
         #region IDisposable methods
         public void Dispose()
         {
-            _pauseSimulation.Reset();
-            _simulationThread.Abort();
+            _terminationRequested = true;
         }
         #endregion
     }

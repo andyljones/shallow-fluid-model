@@ -37,7 +37,10 @@ namespace Assets.Views.Level.ParticleMap
             UpdateVertexVelocities(velocityField);
             UpdateParticleVelocities(particlePositions);
 
-            Parallel.For(0, particlePositions.Length, i => CalculateNewPosition(particlePositions, i));
+            for (int i = 0; i < particlePositions.Length; i++)
+            {
+                CalculateNewPosition(particlePositions, i);
+            }
         }
 
         private void UpdateVertexVelocities(VectorField<Vertex> velocityField)
@@ -52,7 +55,10 @@ namespace Assets.Views.Level.ParticleMap
         {
             var indicesOfNearestVertices = _tracker.GetIndicesOfVerticesNearest(particlePositions);
 
-            Parallel.For(0, _particleVelocities.Length, i => UpdateParticleVelocity(particlePositions, indicesOfNearestVertices, i));
+            for (int i = 0; i < _particleVelocities.Length; i++)
+            {
+                UpdateParticleVelocity(particlePositions, indicesOfNearestVertices, i);
+            }
         }
 
         private void UpdateParticleVelocity(Vector3[] particlePositions, int[][] indicesOfNearestVertices, int i)

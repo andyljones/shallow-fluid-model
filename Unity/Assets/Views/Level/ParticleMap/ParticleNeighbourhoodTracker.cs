@@ -59,7 +59,10 @@ namespace Assets.Views.Level.ParticleMap
 
         public int[][] GetIndicesOfVerticesNearest(Vector3[] particlePositions)
         {
-            Parallel.For(0, particlePositions.Length, i => UpdateNearestVerticesAndNeighbourhoods(particlePositions, i));
+            for (int i = 0; i < particlePositions.Length; i++)
+            {
+                UpdateNearestVerticesAndNeighbourhoods(particlePositions, i);
+            }
 
             return _indicesOfNeighbourhood;
         }
