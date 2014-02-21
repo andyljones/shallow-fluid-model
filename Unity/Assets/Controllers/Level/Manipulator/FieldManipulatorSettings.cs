@@ -50,8 +50,10 @@ namespace Assets.Controllers.Level.Manipulator
 
         public void OnGUI()
         {
+            var style = new GUIStyle { normal = new GUIStyleState { textColor = Color.black } };
+
             var labelText = String.Format("Manipulator Magnitude: {0:F0}m\nManipulator Radius: {1:N0} cells", 1000*AdjustmentSize, AdjustmentRadius);
-            GUI.Label(new Rect(10, Screen.height - 50, 200, 40), labelText);
+            GUI.Label(new Rect(10, Screen.height - 50, 200, 40), labelText, style);
         }
     }
 }

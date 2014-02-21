@@ -47,7 +47,7 @@ namespace Assets.Views.Level.SimulationStats
 
                 var labelText = FormatTimeDilation(timeDilation) + "\n" + FormatCurrentTime(_timestep*_stepCountHistory.Last());
 
-                var rightAlign = new GUIStyle { alignment = TextAnchor.UpperRight, normal = new GUIStyleState { textColor = Color.white }};
+                var rightAlign = new GUIStyle { alignment = TextAnchor.UpperRight, normal = new GUIStyleState { textColor = Color.black }};
                 GUI.Label(new Rect(Screen.width - 280, 10, 270, 50), labelText, rightAlign);
             }
         }

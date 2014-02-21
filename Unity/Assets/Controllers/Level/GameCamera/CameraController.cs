@@ -29,7 +29,7 @@ namespace Assets.Controllers.Level.GameCamera
 
             camera.nearClipPlane = NearClipPlane;
             camera.farClipPlane = FarClipPane;
-            camera.backgroundColor = Color.black;
+            camera.backgroundColor = Color.white;
 
             return cameraGameObject;
         }

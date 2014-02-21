@@ -40,7 +40,7 @@ namespace Assets.Views.Options
 
         private void DrawHelpLabel()
         {
-            var rightAlign = new GUIStyle { alignment = TextAnchor.UpperRight, normal = new GUIStyleState { textColor = Color.white } };
+            var rightAlign = new GUIStyle { alignment = TextAnchor.UpperRight, normal = new GUIStyleState { textColor = Color.black } };
             var text = String.Format("Press {0} for help", _options.HelpMenuKey);
             GUI.Label(new Rect(Screen.width - 110, Screen.height - 30, 100, 20), text, rightAlign);
         }

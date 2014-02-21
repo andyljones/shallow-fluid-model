@@ -17,7 +17,7 @@ namespace Assets.Controllers.Level.GameCamera
         private readonly float _surfaceRadius;
 
         private const float MinColatitude = 0.001f;
-        private const float InitialDistanceScaleFactor = 1.5f;
+        private const float InitialDistanceScaleFactor = 2.5f;
 
         private readonly ICameraOptions _options;
 
