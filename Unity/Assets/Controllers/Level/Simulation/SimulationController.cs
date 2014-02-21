@@ -94,7 +94,7 @@ namespace Assets.Controllers.Level.Simulation
         {
             if (!_pauseSimulation.WaitOne(0))
             {
-                var pauseMessage = String.Format("SIMULATION PAUSED ({0} TO RESUME)", _options.PauseSimulationKey);
+                var pauseMessage = String.Format("SIMULATION PAUSED\n({0} TO RESUME)", _options.PauseSimulationKey);
 
                 var centerStyle = new GUIStyle { alignment = TextAnchor.UpperCenter, normal = new GUIStyleState { textColor = Color.white } }; ;
                 GUI.Label(new Rect(Screen.width/2 - 130, 50, 260, 20), pauseMessage, centerStyle);

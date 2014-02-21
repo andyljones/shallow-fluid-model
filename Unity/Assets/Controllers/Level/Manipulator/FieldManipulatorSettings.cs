@@ -26,11 +26,11 @@ namespace Assets.Controllers.Level.Manipulator
 
         private void UpdateIntensity()
         {
-            if (Input.GetKeyDown(_options.IntensityIncreaseKey))
+            if (Input.GetKeyDown(_options.IncreaseManipulatorMagnitudeKey))
             {
                 AdjustmentSize = 10 * AdjustmentSize;
             }
-            else if (Input.GetKeyDown(_options.IntensityDecreaseKey))
+            else if (Input.GetKeyDown(_options.DecreaseManipulatorMagnitudeKey))
             {
                 AdjustmentSize = Math.Max(0.1 * AdjustmentSize, 0.001);
             }
@@ -38,11 +38,11 @@ namespace Assets.Controllers.Level.Manipulator
 
         private void UpdateRadius()
         {
-            if (Input.GetKeyDown(_options.RadiusIncreaseKey))
+            if (Input.GetKeyDown(_options.IncreaseManipulatorRadiusKey))
             {
                 AdjustmentRadius = AdjustmentRadius + 1;
             }
-            else if (Input.GetKeyDown(_options.RadiusDecreaseKey))
+            else if (Input.GetKeyDown(_options.ReduceManipulatorRadiusKey))
             {
                 AdjustmentRadius = Math.Max(AdjustmentRadius - 1, 1);
             }
@@ -50,7 +50,7 @@ namespace Assets.Controllers.Level.Manipulator
 
         public void OnGUI()
         {
-            var labelText = String.Format("Adjustment Size: {0:F0}m\nAdjustment Radius: {1:N0} cells", 1000*AdjustmentSize, AdjustmentRadius);
+            var labelText = String.Format("Manipulator Magnitude: {0:F0}m\nManipulator Radius: {1:N0} cells", 1000*AdjustmentSize, AdjustmentRadius);
             GUI.Label(new Rect(10, Screen.height - 50, 200, 40), labelText);
         }
     }

@@ -34,11 +34,11 @@ namespace Assets.Controllers.Level.Manipulator
 
         private ScalarField<Face> AdjustedField(ScalarField<Face> field)
         {
-            if (Input.GetKey(_options.SurfaceRaiseKey))
+            if (Input.GetKey(_options.RaiseSurfaceToolKey))
             {
                 return TryAdjustFieldUnderCursor(field, Raise);
             }
-            else if (Input.GetKey(_options.SurfaceLowerKey))
+            else if (Input.GetKey(_options.LowerSurfaceToolKey))
             {
                 return TryAdjustFieldUnderCursor(field, Lower);
             }

@@ -4,11 +4,11 @@ namespace Assets.Controllers.Level.Manipulator
 {
     public interface IFieldManipulatorOptions
     {
-        KeyCode SurfaceRaiseKey { get; }
-        KeyCode SurfaceLowerKey { get; }
-        KeyCode RadiusIncreaseKey { get; }
-        KeyCode RadiusDecreaseKey { get; }
-        KeyCode IntensityIncreaseKey { get; }
-        KeyCode IntensityDecreaseKey { get; }
+        KeyCode RaiseSurfaceToolKey { get; }
+        KeyCode LowerSurfaceToolKey { get; }
+        KeyCode IncreaseManipulatorRadiusKey { get; }
+        KeyCode ReduceManipulatorRadiusKey { get; }
+        KeyCode IncreaseManipulatorMagnitudeKey { get; }
+        KeyCode DecreaseManipulatorMagnitudeKey { get; }
     }
 }

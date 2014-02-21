@@ -26,7 +26,7 @@ namespace Assets.Controllers.Options
             ColorMapHistoryLength = 1000,
             ColorMapMaterialName = "Materials/Surface",
 
-            ParticleCount = 5000,
+            ParticleCount = 20000,
             ParticleSpeedScaleFactor = 10,
             ParticleLifespan = 1000,
             ParticleTrailLifespan = 10,
@@ -37,17 +37,19 @@ namespace Assets.Controllers.Options
             RotateKey = KeyCode.Mouse0,
             ZoomKey = KeyCode.Mouse1,
 
-            SurfaceRaiseKey = KeyCode.UpArrow,
-            SurfaceLowerKey = KeyCode.DownArrow,
-            IntensityIncreaseKey = KeyCode.RightBracket,
-            IntensityDecreaseKey = KeyCode.LeftBracket,
-            RadiusDecreaseKey = KeyCode.LeftArrow,
-            RadiusIncreaseKey = KeyCode.RightArrow,
+            RaiseSurfaceToolKey = KeyCode.UpArrow,
+            LowerSurfaceToolKey = KeyCode.DownArrow,
+            IncreaseManipulatorMagnitudeKey = KeyCode.RightBracket,
+            DecreaseManipulatorMagnitudeKey = KeyCode.LeftBracket,
+            ReduceManipulatorRadiusKey = KeyCode.LeftArrow,
+            IncreaseManipulatorRadiusKey = KeyCode.RightArrow,
 
             PauseSimulationKey = KeyCode.P,
             ResetSimulationKey = KeyCode.R,
             
-            OptionsMenuKey = KeyCode.O
+            OptionsMenuKey = KeyCode.O,
+
+            HelpMenuKey = KeyCode.H
         };
 
         public static GameOptions Build()

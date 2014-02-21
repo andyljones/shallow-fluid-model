@@ -1,5 +1,7 @@
 ﻿using System;
 using Assets.Controllers.Level;
+using Assets.Views.Options;
+using Assets.Views.UI.Help;
 using Engine.Geometry;
 using Engine.Simulation;
 using MathNet.Numerics.LinearAlgebra;
@@ -7,7 +9,7 @@ using UnityEngine;
 
 namespace Assets.Controllers.Options
 {
-    public class GameOptions : ILevelControllerOptions, IOptionsControllerOptions
+    public class GameOptions : ILevelControllerOptions, IOptionsControllerOptions, IHelpOptions
     {
         public double Radius { get; set; }
         public int MinimumNumberOfFaces { get; set; }
@@ -36,16 +38,18 @@ namespace Assets.Controllers.Options
         public KeyCode RotateKey { get; set; }
         public KeyCode ZoomKey { get; set; }
 
-        public KeyCode SurfaceRaiseKey { get; set; }
-        public KeyCode SurfaceLowerKey { get; set; }
-        public KeyCode RadiusIncreaseKey { get; set; }
-        public KeyCode RadiusDecreaseKey { get; set; }
-        public KeyCode IntensityIncreaseKey { get; set; }
-        public KeyCode IntensityDecreaseKey { get; set; }
+        public KeyCode RaiseSurfaceToolKey { get; set; }
+        public KeyCode LowerSurfaceToolKey { get; set; }
+        public KeyCode IncreaseManipulatorRadiusKey { get; set; }
+        public KeyCode ReduceManipulatorRadiusKey { get; set; }
+        public KeyCode IncreaseManipulatorMagnitudeKey { get; set; }
+        public KeyCode DecreaseManipulatorMagnitudeKey { get; set; }
 
         public KeyCode PauseSimulationKey { get; set; }
         public KeyCode ResetSimulationKey { get; set; }
 
         public KeyCode OptionsMenuKey { get; set; }
+
+        public KeyCode HelpMenuKey { get; set; }
     }
 }
