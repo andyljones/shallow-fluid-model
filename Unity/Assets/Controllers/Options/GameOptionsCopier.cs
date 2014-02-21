@@ -1,6 +1,6 @@
 ﻿namespace Assets.Controllers.Options
 {
-    public static class Copier
+    public static class GameOptionsCopier
     {
         public static GameOptions Copy(this GameOptions original)
         {

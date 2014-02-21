@@ -34,7 +34,7 @@ namespace Assets.Controllers.Level
             var surface = GeodesicSphereFactory.Build(options);
             var simulation = new SimulationController(surface, options);
 
-            var cameraController = new CameraController(options.Radius);
+            var cameraController = new CameraController(options);
 
             var meshManager = new MeshManager(surface);
             var cursorTracker = new CursorTracker(cameraController.Camera, meshManager);

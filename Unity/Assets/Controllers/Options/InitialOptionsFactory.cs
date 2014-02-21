@@ -32,6 +32,11 @@ namespace Assets.Controllers.Options
             ParticleTrailLifespan = 10,
             ParticleMaterialName = "Materials/ParticleMap",
 
+            RadialSpeedSensitivity = 0.1f,
+
+            RotateKey = KeyCode.Mouse0,
+            ZoomKey = KeyCode.Mouse1,
+
             SurfaceRaiseKey = KeyCode.UpArrow,
             SurfaceLowerKey = KeyCode.DownArrow,
             IntensityIncreaseKey = KeyCode.RightBracket,

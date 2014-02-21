@@ -31,6 +31,11 @@ namespace Assets.Controllers.Options
         public string ParticleMaterialName { get; set; }
         public int ParticleTrailLifespan { get; set; }
 
+        public float RadialSpeedSensitivity { get; set; }
+
+        public KeyCode RotateKey { get; set; }
+        public KeyCode ZoomKey { get; set; }
+
         public KeyCode SurfaceRaiseKey { get; set; }
         public KeyCode SurfaceLowerKey { get; set; }
         public KeyCode RadiusIncreaseKey { get; set; }
