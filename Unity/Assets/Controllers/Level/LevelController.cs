@@ -12,25 +12,60 @@ using Engine.Geometry.GeodesicSphere;
 
 namespace Assets.Controllers.Level
 {
+    /// <summary>
+    /// Controls in-scene processes and entities. In particular, it manages
+    ///  - The simulation
+    ///  - The visualization of the simulation, inc the heatmap, particles and time display.
+    ///  - Any interaction with the simulation
+    ///  - The camera position
+    ///  - The cursor's position
+    /// </summary>
     public class LevelController : IDisposable
     {
+        // Controls the simulation thread, which does all the number crunching.
         private SimulationController _simulationController;
-        private CameraController _cameraController;
+        
+        // Controls interactions with the simulation.
         private FieldManipulator _fieldManipulator;
+
+        // Tracks the cursor's position, which is necessary for interaction with the simulation and for display of the 
+        // values of the simulation cell underneath the cursor.
         private CursorTracker _cursorTracker;
 
+        // Controls the camera's movement.
+        private CameraController _cameraController;
+        
+
+        // Displays the heatmap which reflects the current simulation heightfield
         private ColorMapView _colorMapView;
+
+        // Displays the particles which follow the simulation's vector field
         private ParticleMapView _particleMapView;
+
+        // Displays the values of the simulation cell underneath the cursor's position
         private RawValuesView _rawValuesView;
+
+        // Displays the current in-simulation time and time-since-start
         private TimeView _timeView;
+
+        // Displays the static latitude-longitude grid.
         private LatLongGridView _latLongGridView;
 
+        /// <summary>
+        /// Creates a simulation with the specified options, along with all the additional structures needed to display 
+        /// and interact with it.
+        /// </summary>
+        /// <param name="options">The options to use in creating the simulation</param>
         public LevelController(ILevelControllerOptions options)
         {
             Initialize(options);
         }
+        
         private void Initialize(ILevelControllerOptions options)
         {
+            // Constructs all the in-level components, then stores the ones that'll be needed later in member variables.
+            // Done this way rather than directly initializing the member variables because this way if they're reordered,
+            // the compiler will complain if something's being constructed before its dependency.
             var surface = GeodesicSphereFactory.Build(options);
             var simulation = new SimulationController(surface, options);
 
@@ -57,6 +92,9 @@ namespace Assets.Controllers.Level
             _fieldManipulator = fieldManipulator;
         }
 
+        /// <summary>
+        /// Servant for the Unity engine's Update() function. Intended to be called once a frame.
+        /// </summary>
         public void Update()
         {
             _simulationController.Update();
@@ -68,6 +106,9 @@ namespace Assets.Controllers.Level
             _simulationController.CurrentFields.Height = _fieldManipulator.Update(_simulationController.CurrentFields.Height);
         }
 
+        /// <summary>
+        /// Servant for the Unity engine's OnGUI() function. Intended to be called several times a frame.
+        /// </summary>
         public void OnGUI()
         {
             _simulationController.OnGUI();            
@@ -77,6 +118,10 @@ namespace Assets.Controllers.Level
         }
 
         #region IDisposable methods
+        /// <summary>
+        /// Tears down the LevelController in a safe manner. In particular it safely disposes of the simulation's thread.
+        /// After it executes, it should be safe to instantiate another LevelController in its place.
+        /// </summary>
         public void Dispose()
         {
             _simulationController.Dispose();

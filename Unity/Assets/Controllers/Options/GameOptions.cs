@@ -9,6 +9,10 @@ using UnityEngine;
 
 namespace Assets.Controllers.Options
 {
+    //TODO: This looks like it could get very unweildy very quickly. Is there a better solution?
+    /// <summary>
+    /// Options class for the whole app.
+    /// </summary>
     public class GameOptions : ILevelControllerOptions, IOptionsControllerOptions, IHelpOptions
     {
         public double Radius { get; set; }

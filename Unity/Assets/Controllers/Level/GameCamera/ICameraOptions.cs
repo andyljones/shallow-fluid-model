@@ -2,6 +2,9 @@
 
 namespace Assets.Controllers.Level.GameCamera
 {
+    /// <summary>
+    /// The options required by the CameraController.
+    /// </summary>
     public interface ICameraOptions
     {
         double Radius { get; }

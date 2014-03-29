@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Assets.Controllers.Level.Manipulator
 {
+    /// <summary>
+    /// Manages the width/intensity settings of the manipulator.
+    /// </summary>
     public class FieldManipulatorSettings
     {
         public double AdjustmentSize { get; private set; }
@@ -10,6 +13,10 @@ namespace Assets.Controllers.Level.Manipulator
 
         private readonly IFieldManipulatorOptions _options;
 
+        /// <summary>
+        /// Initialize the manipulator's width & intensity with the provided defaults.
+        /// </summary>
+        /// <param name="options"></param>
         public FieldManipulatorSettings(IFieldManipulatorOptions options)
         {
             _options = options;
@@ -18,12 +25,17 @@ namespace Assets.Controllers.Level.Manipulator
             AdjustmentRadius = 3;
         }
 
+        /// <summary>
+        /// Servant for Unity's Update() function. Changes the manipulator's intensity & width in response to user 
+        /// inputs.
+        /// </summary>
         public void Update()
         {
             UpdateIntensity();
             UpdateRadius();
         }
 
+        // Changes the manipulator's intensity in response to user inputs.
         private void UpdateIntensity()
         {
             if (Input.GetKeyDown(_options.IncreaseManipulatorMagnitudeKey))
@@ -36,6 +48,7 @@ namespace Assets.Controllers.Level.Manipulator
             }
         }
 
+        // Changes the manipulator's intensity in response to user inputs.
         private void UpdateRadius()
         {
             if (Input.GetKeyDown(_options.IncreaseManipulatorRadiusKey))
@@ -48,6 +61,9 @@ namespace Assets.Controllers.Level.Manipulator
             }
         }
 
+        /// <summary>
+        /// Servant for Unity's OnGUI() function. Displays the current manipulator settings.
+        /// </summary>
         public void OnGUI()
         {
             var style = new GUIStyle { normal = new GUIStyleState { textColor = Color.black } };

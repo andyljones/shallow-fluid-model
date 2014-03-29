@@ -3,8 +3,14 @@ using UnityEngine;
 
 namespace Assets.Controllers.Options
 {
+    /// <summary>
+    /// Allows users to change some of the app's options. Displays an options menu.
+    /// </summary>
     public class OptionsController
     {
+        /// <summary>
+        /// The current set of options.
+        /// </summary>
         public GameOptions Options { get; private set; }
         private GameOptions _currentOptions;
 
@@ -12,6 +18,11 @@ namespace Assets.Controllers.Options
 
         private bool _optionsMenuIsOpen = false;
 
+        /// <summary>
+        /// Generates an options menu that uses the specified resetLevel method to reload the level when a new set of 
+        /// options are applied.
+        /// </summary>
+        /// <param name="resetLevel"></param>
         public OptionsController(Action resetLevel)
         {
             _resetLevel = resetLevel;
@@ -19,6 +30,9 @@ namespace Assets.Controllers.Options
             Options = _currentOptions.Copy();
         }
 
+        /// <summary>
+        /// Servant for Unity's Update() function. Opens or closes an options menu in response to user input.
+        /// </summary>
         public void Update()
         {
             if (Input.GetKeyDown(Options.OptionsMenuKey))
@@ -32,6 +46,9 @@ namespace Assets.Controllers.Options
             }
         }
 
+        /// <summary>
+        /// Servant for Unity's OnGUI() function. Displays an options menu if it's currently open.
+        /// </summary>
         public void OnGUI()
         {
             if (_optionsMenuIsOpen)
@@ -40,6 +57,7 @@ namespace Assets.Controllers.Options
             }
         }
 
+        // Draws an options menu.
         private void DrawOptionsMenu()
         {
             GUI.Box(new Rect(Screen.width / 2 - 210, 100, 420, 370), "");
@@ -57,6 +75,7 @@ namespace Assets.Controllers.Options
             GUILayout.EndArea();
         }
 
+        // Displays the simulation parameter options of the options menu.
         private void DrawSimulationParameters()
         {
             GUILayout.Box("Simulation Parameters");
@@ -82,6 +101,7 @@ namespace Assets.Controllers.Options
             _currentOptions.RotationFrequency = 1 / period;
         }
 
+        // Displays the initial parameters options of the options menu.
         private void DrawInitialHeightfieldParameters()
         {
             GUILayout.Box("Initial Heightfield Parameters");
@@ -95,6 +115,7 @@ namespace Assets.Controllers.Options
             _currentOptions.InitialMaxDeviationOfHeight = deviationHeight;
         }
 
+        // Displays the particle parameters options of the options menu.
         private void DrawParticleParameters()
         {
             GUILayout.Box("Particle Parameters");
@@ -112,6 +133,7 @@ namespace Assets.Controllers.Options
             _currentOptions.ParticleSpeedScaleFactor = speedMultiplier;
         }
 
+        // Utility function that'll display a label on the left and a double-type user input box on the right.
         private static void LabelAndNumericField(string label, ref double value)
         {
             GUILayout.BeginHorizontal();
@@ -122,6 +144,7 @@ namespace Assets.Controllers.Options
             GUILayout.EndHorizontal();
         }
 
+        // Utility function that'll display a label on the left and an int-type user input box on the right.
         private static void LabelAndNumericField(string label, ref int value)
         {
             GUILayout.BeginHorizontal();
@@ -132,6 +155,7 @@ namespace Assets.Controllers.Options
             GUILayout.EndHorizontal();
         }
 
+        // Displays an apply & cancel button on the options menu.
         private void DrawButtons()
         {
             GUILayout.BeginHorizontal();

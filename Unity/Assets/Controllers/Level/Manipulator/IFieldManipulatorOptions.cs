@@ -2,6 +2,9 @@
 
 namespace Assets.Controllers.Level.Manipulator
 {
+    /// <summary>
+    /// Options required by the FieldManipulator class.
+    /// </summary>
     public interface IFieldManipulatorOptions
     {
         KeyCode RaiseSurfaceToolKey { get; }

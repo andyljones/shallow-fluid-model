@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Assets.Controllers.Options
 {
+    /// <summary>
+    /// Factory for construction a default GameOptions object.
+    /// </summary>
     public static class InitialOptionsFactory
     {
         private static readonly GameOptions InitialOptions = new GameOptions
@@ -52,6 +55,10 @@ namespace Assets.Controllers.Options
             HelpMenuKey = KeyCode.H
         };
 
+        /// <summary>
+        /// Returns a default GameOptions object.
+        /// </summary>
+        /// <returns></returns>
         public static GameOptions Build()
         {
             return InitialOptions;

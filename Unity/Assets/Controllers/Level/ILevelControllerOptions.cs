@@ -7,6 +7,9 @@ using Engine.Geometry;
 
 namespace Assets.Controllers.Level
 {
+    /// <summary>
+    /// Specifies the options needed to construct the LevelController object.
+    /// </summary>
     public interface ILevelControllerOptions : IPolyhedronOptions, IColorMapOptions, ISimulationControllerOptions, IParticleMapOptions, IFieldManipulatorOptions, ICameraOptions
     {
         // Redeclarations necessary to suppress ambiguous reference error.
