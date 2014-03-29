@@ -6,38 +6,50 @@ using Object = UnityEngine.Object;
 
 namespace Assets.Views.Level.LatLongGrid
 {
+    /// <summary>
+    /// Displays a latitude-longitude grid.
+    /// </summary>
     public class LatLongGridView : IDisposable
     {
         private const int NumberOfPointsPerLatitude = 100;
         private const int NumberOfPointsPerLongitude = 50;
 
+        // The relative factor between the size specified for the lat-long grid and the actual grid. Prevents other 
+        // objects which are the specified radius from obscuring the grid.
         private const double ScaleFactor = 1.005f;
 
         private readonly GameObject _gameObject;
 
+        /// <summary>
+        /// Displays a latitude-longitude grid at slightly greater than the given radius.
+        /// </summary>
+        /// <param name="radius"></param>
         public LatLongGridView(double radius)
         {
-            _gameObject = Build(radius);
+            _gameObject = build(radius);
         }
 
-        public static GameObject Build(double radius)
+        private static GameObject build(double radius)
         {
             var gridObject = new GameObject("Cartesian Grid");
 
             var effectiveRadius = (float) (ScaleFactor*radius);
 
+            // Construct the lines of latitude
             foreach (var colatitude in Enumerable.Range(1, 17).Select(i => i*Mathf.PI/18))
             {
                 var latitudeObject = DrawLatitude(effectiveRadius, colatitude);
                 latitudeObject.transform.parent = gridObject.transform;
             }
 
+            // Construct the lines of longitude
             foreach (var azimuth in Enumerable.Range(0, 36).Select(i => i * 2*Mathf.PI / 36))
             {
                 var longitudeObject = DrawLongitude(effectiveRadius, azimuth);
                 longitudeObject.transform.parent = gridObject.transform;
             }
 
+            // Add labels to each intersection between a line of latitude and a line of longitude.
             foreach (var colatitude in Enumerable.Range(1, 17).Select(i => i*Mathf.PI/18))
             {
                 var labelObject = DrawLabelsAtColatitude(effectiveRadius, colatitude);
@@ -121,6 +133,7 @@ namespace Assets.Views.Level.LatLongGrid
             return labelObject;
         }
 
+        // Creates a sequence of floats which interpolate between the two angles.
         private static IEnumerable<float> AnglesInRange(float leftAzimuth, float rightAzimuth, int pointsPerRange)
         {
             float distance;
@@ -137,6 +150,7 @@ namespace Assets.Views.Level.LatLongGrid
             return azimuths;
         }
 
+        // Draws a line through the specified points. Uses the specified name for the resulting object.
         private static GameObject CreateLineObject(String name, Vector3[] points, String materialName)
         {
             var gameObject = new GameObject(name);
@@ -155,6 +169,9 @@ namespace Assets.Views.Level.LatLongGrid
 
 
         #region Destructor & IDisposable methods
+        /// <summary>
+        /// Destroys the latitude-longitude grid objects.
+        /// </summary>
         public void Dispose()
         {
             Object.Destroy(_gameObject);

@@ -17,6 +17,13 @@ namespace Assets.Views.Level
             return new Vector3(x, y, z);
         }
 
+        /// <summary>
+        /// Creates a Unity Vector at the given spherical coordinates.
+        /// </summary>
+        /// <param name="colatitude"></param>
+        /// <param name="azimuth"></param>
+        /// <param name="radius"></param>
+        /// <returns></returns>
         public static Vector3 Vector3(float colatitude, float azimuth, float radius)
         {
             var x = radius * Mathf.Sin(colatitude) * Mathf.Cos(azimuth);
