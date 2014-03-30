@@ -23,6 +23,13 @@ namespace Engine.Geometry
             return neighbours;
         }
 
+        /// <summary>
+        /// Returns the neighbours of a vertex in the same order that their connecting edges are listed by the 
+        /// polyhedron's vertexToEdge lookup.
+        /// </summary>
+        /// <param name="polyhedron"></param>
+        /// <param name="vertex"></param>
+        /// <returns></returns>
         public static IEnumerable<Vertex> NeighboursOf(this IPolyhedron polyhedron, Vertex vertex)
         {
             var vertexSingleton = new[] {vertex};
@@ -50,7 +57,7 @@ namespace Engine.Geometry
         }
 
         /// <summary>
-        /// 
+        /// Calculates the size of the area that's both in the specified face and closer to the specified vertex than any other vertex.
         /// </summary>
         public static double AreaSharedByVertexAndFace(IPolyhedron surface, Vertex vertex, Face face)
         {

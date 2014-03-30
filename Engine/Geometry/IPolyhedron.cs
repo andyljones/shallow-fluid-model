@@ -2,11 +2,11 @@
 
 namespace Engine.Geometry
 {
+    /// <summary>
+    /// Represents a 3D polyhedron comprised of faces, edges and vertices.
+    /// </summary>
     public interface IPolyhedron
     {
-        /// <summary>
-        /// The faces of the polyhedron, with their vertices listed in clockwise order when looking toward the origin.
-        /// </summary>
         List<Face> Faces { get; }
         List<Edge> Edges { get; }
         List<Vertex> Vertices { get; }

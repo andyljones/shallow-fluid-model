@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace Engine.Geometry
 {
+    /// <summary>
+    /// Represents an edge in an IPolyhedron.
+    /// 
+    /// Equality is defined as the *set* (ie unordered) of endpoints being the same.
+    /// </summary>
     public class Edge
     {
         public readonly Vertex A;

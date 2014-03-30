@@ -4,6 +4,9 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Geometry
 {
+    /// <summary>
+    /// Extension methods for the Face class.
+    /// </summary>
     public static class FaceUtilities
     {
         /// <summary>
@@ -36,6 +39,11 @@ namespace Engine.Geometry
             return radius*center.Normalize();
         }
 
+        /// <summary>
+        /// Calculates the center of a polygonal face.
+        /// </summary>
+        /// <param name="face"></param>
+        /// <returns></returns>
         public static Vector Center(this Face face)
         {
             var vectors = face.Vertices.Select(v => v.Position).ToArray();

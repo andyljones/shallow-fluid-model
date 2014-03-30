@@ -6,8 +6,17 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Geometry
 {
+    /// <summary>
+    /// Represents a face in a IPolyhedron.
+    /// 
+    /// Two faces are equal if their collections of vertices are sequence equal.
+    /// </summary>
     public class Face
     {
+        /// <summary>
+        /// The vertices comprising the face, sorted in anticlockwise order around the face's center 
+        /// (when looking towards the origin)
+        /// </summary>
         public readonly List<Vertex> Vertices;
 
         public Face(IEnumerable<Vertex> vertices)
@@ -15,6 +24,7 @@ namespace Engine.Geometry
             Vertices = SortVertices(vertices);
         }
 
+        // Sort the vertices in anticlockwise order when looking towards the origin.
         private static List<Vertex> SortVertices(IEnumerable<Vertex> vertices)
         {
             var vertexList = vertices.ToList();

@@ -5,6 +5,9 @@ using MathNet.Numerics;
 
 namespace Engine.Geometry.GeodesicSphere
 {
+    /// <summary>
+    /// Factory for building icosahedrons (the platonic solid comprised of 20 triangles)
+    /// </summary>
     public static class IcosahedronFactory
     {
         // The colatitudes of the northern five vertices and the southern five vertices.
