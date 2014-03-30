@@ -5,6 +5,9 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Simulation
 {
+    /// <summary>
+    /// Geometry-specific vector field operators.
+    /// </summary>
     public class VectorFieldOperators
     {
         private readonly IPolyhedron _polyhedron;
@@ -23,6 +26,10 @@ namespace Engine.Simulation
         private readonly Vector[][] _gradientCoefficients;
         private readonly Vector[][] _curlCoefficients;
 
+        /// <summary>
+        /// Construct a set of vector field operators with respect to the given geometry.
+        /// </summary>
+        /// <param name="polyhedron"></param>
         public VectorFieldOperators(IPolyhedron polyhedron)
         {
             _polyhedron = polyhedron;

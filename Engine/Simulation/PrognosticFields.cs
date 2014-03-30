@@ -2,6 +2,9 @@
 
 namespace Engine.Simulation
 {
+    /// <summary>
+    /// Datatype for holding the current state of the simulation.
+    /// </summary>
     public class PrognosticFields
     {
         public VectorField<Vertex> DerivativeOfVelocity;

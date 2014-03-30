@@ -7,6 +7,9 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Utilities
 {
+    /// <summary>
+    /// Static utility methods for Vector objects.
+    /// </summary>
     public static class VectorUtilities
     {
         /// <summary>

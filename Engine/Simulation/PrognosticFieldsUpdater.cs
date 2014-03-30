@@ -2,6 +2,9 @@
 
 namespace Engine.Simulation
 {
+    /// <summary>
+    /// Uses a PrognosticFields to generate new PrognosticFields according to the shallow fluid model's equations.
+    /// </summary>
     public class PrognosticFieldsUpdater
     {
         private readonly IModelParameters _options;
@@ -13,7 +16,11 @@ namespace Engine.Simulation
 
         private readonly double _gravity;
 
-
+        /// <summary>
+        /// Construct a field updated for the given surface.
+        /// </summary>
+        /// <param name="surface"></param>
+        /// <param name="options"></param>
         public PrognosticFieldsUpdater(IPolyhedron surface, IModelParameters options)
         {
             _options = options;
@@ -26,11 +33,21 @@ namespace Engine.Simulation
             _gravity = options.Gravity;
         }
 
+        /// <summary>
+        /// Use the specified fields to calculate the next set of PrognosticFields according to the shallow fluid model 
+        /// equations.
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <param name="oldFields"></param>
+        /// <param name="olderFields"></param>
+        /// <returns></returns>
         public PrognosticFields Update(PrognosticFields fields, PrognosticFields oldFields = null, PrognosticFields olderFields = null)
         {
             var derivativeOfHeight = DerivativeOfHeight(fields.Velocity, fields.Height);
             var derivativeOfVelocity = DerivativeOfVelocity(fields.Velocity, fields.Height);
 
+            // If oldFields & olderFields are defined, use all three to step the simulation forward. Otherwise, use the
+            // less-accurate Euler timestepping method and only the most recent set of fields.
             ScalarField<Face> height;
             VectorField<Vertex> velocity;
             if (oldFields != null && olderFields != null)

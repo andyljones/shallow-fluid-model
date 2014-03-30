@@ -1,5 +1,8 @@
 ﻿namespace Engine.Simulation
 {
+    /// <summary>
+    /// Various differential equation update schemes, implemented as static methods.
+    /// </summary>
     public static class NumericalDerivatives
     {
         public static ScalarField<T> AdamsBashforth<T>

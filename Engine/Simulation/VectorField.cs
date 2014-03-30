@@ -6,6 +6,10 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Simulation
 {
+    /// <summary>
+    /// Represents a vector field on a collection of type T entities.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class VectorField<T> : IEnumerable<Vector>
     {
         public readonly Func<T, int> IndexOf;
@@ -16,6 +20,12 @@ namespace Engine.Simulation
 
         public int Count { get { return Values.Length; } }
 
+        /// <summary>
+        /// Construct a vector field with the ith vector being associated with whichever T object is such that 
+        /// indexOf(obj) == i.
+        /// </summary>
+        /// <param name="indexOf"></param>
+        /// <param name="values"></param>
         public VectorField(Func<T, int> indexOf, Vector[] values)
         {
             IndexOf = indexOf;
