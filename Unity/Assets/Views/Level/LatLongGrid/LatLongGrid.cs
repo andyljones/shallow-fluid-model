@@ -111,6 +111,7 @@ namespace Assets.Views.Level.LatLongGrid
             return parentObject;
         }
 
+        // Draw a label at the specified position
         private static GameObject DrawLabel(float scaleFactor, float colatitude, float azimuth)
         {
             var text = String.Format("{0,3:N0}  {1,3:N0}", Mathf.Rad2Deg*colatitude, Mathf.Rad2Deg*azimuth);

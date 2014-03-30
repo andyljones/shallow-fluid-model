@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace Assets.Views.Options
 {
+    /// <summary>
+    /// Displays a help menu when a button is pressed.
+    /// </summary>
     public class HelpView
     {
         private readonly GameOptions _options;

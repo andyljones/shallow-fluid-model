@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Assets.Views.Level.RawValues
 {
+    /// <summary>
+    /// Displays the raw values of the simulation field in the face under the cursor.
+    /// </summary>
     public class RawValuesView
     {
         private readonly CursorTracker _cursorTracker;

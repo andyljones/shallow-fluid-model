@@ -2,6 +2,10 @@
 
 namespace Assets.Views.Level.ParticleMap
 {
+    /// <summary>
+    /// Keeps track of how long each particle has been alive, and when they should be replaced with a fresh, randomly
+    /// generated one.
+    /// </summary>
     public class ParticleRenewalScheduler
     {
         private readonly Queue<RenewalEvent> _renewalSchedule;
@@ -34,6 +38,11 @@ namespace Assets.Views.Level.ParticleMap
         #region IndiciesToBeRenewed methods & variables
         private int _timesCalled = 0; 
 
+        /// <summary>
+        /// Should be called once per frame. Returns a list of the indices of particles which have reached the 
+        /// end of their lifespan.
+        /// </summary>
+        /// <returns></returns>
         public List<int> IndicesToBeRenewed()
         {
             var lifespan = _options.ParticleLifespan;

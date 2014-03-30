@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Assets.Views.Level.SimulationStats
 {
+    /// <summary>
+    /// Displays how much time has passed in the simulation and what the timescale is.
+    /// </summary>
     public class TimeView
     {
         private List<int> _stepCountHistory;
