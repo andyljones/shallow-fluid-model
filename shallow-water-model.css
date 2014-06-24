@@ -1,0 +1,60 @@
+html,body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#instructions,#unityPlayerHolder {
+    border: 1px solid #aaaaaa;
+    float: left;
+}
+
+/* Instructions styling */
+#instructions {
+    width: 250px;
+    margin: 10px 5px 10px 10px;
+    padding: 5px;
+    text-align: justify;
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 14px;
+}
+
+#instructions h2, #instructions h3 {
+    text-align: center;
+}
+
+#instructions img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#instructions ul {
+    margin-left: -20px;
+}
+
+#instructions dl {
+    margin: 0;
+    padding: 0;
+}
+
+#instructions dl dt {
+    margin: 0;
+	padding: 0;
+	font-weight: bold;
+}
+
+#instructions dl dd {
+    margin: 0 0 1em 0;
+	padding: 0;
+}
+
+/* Player styling */
+#unityPlayerHolder {
+    position: fixed;
+    width: calc(100% - 295px);
+    height: calc(100% - 25px);
+    margin-top: 10px;
+    margin-left: 285px;
+}

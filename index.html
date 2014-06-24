@@ -1,0 +1,75 @@
+<html>
+    <head>
+        <title>Global Shallow Fluid Model</title>
+        <link href="shallow-water-model.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="instructions">
+            <h2>Shallow Fluid Model</h2>
+            <ul>
+                <li><strong>P key</strong> Pause/unpause</li>
+                <li><strong>Mouse 1</strong> Rotate</li>
+                <li><strong>Mouse 2</strong> Zoom</li>
+                <li><strong>Up arrow</strong> Raise surface</li>
+                <li><strong>Down arrow</strong> Lower surface</li>
+                <li><strong>H key</strong> List other controls</li>
+            </ul>
+            
+            <img src="shallow-water-example.png" height="240" width="240">
+            
+            <p>
+                On the right is a simple, interactive model of fluid on a rotating planet. In particular, it models gravity and the <a href="http://en.wikipedia.org/wiki/Coriolis_effect">Coriolis effect</a> on a single fluid layer.
+            </p>
+            
+            <p>
+                You'll need the Unity Player to run it, which is a ~1MB browser plugin that allows the 3D Unity Engine to run in a browser window. If your browser doesn't automatically prompt you to download it, you can get it <a href="https://unity3d.com/webplayer">here</a>.
+            </p>
+            <p>
+                As well as raising and lowering areas, check the help menu (<strong>H</strong>) for extra controls. In particular, the options menu (<strong>O</strong>) will let you adjust the model's parameters. If everything goes wrong, hit <strong>R</strong> to reset the fields.
+            </p>
+            
+            <h3>FAQ</h3>
+            <dl>
+                <dt>Why has everything gone black??</dt>
+                <dd>Sometimes if you enforce particularly extreme conditions on the simulation, certain fields can take on illegal values (such as a negative height). For now, hit <strong>R</strong> to reset - dealing with exposed ground properly is on the to-do list.</dd>
+                <dt>Why don't the colours seem to reliably match up to the actual height at a point?<dt>
+                <dd>It's adaptive. It keeps a running average of the recent highest values anywhere on the planet, and sets that to red. Similarly, it sets the running average of lowest values to blue.</dd>  
+                <dt>My sense of scale is telling me those white particles are going far too fast!</dt>
+                <dd>Even at the 5-10 hours-per-second that the simulation runs at, realistic particles would still move far too slowly to be noticeable. As such, their motion is exaggerated by a factor of 10:1.</dd>
+                <dt>I'm playing with the model parameters but everything goes crazy!</dt>
+                <dd>Your timestep is probably too high. As a rule of thumb, if you halve the size of the simulation's cells (by increasing how many there are or by decreasing the radius of the planet), halve the timestep. This is formally known as the <a href="http://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition">CFL condition</a>.</dd>
+                <dt>Who came up with this?</dt>
+                <dd>While I wrote this particular implementation, the theory behind it was taken from several research papers. <a href="http://kiwi.atmos.colostate.edu/BUGS/geodesic/pdfFiles.html">Ringler & Randall's 2001 paper</a> supplied the vorticity-momentum formulation of the shallow-water equations that's used, while <a href="http://kiwi.atmos.colostate.edu/pubs/Heikes-Randall.2.95.pdf">Heikes & Randall 1995</a> came up with the geodesic grid.</dd>
+                <dt>Why'd you make it?</dt>
+                <dd>As a learning experience. This is my first non-trivial programming project, and in pursuing it I learnt a lot about C# and about software architecture.</dd>
+                <dt>Where can I find the source?</dt>
+                <dd>In <a href="https://github.com/andyljones/shallow-fluid-model">this GitHub repository</a>.
+            </dl>
+            
+            <h3>Links</h3>
+            <ul>
+                <li><a href="http://andyljones.github.io/">My blog</a></li>
+                <li>Colorado State's <a href="http://kiwi.atmos.colostate.edu/BUGS/geodesic/">excellent little website</a> on real geodesic shallow water models</li>
+                <li><a href="https://unity3d.com/">The Unity Engine</a>, a game framework which does all the hard work of 3D rendering and capturing user input.</li>
+            </ul>
+        </div>
+    
+        <div id="unityPlayerHolder">
+            <div id="unityPlayer">
+                <div class="missing">
+                    <a href="http://unity3d.com/webplayer/" title="Unity Web Player. Install now!">
+                        <img alt="Unity Web Player. Install now!" src="http://webplayer.unity3d.com/installation/getunity.png" width="193" height="63" />
+                    </a>
+                </div>
+                <div class="broken">
+                    <a href="http://unity3d.com/webplayer/" title="Unity Web Player. Install now! Restart your browser after install.">
+                        <img alt="Unity Web Player. Install now! Restart your browser after install." src="http://webplayer.unity3d.com/installation/getunityrestart.png" width="193" height="63" />
+                    </a>
+                </div>
+            </div>
+        </div>
+        <script type='text/javascript' src='https://ssl-webplayer.unity3d.com/download_webplayer-3.x/3.0/uo/jquery.min.js'></script>
+        <script type='text/javascript' src='fetch-unity-object2.js'></script>
+        <script type='text/javascript' src='load-unity-player.js'></script>
+    </body>
+</html>
