@@ -3,5 +3,5 @@ This is an interactive global [shallow fluid model](http://en.wikipedia.org/wiki
 The live version is [here](http://andyljones.github.io/pages/shallow-water-model/), which you'll need the Unity3D browser plugin to run.
 
 <p align="center">
-<img src="http://i.minus.com/ipOdlyBqvPpC7.png"/>
+<img src="http://i.imgur.com/a0g69Is.png"/>
 </p>
