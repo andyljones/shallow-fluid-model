@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace Assets.Views.Level
 {
+    using Vector = Vector<double>;
+
     public static class GraphicsUtilities
     {
         /// <summary>

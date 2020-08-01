@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace Assets.Controllers.Options
 {
+    using Vector = Vector<double>;
+
     /// <summary>
     /// Factory for construction a default GameOptions object.
     /// </summary>

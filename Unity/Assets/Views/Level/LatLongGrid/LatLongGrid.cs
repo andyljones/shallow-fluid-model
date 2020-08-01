@@ -127,7 +127,7 @@ namespace Assets.Views.Level.LatLongGrid
             var textMesh = labelObject.AddComponent<TextMesh>();
             textMesh.text = text;
             textMesh.font = Resources.Load("Materials/LatLongGrid/ARIAL", typeof (Font)) as Font;
-            textMesh.renderer.material = Resources.Load("Materials/LatLongGrid/OneSidedMaterial", typeof(Material)) as Material;
+            textMesh.GetComponent<Renderer>().material = Resources.Load("Materials/LatLongGrid/OneSidedMaterial", typeof(Material)) as Material;
             textMesh.characterSize = scaleFactor*0.005f;
             textMesh.anchor = TextAnchor.UpperCenter;
 

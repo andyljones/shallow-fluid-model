@@ -9,6 +9,8 @@ using UnityEngine;
 
 namespace Assets.Controllers.Options
 {
+    using Vector = Vector<double>;
+
     //TODO: This looks like it could get very unweildy very quickly. Is there a better solution?
     /// <summary>
     /// Options class for the whole app.
