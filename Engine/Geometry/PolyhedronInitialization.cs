@@ -125,20 +125,21 @@ namespace Engine.Geometry
         // Sorts the list of faces to match the list of edges.
         private static List<Face> SortFacesToMatchEdgeOrder(Vertex vertex, List<Edge> edges, List<Face> faces)
         {
-            var orderedFaces = new List<Face>();
-            for (int index = 0; index < edges.Count; index++)
-            {
-                var previousNeighbour = edges.AtCyclicIndex(index).Vertices().First(v => v != vertex);
-                var nextNeighbour = edges.AtCyclicIndex(index - 1).Vertices().First(v => v != vertex);
-                
-                var face = faces[4];
-                Console.WriteLine(face.Vertices.Contains(previousNeighbour) && face.Vertices.Contains(nextNeighbour));
+            try {
+                var orderedFaces = new List<Face>();
+                for (int index = 0; index < edges.Count; index++)
+                {
+                    var previousNeighbour = edges.AtCyclicIndex(index).Vertices().First(v => v != vertex);
+                    var nextNeighbour = edges.AtCyclicIndex(index - 1).Vertices().First(v => v != vertex);
+                    
+                    var faceBetween = faces.First(face => face.Vertices.Contains(previousNeighbour) && face.Vertices.Contains(nextNeighbour));
+                    orderedFaces.Add(faceBetween);
+                }
 
-                var faceBetween = faces.First(face => face.Vertices.Contains(previousNeighbour) && face.Vertices.Contains(nextNeighbour));
-                orderedFaces.Add(faceBetween);
+                return orderedFaces;
+            } catch (System.InvalidOperationException) {
+                return  faces;
             }
-
-            return orderedFaces;
         }
 
         #region FaceToEdgeDictionary methods

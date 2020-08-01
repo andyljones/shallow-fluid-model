@@ -37,7 +37,7 @@ namespace Assets.Controllers.Level.Cursor
             var gameObject = new GameObject("Collider");
             var collider = gameObject.AddComponent<MeshCollider>();
             collider.sharedMesh = mesh;
-            collider.isTrigger = true;
+            // collider.isTrigger = true;
 
             return gameObject;
         }
