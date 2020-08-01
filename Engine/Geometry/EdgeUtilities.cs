@@ -1,8 +1,9 @@
 ﻿using Engine.Utilities;
-using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Geometry
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     /// <summary>
     /// Extension methods for the Edge class.
     /// </summary>

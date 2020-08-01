@@ -6,6 +6,8 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Simulation
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     /// <summary>
     /// Static methods for constructing fast-access tables to geometric information about a surface.
     /// </summary>
@@ -38,7 +40,7 @@ namespace Engine.Simulation
             {
                 var vertexVector = vertex.Position;
                 var edgeVectors = surface.NeighboursOf(vertex).Select(neighbour => (neighbour.Position - vertexVector));
-                var edgeNormals = edgeVectors.Select(edgeVector => Vector.CrossProduct(vertexVector, edgeVector).Normalize(2)).ToArray();
+                var edgeNormals = edgeVectors.Select(edgeVector => VectorUtilities.CrossProduct(vertexVector, edgeVector).Normalize(2)).ToArray();
                 edgeNormalsTable[surface.IndexOf(vertex)] = edgeNormals;
             }
 

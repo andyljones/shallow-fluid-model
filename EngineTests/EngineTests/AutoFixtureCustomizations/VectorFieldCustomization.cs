@@ -2,12 +2,14 @@
 using System.Linq;
 using Engine.Geometry;
 using Engine.Simulation;
-using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
+using Engine.Utilities;
 using AutoFixture;
 
 namespace EngineTests.AutoFixtureCustomizations
 {
+    using Vector = Vector<double>;
+
     public class VectorFieldCustomization : ICustomization
     {
         private readonly Random _prng = new Random();

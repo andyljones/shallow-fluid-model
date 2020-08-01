@@ -3,6 +3,8 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Simulation.Initialization
 {
+    using Vector = Vector<double>;
+
     public static class InitialFieldsFactory
     {
         public static PrognosticFields Build(IPolyhedron polyhedron, IInitialFieldParameters parameters)
@@ -10,7 +12,7 @@ namespace Engine.Simulation.Initialization
             var height = parameters.InitialHeightFunction(polyhedron, parameters.InitialAverageHeight, parameters.InitialMaxDeviationOfHeight);
             var velocity = parameters.InitialVelocityFunction(polyhedron, parameters.InitialAverageVelocity, parameters.InitialMaxDeviationOfVelocity);
 
-            var zeroVector = Vector.Zeros(3);
+            var zeroVector = Vector.Build.Dense(3);
 
             var fields = new PrognosticFields
             {

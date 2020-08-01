@@ -5,6 +5,8 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Simulation
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     /// <summary>
     /// Static methods for constructing fast-access tables to geometric information about a surface.
     /// </summary>

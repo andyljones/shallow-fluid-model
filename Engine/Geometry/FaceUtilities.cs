@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
+using Engine.Utilities;
 
 namespace Engine.Geometry
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     /// <summary>
     /// Extension methods for the Face class.
     /// </summary>
@@ -18,7 +21,7 @@ namespace Engine.Geometry
             var flatArea = 0.0; 
             for (int i = 1; i < vectors.Length - 1; i++)
             {
-                flatArea += Vector.CrossProduct(vectors[i] - vectors[0], vectors[i + 1] - vectors[0]).Norm(2)/2;
+                flatArea += VectorUtilities.CrossProduct(vectors[i] - vectors[0], vectors[i + 1] - vectors[0]).Norm(2)/2;
             }
 
             return Math.Abs(flatArea);
@@ -47,12 +50,12 @@ namespace Engine.Geometry
         public static Vector Center(this Face face)
         {
             var vectors = face.Vertices.Select(v => v.Position).ToArray();
-            var centroid = Vector.Zeros(3);
+            var centroid = Vector.Build.Dense(3);
             var area = 0.0;
             for (int i = 1; i < vectors.Length - 1; i++)
             {
                 var centroidOfTriangle = (vectors[0] + vectors[i] + vectors[i + 1]) / 3;
-                var areaOfTriangle = Vector.CrossProduct(vectors[i] - vectors[0], vectors[i + 1] - vectors[0]).Norm(2) / 2;
+                var areaOfTriangle = VectorUtilities.CrossProduct(vectors[i] - vectors[0], vectors[i + 1] - vectors[0]).Norm(2) / 2;
                 centroid += areaOfTriangle * centroidOfTriangle;
                 area += areaOfTriangle;
             }

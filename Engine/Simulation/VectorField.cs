@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
+using Engine.Utilities;
 
 namespace Engine.Simulation
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     /// <summary>
     /// Represents a vector field on a collection of type T entities.
     /// </summary>
@@ -79,7 +82,7 @@ namespace Engine.Simulation
             var newValues = new Vector[a.Values.Length];
             for (int i = 0; i < a.Values.Length; i++)
             {
-                newValues[i] = Vector.CrossProduct(a.Values[i], b.Values[i]);
+                newValues[i] = VectorUtilities.CrossProduct(a.Values[i], b.Values[i]);
             }
             return new VectorField<T>(a.IndexOf, newValues);
         }
@@ -89,7 +92,7 @@ namespace Engine.Simulation
             var newValues = new double[a.Values.Length];
             for (int i = 0; i < a.Values.Length; i++)
             {
-                newValues[i] = Vector.ScalarProduct(a.Values[i], b.Values[i]);
+                newValues[i] = VectorUtilities.ScalarProduct(a.Values[i], b.Values[i]);
             }
             return new ScalarField<T>(a.IndexOf, newValues);
         }

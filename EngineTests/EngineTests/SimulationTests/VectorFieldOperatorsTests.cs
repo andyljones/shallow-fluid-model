@@ -8,6 +8,8 @@ using Xunit;
 
 namespace EngineTests.SimulationTests
 {
+    using Vector = Vector<double>;
+
     public class VectorFieldOperatorsTests
     {
         //[Theory]
@@ -66,9 +68,9 @@ namespace EngineTests.SimulationTests
             var divergence = operators.Curl(V);
 
             // Verify outcome
-            var expected = Vector.Zeros(3);
+            var expected = Vector.Build.Dense(3);
 
-            var actual = divergence.Values.Aggregate(Vector.Zeros(3), (c, v) => c + v);
+            var actual = divergence.Values.Aggregate(Vector.Build.Dense(3), (c, v) => c + v);
 
             TestUtilities.WriteExpectedAndActual(expected, actual);
             Assert.True(Precision.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));

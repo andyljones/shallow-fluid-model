@@ -14,6 +14,14 @@ namespace Engine.Utilities
     /// </summary>
     public static class VectorUtilities
     {
+        public static Vector CrossProduct(Vector a, Vector b) {
+
+        }
+
+        public static double ScalarProduct(Vector a, Vector b) { 
+
+        }
+
         /// <summary>
         /// Calculates an approximation to the length of the spherical geodesic between a and b.
         /// 
@@ -22,7 +30,7 @@ namespace Engine.Utilities
         public static double GeodesicDistance(Vector a, Vector b)
         {
             var radius = (a.Norm(2) + b.Norm(2))/2;
-            var angle = Trig.Acos(Vector.ScalarProduct(a.Normalize(2), b.Normalize(2)));
+            var angle = Trig.Acos(VectorUtilities.ScalarProduct(a.Normalize(2), b.Normalize(2)));
 
             return radius*angle;
         }
@@ -55,7 +63,7 @@ namespace Engine.Utilities
             var direction = destination - origin;
             var normalAtFrom = origin.Normalize(2);
 
-            var localDirection = (direction - Vector.ScalarProduct(direction, normalAtFrom)*normalAtFrom).Normalize(2);
+            var localDirection = (direction - VectorUtilities.ScalarProduct(direction, normalAtFrom)*normalAtFrom).Normalize(2);
 
             return localDirection;
         }

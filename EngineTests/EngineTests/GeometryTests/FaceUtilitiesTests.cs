@@ -5,6 +5,8 @@ using Xunit;
 
 namespace EngineTests.GeometryTests
 {
+    using Vector = Vector<double>;
+
     public class FaceUtilitiesTests
     {
         [Fact]

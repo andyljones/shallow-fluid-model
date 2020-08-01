@@ -4,6 +4,8 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Geometry
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+    
     public static class VertexUtilities
     {
         /// <summary>
@@ -43,7 +45,7 @@ namespace Engine.Geometry
         /// </summary>
         public static double Azimuth(this Vertex vertex)
         {
-            return Trig.InverseTangentFromRational(vertex.Position.Normalize(2)[1], vertex.Position.Normalize(2)[0]);            
+            return Trig.Atan2(vertex.Position.Normalize(2)[1], vertex.Position.Normalize(2)[0]);            
         }
 
         /// <summary>

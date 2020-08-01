@@ -4,9 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
+using Engine.Utilities;
 
 namespace EngineTests
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     public static class TestUtilities
     {
         public readonly static double RelativeAccuracy = 1.0/1000000;
@@ -71,8 +74,8 @@ namespace EngineTests
             {
                 var thisVector = vectors[i];
                 var nextVector = vectors[i + 1];
-                var crossProduct = Vector.CrossProduct(thisVector - center, nextVector - center);
-                var componentAlongView = Vector.ScalarProduct(crossProduct, viewDirection);
+                var crossProduct = VectorUtilities.CrossProduct(thisVector - center, nextVector - center);
+                var componentAlongView = VectorUtilities.ScalarProduct(crossProduct, viewDirection);
 
                 if (componentAlongView > 0)
                 {

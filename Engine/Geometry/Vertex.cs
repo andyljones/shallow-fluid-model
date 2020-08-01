@@ -4,6 +4,8 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Geometry
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     /// <summary>
     /// Represents a vertex in an IPolyhedron.
     /// </summary>

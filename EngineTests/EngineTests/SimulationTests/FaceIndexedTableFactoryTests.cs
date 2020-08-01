@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Engine.Geometry;
 using Engine.Simulation;
-using Engine.Utilities;
 using EngineTests.AutoFixtureCustomizations;
 using MathNet.Numerics;
-using MathNet.Numerics.LinearAlgebra;
+using Engine.Utilities;
 using Xunit;
 
 namespace EngineTests.SimulationTests
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     public class FaceIndexedTableFactoryTests
     {
         [Theory]

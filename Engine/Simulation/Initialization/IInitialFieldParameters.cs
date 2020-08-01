@@ -4,6 +4,8 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Simulation.Initialization
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     public interface IInitialFieldParameters
     {
         Func<IPolyhedron, double, double, ScalarField<Face>> InitialHeightFunction { get; }

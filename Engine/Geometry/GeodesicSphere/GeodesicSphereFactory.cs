@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
+using Engine.Utilities;
 
 namespace Engine.Geometry.GeodesicSphere
 {
+
     /// <summary>
     /// Factory for geodesic spheres (spheres comprised of 12 pentagons and some number of hexagons)
     /// </summary>
@@ -64,7 +66,7 @@ namespace Engine.Geometry.GeodesicSphere
 
             var radius = (a.Norm(2) + b.Norm(2) + c.Norm(2))/3;
 
-            var center = radius*Vector.CrossProduct(a - b, c - b).Normalize(2);
+            var center = radius*VectorUtilities.CrossProduct(a - b, c - b).Normalize(2);
 
             return new Vertex(center);
         }

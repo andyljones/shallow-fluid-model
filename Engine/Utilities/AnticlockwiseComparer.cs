@@ -4,6 +4,8 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Utilities
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     /// <summary>
     /// Comparer for ordering planar vectors in an anticlockwise fashion around a given point. 
     /// </summary>
@@ -20,23 +22,23 @@ namespace Engine.Utilities
 
         public int Compare(Vector a, Vector b)
         {
-            if (Precision.AlmostEqual(a, b))
+            if (Precision.AlmostEqual(a, b, 8))
             {
                 return 0;
             }
 
-            if (Precision.AlmostEqual(a, _center))
+            if (Precision.AlmostEqual(a, _center, 8))
             {
                 return -1;
             }
 
-            if (Precision.AlmostEqual(_center, b))
+            if (Precision.AlmostEqual(_center, b, 8))
             {
                 return 1;
             }
 
-            var middle = Vector.CrossProduct(a - _center, b - _center);
-            var componentAlongView = Vector.ScalarProduct(middle, _viewVector);
+            var middle = VectorUtilities.CrossProduct(a - _center, b - _center);
+            var componentAlongView = VectorUtilities.ScalarProduct(middle, _viewVector);
 
             var result = componentAlongView <= 0 ? -1 : 1;
 

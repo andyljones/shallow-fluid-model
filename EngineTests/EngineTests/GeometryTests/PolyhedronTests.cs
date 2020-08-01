@@ -8,6 +8,8 @@ using Xunit;
 
 namespace EngineTests.GeometryTests
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     public class PolyhedronTests
     {
         [Theory]

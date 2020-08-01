@@ -6,6 +6,8 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Geometry
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     /// <summary>
     /// Represents a face in a IPolyhedron.
     /// 
@@ -28,7 +30,7 @@ namespace Engine.Geometry
         private static List<Vertex> SortVertices(IEnumerable<Vertex> vertices)
         {
             var vertexList = vertices.ToList();
-            var center = vertexList.Aggregate(Vector.Zeros(3), (c, v) => c + v.Position).Normalize(2);
+            var center = vertexList.Aggregate(Vector.Build.Dense(3), (c, v) => c + v.Position).Normalize(2);
             var view = -center;
             var comparer = new AnticlockwiseComparer(vertexList.First().Position, view);
 

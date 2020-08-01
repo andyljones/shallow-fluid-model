@@ -5,6 +5,8 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Simulation
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     /// <summary>
     /// Geometry-specific vector field operators.
     /// </summary>
@@ -88,7 +90,7 @@ namespace Engine.Simulation
             var faces = _faces[vertex];
             var coefficients = _gradientCoefficients[vertex];
 
-            var result = Vector.Zeros(3);
+            var result = Vector.Build.Dense(3);
             for (int j = 0; j < faces.Length; j++)
             {
                 result += A[faces[j]]*coefficients[j];
@@ -194,7 +196,7 @@ namespace Engine.Simulation
             var fluxes = new double[edgeNormals.Length];
             for (int halfEdge = 0; halfEdge < edgeNormals.Length; halfEdge++)
             {
-                fluxes[halfEdge] = Vector.ScalarProduct(v, edgeNormals[halfEdge]) * halfEdgeLengths[halfEdge];
+                fluxes[halfEdge] = VectorUtilities.ScalarProduct(v, edgeNormals[halfEdge]) * halfEdgeLengths[halfEdge];
             }
 
             return fluxes;
@@ -225,7 +227,7 @@ namespace Engine.Simulation
             var vertices = _vertices[face];
             var faceInFacesOfVertex = _faceInFacesOfVertices[face];
 
-            var result = Vector.Zeros(3);
+            var result = Vector.Build.Dense(3);
             for (int index = 0; index < vertices.Length; index++)
             {
                 var indexOfFaceInVertex = faceInFacesOfVertex[index];
@@ -237,7 +239,7 @@ namespace Engine.Simulation
 
         private Vector ContributionOfVertexToCurlAtFace(int vertex, int indexOfFaceInVertex, VectorField<Vertex> V)
         {
-            return Vector.CrossProduct(_curlCoefficients[vertex][indexOfFaceInVertex], V[vertex]);
+            return VectorUtilities.CrossProduct(_curlCoefficients[vertex][indexOfFaceInVertex], V[vertex]);
         }
 
         private Vector[][] CurlPrecomputation()
@@ -319,7 +321,7 @@ namespace Engine.Simulation
             for (int index = 0; index < vertices.Length; index++)
             {
                 var vertex = vertices[index];
-                result += areasInVertices[index]*Vector.ScalarProduct(V[vertex], V[vertex])/2;
+                result += areasInVertices[index]*VectorUtilities.ScalarProduct(V[vertex], V[vertex])/2;
             }
 
             return result/_faceAreas[face];

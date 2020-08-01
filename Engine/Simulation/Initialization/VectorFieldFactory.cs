@@ -6,6 +6,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Simulation.Initialization
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
     public static class VectorFieldFactory
     {
         public static VectorField<Vertex> ConstantVectorField(IPolyhedron polyhedron, Vector average, double deviation)
@@ -36,8 +37,8 @@ namespace Engine.Simulation.Initialization
         {
             var globalNorth = VectorUtilities.NewVector(0, 0, 1);
 
-            var localEast = Vector.CrossProduct(globalNorth, origin).Normalize(2);
-            var localNorth = Vector.CrossProduct(origin, localEast).Normalize(2);
+            var localEast = VectorUtilities.CrossProduct(globalNorth, origin).Normalize(2);
+            var localNorth = VectorUtilities.CrossProduct(origin, localEast).Normalize(2);
 
             return v[0] * localNorth + v[1] * localEast;
         }
