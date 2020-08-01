@@ -31,7 +31,7 @@ namespace Assets.Controllers.Options
             ColorMapHistoryLength = 1000,
             ColorMapMaterialName = "Materials/Surface",
 
-            ParticleCount = 20000,
+            ParticleCount = 50000,
             ParticleSpeedScaleFactor = 10,
             ParticleLifespan = 1000,
             ParticleTrailLifespan = 10,
