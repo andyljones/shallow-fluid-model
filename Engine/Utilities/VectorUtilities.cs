@@ -15,11 +15,14 @@ namespace Engine.Utilities
     public static class VectorUtilities
     {
         public static Vector CrossProduct(Vector a, Vector b) {
-
+            return Vector.Build.Dense(new double[] {
+                a[1]*b[2] - a[2]*b[1],
+                a[2]*b[0] - a[0]*b[2],
+                a[0]*b[1] - a[1]*b[0]});
         }
 
         public static double ScalarProduct(Vector a, Vector b) { 
-
+            return a.DotProduct(b);
         }
 
         /// <summary>

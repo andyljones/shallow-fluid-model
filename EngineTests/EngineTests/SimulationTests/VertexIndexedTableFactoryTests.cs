@@ -216,7 +216,7 @@ namespace EngineTests.SimulationTests
             var normals = VertexIndexedTableFactory.EdgeNormals(polyhedron);
             
             // Verify outcome
-            var vertex = polyhedron.Vertices.First(v => Precision.AlmostEqual(v.Position, VectorUtilities.NewVector(1, 1, 1), 1e-3));
+            var vertex = polyhedron.Vertices.First(v => Precision.AlmostEqual(v.Position, VectorUtilities.NewVector(1, 1, 1), 8));
             var actual = normals[polyhedron.IndexOf(vertex)];
             
             TestUtilities.WriteExpectedAndActual(expected, actual);

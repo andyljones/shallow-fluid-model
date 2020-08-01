@@ -130,6 +130,9 @@ namespace Engine.Geometry
             {
                 var previousNeighbour = edges.AtCyclicIndex(index).Vertices().First(v => v != vertex);
                 var nextNeighbour = edges.AtCyclicIndex(index - 1).Vertices().First(v => v != vertex);
+                
+                var face = faces[4];
+                Console.WriteLine(face.Vertices.Contains(previousNeighbour) && face.Vertices.Contains(nextNeighbour));
 
                 var faceBetween = faces.First(face => face.Vertices.Contains(previousNeighbour) && face.Vertices.Contains(nextNeighbour));
                 orderedFaces.Add(faceBetween);

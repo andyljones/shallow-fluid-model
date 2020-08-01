@@ -1,6 +1,7 @@
 ﻿using Engine.Utilities;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
+using System;
 
 namespace Engine.Geometry
 {
@@ -45,7 +46,7 @@ namespace Engine.Geometry
         /// </summary>
         public static double Azimuth(this Vertex vertex)
         {
-            return Trig.Atan2(vertex.Position.Normalize(2)[1], vertex.Position.Normalize(2)[0]);            
+            return Math.Atan2(vertex.Position.Normalize(2)[1], vertex.Position.Normalize(2)[0]);            
         }
 
         /// <summary>
