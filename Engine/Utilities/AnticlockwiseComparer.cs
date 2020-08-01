@@ -20,17 +20,17 @@ namespace Engine.Utilities
 
         public int Compare(Vector a, Vector b)
         {
-            if (Vector.AlmostEqual(a, b))
+            if (Precision.AlmostEqual(a, b))
             {
                 return 0;
             }
 
-            if (Vector.AlmostEqual(a, _center))
+            if (Precision.AlmostEqual(a, _center))
             {
                 return -1;
             }
 
-            if (Vector.AlmostEqual(_center, b))
+            if (Precision.AlmostEqual(_center, b))
             {
                 return 1;
             }

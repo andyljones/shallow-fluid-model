@@ -23,7 +23,7 @@ namespace Assets.Controllers.Options
             InitialMaxDeviationOfHeight = 2,
 
             InitialVelocityFunction = VectorFieldFactory.ConstantVectorField,
-            InitialAverageVelocity = new Vector(new[] { 0.0, 0.0, 0.0 }),
+            InitialAverageVelocity = Vector.Build.DenseOfArray(new[] { 0.0, 0.0, 0.0 }),
             InitialMaxDeviationOfVelocity = 0,
 
             ColorMapHistoryLength = 1000,

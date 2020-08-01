@@ -62,9 +62,9 @@ namespace Engine.Geometry.GeodesicSphere
             var b = face.Vertices[1].Position;
             var c = face.Vertices[2].Position;
 
-            var radius = (a.Norm() + b.Norm() + c.Norm())/3;
+            var radius = (a.Norm(2) + b.Norm(2) + c.Norm(2))/3;
 
-            var center = radius*Vector.CrossProduct(a - b, c - b).Normalize();
+            var center = radius*Vector.CrossProduct(a - b, c - b).Normalize(2);
 
             return new Vertex(center);
         }

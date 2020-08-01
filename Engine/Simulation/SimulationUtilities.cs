@@ -18,7 +18,7 @@ namespace Engine.Simulation
         public static ScalarField<Face> CoriolisField(IPolyhedron surface, double rotationFrequency)
         {
             var angularVelocity = 2*Math.PI*rotationFrequency;
-            var values = surface.Faces.Select(face => 2*angularVelocity*face.SphericalCenter().Normalize()[2]).ToArray();
+            var values = surface.Faces.Select(face => 2*angularVelocity*face.SphericalCenter().Normalize(2)[2]).ToArray();
 
             return new ScalarField<Face>(surface.IndexOf, values);
         }
@@ -30,7 +30,7 @@ namespace Engine.Simulation
         /// <returns></returns>
         public static VectorField<Face> FaceNormalsField(IPolyhedron surface)
         {
-            var values = surface.Faces.Select(face => face.SphericalCenter().Normalize()).ToArray();
+            var values = surface.Faces.Select(face => face.SphericalCenter().Normalize(2)).ToArray();
 
             return new VectorField<Face>(surface.IndexOf, values);
         }
@@ -42,7 +42,7 @@ namespace Engine.Simulation
         /// <returns></returns>
         public static VectorField<Vertex> VertexNormalsField(IPolyhedron surface)
         {
-            var values = surface.Vertices.Select(vertex => vertex.Position.Normalize()).ToArray();
+            var values = surface.Vertices.Select(vertex => vertex.Position.Normalize(2)).ToArray();
 
             return new VectorField<Vertex>(surface.IndexOf, values);
         }

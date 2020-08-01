@@ -5,7 +5,6 @@ using Engine.Geometry.GeodesicSphere;
 using EngineTests.AutoFixtureCustomizations;
 using MathNet.Numerics;
 using Xunit;
-using Xunit.Extensions;
 
 namespace EngineTests.GeometryTests.GeodesicSphereTests
 {
@@ -23,10 +22,10 @@ namespace EngineTests.GeometryTests.GeodesicSphereTests
             var vertices = polyhedron.Vertices;
 
             // Verify outcome
-            var lengths = vertices.Select(vertex => vertex.Position.Norm()).ToList();
+            var lengths = vertices.Select(vertex => vertex.Position.Norm(2)).ToList();
 
             Debug.WriteLine("Lengths were " + TestUtilities.CollectionToString(lengths));
-            Assert.True(lengths.All(length => Number.AlmostEqual(length, options.Radius)));
+            Assert.True(lengths.All(length => Precision.AlmostEqual(length, options.Radius)));
 
             // Teardown
         }

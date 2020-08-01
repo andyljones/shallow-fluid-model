@@ -35,8 +35,8 @@ namespace EngineTests
             var expectedList = expected.ToList();
             var actualList = actual.ToList();
 
-            var missingFromActual = expectedList.Where(x => expectedList.Count(y => Number.AlmostEqual(x, y, relativeAccuracy)) != actualList.Count(y => Number.AlmostEqual(x, y, relativeAccuracy)));
-            var missingFromExpected = actualList.Where(x => expectedList.Count(y => Number.AlmostEqual(x, y, relativeAccuracy)) != actualList.Count(y => Number.AlmostEqual(x, y, relativeAccuracy)));
+            var missingFromActual = expectedList.Where(x => expectedList.Count(y => Precision.AlmostEqual(x, y, relativeAccuracy)) != actualList.Count(y => Precision.AlmostEqual(x, y, relativeAccuracy)));
+            var missingFromExpected = actualList.Where(x => expectedList.Count(y => Precision.AlmostEqual(x, y, relativeAccuracy)) != actualList.Count(y => Precision.AlmostEqual(x, y, relativeAccuracy)));
 
             return !(missingFromActual.Any() || missingFromExpected.Any());
         }
@@ -46,8 +46,8 @@ namespace EngineTests
             var expectedList = expected.ToList();
             var actualList = actual.ToList();
 
-            var missingFromActual = expectedList.Where(x => expectedList.Count(y => Vector.AlmostEqual(x, y, relativeAccuracy)) != actualList.Count(y => Vector.AlmostEqual(x, y, relativeAccuracy)));
-            var missingFromExpected = actualList.Where(x => expectedList.Count(y => Vector.AlmostEqual(x, y, relativeAccuracy)) != actualList.Count(y => Vector.AlmostEqual(x, y, relativeAccuracy)));
+            var missingFromActual = expectedList.Where(x => expectedList.Count(y => Precision.AlmostEqual(x, y, relativeAccuracy)) != actualList.Count(y => Precision.AlmostEqual(x, y, relativeAccuracy)));
+            var missingFromExpected = actualList.Where(x => expectedList.Count(y => Precision.AlmostEqual(x, y, relativeAccuracy)) != actualList.Count(y => Precision.AlmostEqual(x, y, relativeAccuracy)));
 
             return !(missingFromActual.Any() || missingFromExpected.Any());
         }

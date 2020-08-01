@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Geometry.GeodesicSphere
 {
@@ -123,7 +124,7 @@ namespace Engine.Geometry.GeodesicSphere
         {
             var newVertex = 
                 polyhedron.Vertices.
-                ToDictionary(oldVertex => oldVertex, oldVertex => new Vertex(radius*oldVertex.Position.Normalize()));
+                ToDictionary(oldVertex => oldVertex, oldVertex => new Vertex(radius*oldVertex.Position.Normalize(2)));
 
             var newFaces =
                 from face in polyhedron.Faces

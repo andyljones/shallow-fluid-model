@@ -1,7 +1,7 @@
 ﻿using Engine.Simulation;
 using EngineTests.SimulationTests;
-using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Xunit;
+using AutoFixture;
+using AutoFixture.Xunit2;
 
 namespace EngineTests.AutoFixtureCustomizations
 {

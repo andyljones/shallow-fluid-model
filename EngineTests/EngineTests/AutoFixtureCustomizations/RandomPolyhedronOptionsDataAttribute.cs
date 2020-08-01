@@ -2,8 +2,8 @@
 using Engine;
 using Engine.Geometry;
 using EngineTests.GeometryTests;
-using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Xunit;
+using AutoFixture;
+using AutoFixture.Xunit2;
 
 namespace EngineTests.AutoFixtureCustomizations
 {

@@ -5,7 +5,6 @@ using Engine.Geometry;
 using Engine.Utilities;
 using EngineTests.AutoFixtureCustomizations;
 using Xunit;
-using Xunit.Extensions;
 
 namespace EngineTests.GeometryTests
 {

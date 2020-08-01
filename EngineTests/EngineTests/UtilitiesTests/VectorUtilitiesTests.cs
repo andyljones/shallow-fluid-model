@@ -2,9 +2,8 @@
 using System.Diagnostics;
 using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
-using Ploeh.AutoFixture.Xunit;
+using AutoFixture.Xunit2;
 using Xunit;
-using Xunit.Extensions;
 using MathNet.Numerics;
 
 namespace EngineTests.UtilitiesTests
@@ -28,7 +27,7 @@ namespace EngineTests.UtilitiesTests
 
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(Number.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
+            Assert.True(Precision.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
 
             // Teardown
         }
@@ -44,14 +43,14 @@ namespace EngineTests.UtilitiesTests
 
             var expected = vector;
             expected[2] = 0;
-            expected = expected.Normalize();
+            expected = expected.Normalize(2);
 
             // Exercise system
             var actual = VectorUtilities.LocalDirection(northPole, vector);
             
             // Verify outcome
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(Vector.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
+            Assert.True(Precision.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
 
             // Teardown
         }

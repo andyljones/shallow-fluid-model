@@ -50,7 +50,7 @@ namespace Assets.Views.Level.RawValues
             var vertexUnderCursor = _cursorTracker.TryGetVertexUnderCursor();
             if (vertexUnderCursor != null)
             {
-                speedAtCursor = fields.Velocity[vertexUnderCursor].Norm();
+                speedAtCursor = fields.Velocity[vertexUnderCursor].Norm(2);
             }
             else
             {

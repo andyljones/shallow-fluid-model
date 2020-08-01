@@ -18,7 +18,7 @@ namespace Engine.Geometry
             var flatArea = 0.0; 
             for (int i = 1; i < vectors.Length - 1; i++)
             {
-                flatArea += Vector.CrossProduct(vectors[i] - vectors[0], vectors[i + 1] - vectors[0]).Norm()/2;
+                flatArea += Vector.CrossProduct(vectors[i] - vectors[0], vectors[i + 1] - vectors[0]).Norm(2)/2;
             }
 
             return Math.Abs(flatArea);
@@ -34,9 +34,9 @@ namespace Engine.Geometry
             var vectors = face.Vertices.Select(v => v.Position).ToArray();
 
             var center = face.Center();
-            var radius = vectors.Average(vector => vector.Norm());
+            var radius = vectors.Average(vector => vector.Norm(2));
 
-            return radius*center.Normalize();
+            return radius*center.Normalize(2);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Engine.Geometry
             for (int i = 1; i < vectors.Length - 1; i++)
             {
                 var centroidOfTriangle = (vectors[0] + vectors[i] + vectors[i + 1]) / 3;
-                var areaOfTriangle = Vector.CrossProduct(vectors[i] - vectors[0], vectors[i + 1] - vectors[0]).Norm() / 2;
+                var areaOfTriangle = Vector.CrossProduct(vectors[i] - vectors[0], vectors[i + 1] - vectors[0]).Norm(2) / 2;
                 centroid += areaOfTriangle * centroidOfTriangle;
                 area += areaOfTriangle;
             }

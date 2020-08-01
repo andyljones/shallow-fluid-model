@@ -8,7 +8,6 @@ using EngineTests.AutoFixtureCustomizations;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Xunit;
-using Xunit.Extensions;
 
 namespace EngineTests.SimulationTests
 {
@@ -81,7 +80,7 @@ namespace EngineTests.SimulationTests
             (IPolyhedron polyhedron)
         {
             // Fixture setup
-            var correctLength = Math.Sqrt(3)*Trig.InverseCosine(1.0/3.0);
+            var correctLength = Math.Sqrt(3)*Trig.Acos(1.0/3.0);
             var expected = Enumerable.Repeat(correctLength, 24).ToList();
 
             // Exercise system
@@ -172,7 +171,7 @@ namespace EngineTests.SimulationTests
             for (int i = 0; i < neighbourTable.Length; i++)
             {
                 var centerOfFace = polyhedron.Faces[i].SphericalCenter();
-                var viewVector = -centerOfFace.Normalize();
+                var viewVector = -centerOfFace.Normalize(2);
 
                 var neighbours = neighbourTable[i].Select(index => polyhedron.Faces[index]);
                 var centersOfNeighbours = neighbours.Select(neighbour => neighbour.SphericalCenter()).ToList();

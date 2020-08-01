@@ -5,7 +5,6 @@ using EngineTests.AutoFixtureCustomizations;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Xunit;
-using Xunit.Extensions;
 
 namespace EngineTests.SimulationTests
 {
@@ -50,7 +49,7 @@ namespace EngineTests.SimulationTests
             var actual = divergence.Values.Sum();
 
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(Number.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
+            Assert.True(Precision.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
 
             // Teardown
         }
@@ -72,7 +71,7 @@ namespace EngineTests.SimulationTests
             var actual = divergence.Values.Aggregate(Vector.Zeros(3), (c, v) => c + v);
 
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(Vector.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
+            Assert.True(Precision.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
 
             // Teardown
         }
@@ -89,12 +88,12 @@ namespace EngineTests.SimulationTests
             var energy = operators.KineticEnergy(V);
 
             // Verify outcome
-            var expected = 3.0 / 8.0 * V.Values.Select(v => v.Norm()*v.Norm()).Sum();
+            var expected = 3.0 / 8.0 * V.Values.Select(v => v.Norm(2)*v.Norm(2)).Sum();
 
             var actual = energy.Values.Sum();
 
             TestUtilities.WriteExpectedAndActual(expected, actual);
-            Assert.True(Number.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
+            Assert.True(Precision.AlmostEqual(expected, actual, TestUtilities.RelativeAccuracy));
 
             // Teardown
         }

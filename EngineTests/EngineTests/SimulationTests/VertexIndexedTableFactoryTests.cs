@@ -6,8 +6,8 @@ using Engine.Simulation;
 using Engine.Utilities;
 using EngineTests.AutoFixtureCustomizations;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics;
 using Xunit;
-using Xunit.Extensions;
 
 namespace EngineTests.SimulationTests
 {
@@ -205,16 +205,16 @@ namespace EngineTests.SimulationTests
             // Fixture setup
             var expected = new List<Vector>
             {
-                VectorUtilities.NewVector(0, -1, 1).Normalize(),
-                VectorUtilities.NewVector(1, 0, -1).Normalize(),
-                VectorUtilities.NewVector(-1, 1, 0).Normalize(),
+                VectorUtilities.NewVector(0, -1, 1).Normalize(2),
+                VectorUtilities.NewVector(1, 0, -1).Normalize(2),
+                VectorUtilities.NewVector(-1, 1, 0).Normalize(2),
             };
 
             // Exercise system
             var normals = VertexIndexedTableFactory.EdgeNormals(polyhedron);
             
             // Verify outcome
-            var vertex = polyhedron.Vertices.First(v => Vector.AlmostEqual(v.Position, VectorUtilities.NewVector(1, 1, 1)));
+            var vertex = polyhedron.Vertices.First(v => Precision.AlmostEqual(v.Position, VectorUtilities.NewVector(1, 1, 1)));
             var actual = normals[polyhedron.IndexOf(vertex)];
             
             TestUtilities.WriteExpectedAndActual(expected, actual);

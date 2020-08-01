@@ -38,7 +38,7 @@ namespace Engine.Simulation
             {
                 var vertexVector = vertex.Position;
                 var edgeVectors = surface.NeighboursOf(vertex).Select(neighbour => (neighbour.Position - vertexVector));
-                var edgeNormals = edgeVectors.Select(edgeVector => Vector.CrossProduct(vertexVector, edgeVector).Normalize()).ToArray();
+                var edgeNormals = edgeVectors.Select(edgeVector => Vector.CrossProduct(vertexVector, edgeVector).Normalize(2)).ToArray();
                 edgeNormalsTable[surface.IndexOf(vertex)] = edgeNormals;
             }
 
@@ -59,7 +59,7 @@ namespace Engine.Simulation
                 {
                     var neighbour = edge.Vertices().First(v => v != vertex);
                     var bisectionPoint = PolyhedronUtilities.BisectionPoint(surface, edge);
-                    var length = (neighbour.Position - bisectionPoint).Norm();
+                    var length = (neighbour.Position - bisectionPoint).Norm(2);
                     //TODO: This is planar distance, not geodesic.
                     lengths.Add(length);
                 }
@@ -123,7 +123,7 @@ namespace Engine.Simulation
             var normals = new Vector[surface.Vertices.Count];
             foreach (var vertex in surface.Vertices)
             {
-                var normal = vertex.Position.Normalize();
+                var normal = vertex.Position.Normalize(2);
                 normals[surface.IndexOf(vertex)] = normal;
             }
 

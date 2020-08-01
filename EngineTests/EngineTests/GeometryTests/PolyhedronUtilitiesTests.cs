@@ -2,7 +2,6 @@
 using Engine.Geometry;
 using EngineTests.AutoFixtureCustomizations;
 using Xunit;
-using Xunit.Extensions;
 
 namespace EngineTests.GeometryTests
 {
@@ -19,8 +18,8 @@ namespace EngineTests.GeometryTests
             var points = polyhedron.Edges.Select(edge => PolyhedronUtilities.BisectionPoint(polyhedron, edge)).ToList();
 
             // Verify outcome
-            var expected = polyhedron.Edges.Select((edge, i) => (edge.A.Position - points[i]).Norm()).ToList();
-            var actual = polyhedron.Edges.Select((edge, i) => (edge.B.Position - points[i]).Norm()).ToList();
+            var expected = polyhedron.Edges.Select((edge, i) => (edge.A.Position - points[i]).Norm(2)).ToList();
+            var actual = polyhedron.Edges.Select((edge, i) => (edge.B.Position - points[i]).Norm(2)).ToList();
 
             TestUtilities.WriteExpectedAndActual(expected, actual);
             Assert.True(Enumerable.SequenceEqual(expected, actual));

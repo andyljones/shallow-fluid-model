@@ -11,7 +11,7 @@ namespace Engine.Geometry.GeodesicSphere
     public static class IcosahedronFactory
     {
         // The colatitudes of the northern five vertices and the southern five vertices.
-        private static readonly double NorthernColatitude = Trig.InverseCosine((1 + Math.Sqrt(5))/(5 + Math.Sqrt(5)));
+        private static readonly double NorthernColatitude = Trig.Acos((1 + Math.Sqrt(5))/(5 + Math.Sqrt(5)));
         private static readonly double SouthernColatitude = Math.PI - NorthernColatitude;
 
         // The 12 vertices of the icosahedron.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Engine.Geometry;
 using Engine.Simulation;
-using Ploeh.AutoFixture;
+using AutoFixture;
 
 namespace EngineTests.AutoFixtureCustomizations
 {

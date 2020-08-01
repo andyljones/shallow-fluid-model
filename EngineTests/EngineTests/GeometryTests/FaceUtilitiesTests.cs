@@ -19,7 +19,7 @@ namespace EngineTests.GeometryTests
                 VertexUtilities.NewVertex(-1, 1, 1)
             });
 
-            var expected = new Vector(new[] {0, 0, Math.Sqrt(3)});
+            var expected = Vector.Build.DenseOfArray(new[] {0, 0, Math.Sqrt(3)});
 
             // Exercise system
             var actual = fakeFace.SphericalCenter();

@@ -1,4 +1,4 @@
-﻿using Ploeh.AutoFixture.Xunit;
+﻿using AutoFixture.Xunit2;
 
 namespace EngineTests.AutoFixtureCustomizations
 {

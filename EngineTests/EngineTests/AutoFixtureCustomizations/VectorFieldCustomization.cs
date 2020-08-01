@@ -4,7 +4,7 @@ using Engine.Geometry;
 using Engine.Simulation;
 using Engine.Utilities;
 using MathNet.Numerics.LinearAlgebra;
-using Ploeh.AutoFixture;
+using AutoFixture;
 
 namespace EngineTests.AutoFixtureCustomizations
 {

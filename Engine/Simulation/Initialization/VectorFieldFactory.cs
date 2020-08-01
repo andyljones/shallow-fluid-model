@@ -27,7 +27,7 @@ namespace Engine.Simulation.Initialization
         {
             var x = maxDeviation*(prng.NextDouble() - 0.5);
             var y = maxDeviation*(prng.NextDouble() - 0.5);
-            var vector = new Vector(new[] {x, y, 0});
+            var vector = Vector.Build.DenseOfArray(new[] {x, y, 0});
             
             return LocalVector(origin, average + vector);
         }
@@ -36,8 +36,8 @@ namespace Engine.Simulation.Initialization
         {
             var globalNorth = VectorUtilities.NewVector(0, 0, 1);
 
-            var localEast = Vector.CrossProduct(globalNorth, origin).Normalize();
-            var localNorth = Vector.CrossProduct(origin, localEast).Normalize();
+            var localEast = Vector.CrossProduct(globalNorth, origin).Normalize(2);
+            var localNorth = Vector.CrossProduct(origin, localEast).Normalize(2);
 
             return v[0] * localNorth + v[1] * localEast;
         }

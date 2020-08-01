@@ -25,7 +25,7 @@ namespace Engine.Geometry
         /// <returns></returns>
         public static Vector SphericalCenter(this Edge edge)
         {
-            return (edge.A.Position + edge.B.Position).Normalize();
+            return (edge.A.Position + edge.B.Position).Normalize(2);
         }
     }
 }

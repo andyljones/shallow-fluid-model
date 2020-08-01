@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Engine.Utilities;
-using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Engine.Geometry
 {
@@ -51,7 +51,7 @@ namespace Engine.Geometry
             var edgeVector = edge.B.Position - origin;
             var vectorToFace = aFace.SphericalCenter() - origin;
 
-            var vectorToBisector = Vector.ScalarProduct(vectorToFace, edgeVector.Normalize())*edgeVector.Normalize();
+            var vectorToBisector = Vector.ScalarProduct(vectorToFace, edgeVector.Normalize(2))*edgeVector.Normalize(2);
 
             return vectorToBisector + origin;
         }
@@ -80,10 +80,10 @@ namespace Engine.Geometry
             var midpointOfNextEdge = BisectionPoint(surface, nextEdge);
 
             var crossProductOfFirstSegment = Vector.CrossProduct(midpointOfPreviousEdge - vertexPosition, midpointOfFace - vertexPosition);
-            var areaOfFirstSegment = Vector.ScalarProduct(crossProductOfFirstSegment, midpointOfFace.Normalize()) / 2;
+            var areaOfFirstSegment = Vector.ScalarProduct(crossProductOfFirstSegment, midpointOfFace.Normalize(2)) / 2;
 
             var crossProductOfSecondSegment = Vector.CrossProduct(midpointOfFace - vertexPosition, midpointOfNextEdge - vertexPosition);
-            var areaOfSecondSegment = Vector.ScalarProduct(crossProductOfSecondSegment, midpointOfFace.Normalize()) / 2;
+            var areaOfSecondSegment = Vector.ScalarProduct(crossProductOfSecondSegment, midpointOfFace.Normalize(2)) / 2;
 
             return areaOfFirstSegment + areaOfSecondSegment;
         }

@@ -1,5 +1,5 @@
 ﻿using EngineTests.GeometryTests;
-using Ploeh.AutoFixture;
+using AutoFixture;
 
 namespace EngineTests.AutoFixtureCustomizations
 {

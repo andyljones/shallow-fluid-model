@@ -18,10 +18,10 @@ namespace EngineTests.GeometryTests.GeodesicSphereTests
             var vertices = icosahedron.Vertices;
 
             // Verify outcome
-            var norms = vertices.Select(vertex => vertex.Position.Norm()).ToArray();
+            var norms = vertices.Select(vertex => vertex.Position.Norm(2)).ToArray();
 
             Debug.WriteLine("Norms are " + TestUtilities.CollectionToString(norms));
-            Assert.True(norms.All(norm => Number.AlmostEqual(norm, 1.0)));
+            Assert.True(norms.All(norm => Precision.AlmostEqual(norm, 1.0)));
 
             // Teardown
         }
@@ -36,12 +36,12 @@ namespace EngineTests.GeometryTests.GeodesicSphereTests
             var edges = icosahedron.Edges;
 
             // Verify outcome
-            var norms = edges.Select(edge => (edge.A.Position - edge.B.Position).Norm()).ToArray();
+            var norms = edges.Select(edge => (edge.A.Position - edge.B.Position).Norm(2)).ToArray();
 
             var expectedNorm = norms.First();
 
             Debug.WriteLine("Norms are " + TestUtilities.CollectionToString(norms));
-            Assert.True(norms.All(norm => Number.AlmostEqual(norm, expectedNorm)));
+            Assert.True(norms.All(norm => Precision.AlmostEqual(norm, expectedNorm)));
 
             // Teardown
         }

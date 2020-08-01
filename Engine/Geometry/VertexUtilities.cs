@@ -35,7 +35,7 @@ namespace Engine.Geometry
         /// </summary>
         public static double Colatitude(this Vertex vertex)
         {
-            return Trig.InverseCosine(vertex.Position.Normalize()[2]);
+            return Trig.Acos(vertex.Position.Normalize(2)[2]);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Engine.Geometry
         /// </summary>
         public static double Azimuth(this Vertex vertex)
         {
-            return Trig.InverseTangentFromRational(vertex.Position.Normalize()[1], vertex.Position.Normalize()[0]);            
+            return Trig.InverseTangentFromRational(vertex.Position.Normalize(2)[1], vertex.Position.Normalize(2)[0]);            
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Engine.Geometry
         /// </summary>
         public static Vertex NewVertex(double x, double y, double z)
         {
-            var v = new Vector(new[] {x, y, z});
+            var v = Vector.Build.DenseOfArray(new[] {x, y, z});
 
             return new Vertex(v);
         }

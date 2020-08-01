@@ -7,6 +7,8 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Engine.Utilities
 {
+    using Vector = MathNet.Numerics.LinearAlgebra.Vector<double>;
+
     /// <summary>
     /// Static utility methods for Vector objects.
     /// </summary>
@@ -19,8 +21,8 @@ namespace Engine.Utilities
         /// </summary>
         public static double GeodesicDistance(Vector a, Vector b)
         {
-            var radius = (a.Norm() + b.Norm())/2;
-            var angle = Trig.InverseCosine(Vector.ScalarProduct(a.Normalize(), b.Normalize()));
+            var radius = (a.Norm(2) + b.Norm(2))/2;
+            var angle = Trig.Acos(Vector.ScalarProduct(a.Normalize(2), b.Normalize(2)));
 
             return radius*angle;
         }
@@ -30,11 +32,11 @@ namespace Engine.Utilities
         /// </summary>
         public static Vector NewVector(double colatitude, double azimuth)
         {
-            var x = Trig.Sine(colatitude) * Trig.Cosine(azimuth);
-            var y = Trig.Sine(colatitude) * Trig.Sine(azimuth);
-            var z = Trig.Cosine(colatitude);
+            var x = Trig.Sin(colatitude) * Trig.Cos(azimuth);
+            var y = Trig.Sin(colatitude) * Trig.Sin(azimuth);
+            var z = Trig.Cos(colatitude);
 
-            return new Vector(new [] {x, y, z});
+            return Vector.Build.DenseOfArray(new [] {x, y, z});
         }
 
         /// <summary>
@@ -42,7 +44,7 @@ namespace Engine.Utilities
         /// </summary>
         public static Vector NewVector(double x, double y, double z)
         {
-            return new Vector(new [] {x, y, z});
+            return Vector.Build.DenseOfArray(new [] {x, y, z});
         }
 
         /// <summary>
@@ -51,9 +53,9 @@ namespace Engine.Utilities
         public static Vector LocalDirection(Vector origin, Vector destination)
         {
             var direction = destination - origin;
-            var normalAtFrom = origin.Normalize();
+            var normalAtFrom = origin.Normalize(2);
 
-            var localDirection = (direction - Vector.ScalarProduct(direction, normalAtFrom)*normalAtFrom).Normalize();
+            var localDirection = (direction - Vector.ScalarProduct(direction, normalAtFrom)*normalAtFrom).Normalize(2);
 
             return localDirection;
         }

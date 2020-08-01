@@ -71,7 +71,7 @@ namespace Engine.Simulation
             var normals = new Vector[surface.Faces.Count];
             foreach (var face in surface.Faces)
             {
-                normals[surface.IndexOf(face)] = face.SphericalCenter().Normalize();
+                normals[surface.IndexOf(face)] = face.SphericalCenter().Normalize(2);
             }
 
             return normals;
