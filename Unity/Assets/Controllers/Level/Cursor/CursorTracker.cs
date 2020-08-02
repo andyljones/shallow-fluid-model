@@ -37,6 +37,7 @@ namespace Assets.Controllers.Level.Cursor
             var gameObject = new GameObject("Collider");
             var collider = gameObject.AddComponent<MeshCollider>();
             collider.sharedMesh = mesh;
+            //TODO: Another bug I picked up somewhere. I think because the sphere is deformed somewhere? Doesn't seem to have any consequences.
             // collider.isTrigger = true;
 
             return gameObject;
