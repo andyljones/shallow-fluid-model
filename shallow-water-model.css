@@ -5,8 +5,8 @@ html,body {
     padding: 0;
 }
 
-#instructions,#unityPlayerHolder {
-    border: 1px solid #aaaaaa;
+#instructions,#unityContainer {
+    border: 1px solid #aaaaaa !important;
     float: left;
 }
 
@@ -51,10 +51,11 @@ html,body {
 }
 
 /* Player styling */
-#unityPlayerHolder {
-    position: fixed;
-    width: calc(100% - 295px);
-    height: calc(100% - 25px);
-    margin-top: 10px;
-    margin-left: 285px;
+#unityContainer {
+    position: fixed !important;
+    width: calc(100% - 295px) !important;
+    height: calc(100% - 25px) !important;
+    margin-top: 10px !important;
+    margin-left: 285px !important;
+    background-color: #ffffff;
 }

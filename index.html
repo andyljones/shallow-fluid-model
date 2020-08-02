@@ -22,6 +22,12 @@
         </noscript>
 
         <link href="shallow-water-model.css" type="text/css" rel="stylesheet">
+
+        <script src="TemplateData/UnityProgress.js"></script>
+        <script src="Build/UnityLoader.js"></script>
+        <script>
+            var unityInstance = UnityLoader.instantiate("unityContainer", "Build/web.json", {onProgress: UnityProgress});
+        </script>
     </head>
     <body>
         <div id="instructions">
@@ -74,22 +80,6 @@
             </ul>
         </div>
     
-        <div id="unityPlayerHolder">
-            <div id="unityPlayer">
-                <div class="missing">
-                    <a href="http://unity3d.com/webplayer/" title="Unity Web Player. Install now!">
-                        <img alt="Unity Web Player. Install now!" src="http://webplayer.unity3d.com/installation/getunity.png" width="193" height="63" />
-                    </a>
-                </div>
-                <div class="broken">
-                    <a href="http://unity3d.com/webplayer/" title="Unity Web Player. Install now! Restart your browser after install.">
-                        <img alt="Unity Web Player. Install now! Restart your browser after install." src="http://webplayer.unity3d.com/installation/getunityrestart.png" width="193" height="63" />
-                    </a>
-                </div>
-            </div>
-        </div>
-        <script type='text/javascript' src='https://ssl-webplayer.unity3d.com/download_webplayer-3.x/3.0/uo/jquery.min.js'></script>
-        <script type='text/javascript' src='fetch-unity-object2.js'></script>
-        <script type='text/javascript' src='load-unity-player.js'></script>
+        <div id="unityContainer"></div>
     </body>
 </html>
