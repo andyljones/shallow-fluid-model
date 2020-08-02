@@ -88,7 +88,7 @@ namespace Assets.Controllers.Level.GameCamera
             if (keyed) {
                 _radius = Mathf.Max(_surfaceRadius, _radius + _radialSpeed * -Input.GetAxis("Mouse Y"));
             } else {
-                _radius = Mathf.Max(_surfaceRadius, _radius + 5*_radialSpeed * -Input.GetAxis("Mouse ScrollWheel"));
+                _radius = Mathf.Max(_surfaceRadius, _radius + 3*_radialSpeed * -Input.GetAxis("Mouse ScrollWheel"));
             }
         }
 

@@ -13,7 +13,7 @@ namespace Assets.Controllers.Options
     {
         private static readonly GameOptions InitialOptions = new GameOptions
         {
-            MinimumNumberOfFaces = 100,
+            MinimumNumberOfFaces = 500,
             Radius = 6000,
 
             Gravity = 10.0 / 1000.0,

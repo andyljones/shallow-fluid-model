@@ -30,6 +30,7 @@ namespace Assets.Controllers.Level.Simulation
 
         // Simulation thread management variables.
         private bool _simulationIsPaused;
+        private long _last;
         private readonly SimulationRunner _stepper;
 
         private readonly ISimulationControllerOptions _options;
@@ -48,6 +49,7 @@ namespace Assets.Controllers.Level.Simulation
             _currentFieldsCache = _stepper.CurrentFields;
 
             _simulationIsPaused = false;
+            _last = 0;
         }
 
         /// <summary>
@@ -70,7 +72,9 @@ namespace Assets.Controllers.Level.Simulation
                 _currentFieldsCache = _stepper.CurrentFields;
             }
 
-            if (!_simulationIsPaused) {
+            var now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            if (!_simulationIsPaused && (now - _last > 30)) {
+                _last = now;
                 _stepper.StepSimulation();
                 NumberOfSteps = NumberOfSteps + 1;
                 
