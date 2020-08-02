@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using Engine.Geometry;
 using Engine.Simulation;
 using Engine.Simulation.Initialization;
@@ -30,11 +29,8 @@ namespace Assets.Controllers.Level.Simulation
         public int NumberOfSteps { get; private set; }
 
         // Simulation thread management variables.
-        private readonly Thread _simulationThread;
-        private readonly ManualResetEvent _pauseSimulation;
-        private readonly ManualResetEvent _simulationIsPaused;
+        private bool _simulationIsPaused;
         private readonly SimulationRunner _stepper;
-        private bool _terminationRequested = false;
 
         private readonly ISimulationControllerOptions _options;
 
@@ -51,37 +47,7 @@ namespace Assets.Controllers.Level.Simulation
             _stepper = new SimulationRunner(surface, initialFields, options);
             _currentFieldsCache = _stepper.CurrentFields;
 
-            _pauseSimulation = new ManualResetEvent(false);
-            _simulationIsPaused = new ManualResetEvent(false);
-            _simulationThread = new Thread(SimulationLoop);
-            _simulationThread.Start();
-        }
-
-        // Main simulation loop. Runs the simulation and updates CurrentFields/NumberOfSteps until a pause is requested.
-        private void SimulationLoop()
-        {
-            while (true)
-            {
-                // If a pause has been requested, pause the simulation, announce it's been paused, and then wait 
-                // for the pause monitor to reset.
-                if (!_pauseSimulation.WaitOne(0))
-                {
-                    _simulationIsPaused.Set();
-                    _pauseSimulation.WaitOne();
-                    _simulationIsPaused.Reset();
-                }
-
-                _stepper.StepSimulation();
-                NumberOfSteps = NumberOfSteps + 1;
-                
-                _currentFieldsCache = _stepper.CurrentFields;
-
-                // If termination has been requested, exit the loop. 
-                if (_terminationRequested)
-                {
-                    return;
-                }
-            }
+            _simulationIsPaused = false;
         }
 
         /// <summary>
@@ -89,6 +55,7 @@ namespace Assets.Controllers.Level.Simulation
         /// </summary>
         public void Update()
         {
+
             if (Input.GetKeyDown(_options.PauseSimulationKey))
             {
                 TogglePause();
@@ -97,24 +64,24 @@ namespace Assets.Controllers.Level.Simulation
             {
                 // If a reset is requested, pause the simulation, reset the stepper and update the fields cache to the 
                 // reset values.
-                _pauseSimulation.Reset();
-                _simulationIsPaused.WaitOne();
+                _simulationIsPaused = false;
                 NumberOfSteps = 0;             
                 _stepper.Reset();
                 _currentFieldsCache = _stepper.CurrentFields;
             }
+
+            if (!_simulationIsPaused) {
+                _stepper.StepSimulation();
+                NumberOfSteps = NumberOfSteps + 1;
+                
+                _currentFieldsCache = _stepper.CurrentFields;
+            }
+
         }
 
         private void TogglePause()
         {
-            if (_pauseSimulation.WaitOne(0))
-            {
-                _pauseSimulation.Reset();
-            }
-            else
-            {
-                _pauseSimulation.Set();
-            }
+            _simulationIsPaused = !_simulationIsPaused;
         }
 
         /// <summary>
@@ -122,7 +89,7 @@ namespace Assets.Controllers.Level.Simulation
         /// </summary>
         public void OnGUI()
         {
-            if (!_pauseSimulation.WaitOne(0))
+            if (_simulationIsPaused)
             {
                 var pauseMessage = String.Format("SIMULATION PAUSED\n({0} TO RESUME)", _options.PauseSimulationKey);
 
@@ -137,7 +104,6 @@ namespace Assets.Controllers.Level.Simulation
         /// </summary>
         public void Dispose()
         {
-            _terminationRequested = true;
         }
         #endregion
     }

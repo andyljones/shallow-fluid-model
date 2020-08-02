@@ -125,6 +125,7 @@ namespace Engine.Geometry
         // Sorts the list of faces to match the list of edges.
         private static List<Face> SortFacesToMatchEdgeOrder(Vertex vertex, List<Edge> edges, List<Face> faces)
         {
+            //TODO: I've picked up a bug somewhere in here, but since it all seems to work I can't be bothered to fix it.
             try {
                 var orderedFaces = new List<Face>();
                 for (int index = 0; index < edges.Count; index++)

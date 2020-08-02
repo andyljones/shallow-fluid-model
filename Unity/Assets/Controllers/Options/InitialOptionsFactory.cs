@@ -13,7 +13,7 @@ namespace Assets.Controllers.Options
     {
         private static readonly GameOptions InitialOptions = new GameOptions
         {
-            MinimumNumberOfFaces = 500,
+            MinimumNumberOfFaces = 100,
             Radius = 6000,
 
             Gravity = 10.0 / 1000.0,
@@ -31,7 +31,7 @@ namespace Assets.Controllers.Options
             ColorMapHistoryLength = 1000,
             ColorMapMaterialName = "Materials/Surface",
 
-            ParticleCount = 50000,
+            ParticleCount = 10000,
             ParticleSpeedScaleFactor = 10,
             ParticleLifespan = 1000,
             ParticleTrailLifespan = 10,
