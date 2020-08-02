@@ -59,8 +59,9 @@ namespace Assets.Controllers.Level.GameCamera
             // If the zoom key is depressed, update the _radius field.
             if (Input.GetKey(_options.ZoomKey))
             {
-                UpdateRadius();
+                UpdateRadius(true);
             }
+            UpdateRadius(false);
 
             // Update the camera's transform to match the _azimuth, _colatitude & _radius fields
             var position = GraphicsUtilities.Vector3(_colatitude, _azimuth, _radius);
@@ -82,9 +83,13 @@ namespace Assets.Controllers.Level.GameCamera
         }
 
         // Update the radial field in response to user input.
-        private void UpdateRadius()
+        private void UpdateRadius(bool keyed)
         {
-            _radius = Mathf.Max(_surfaceRadius, _radius + _radialSpeed * -Input.GetAxis("Mouse Y"));
+            if (keyed) {
+                _radius = Mathf.Max(_surfaceRadius, _radius + _radialSpeed * -Input.GetAxis("Mouse Y"));
+            } else {
+                _radius = Mathf.Max(_surfaceRadius, _radius + 5*_radialSpeed * -Input.GetAxis("Mouse ScrollWheel"));
+            }
         }
 
         // Calculate x modulo m (which has a range [0, m)). This is distinct from x%m, which is x remainder m 
